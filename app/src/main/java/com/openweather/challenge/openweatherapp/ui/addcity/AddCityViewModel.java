@@ -18,8 +18,6 @@ import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import java.util.List;
 
 public class AddCityViewModel extends ViewModel {
-    // City the user is looking at
-//    private final LiveData<List<CityEntity>> mCityEntity;
 
     private final AppRepository mRepository;
 
@@ -28,9 +26,6 @@ public class AddCityViewModel extends ViewModel {
         mRepository = appRepository;
     }
 
-//    public LiveData<List<CityEntity>> getAllCities() {
-//        return mCityEntity;
-//    }
 
     public List<CityEntity> getAllCities() {
         return mRepository.getAllCities();

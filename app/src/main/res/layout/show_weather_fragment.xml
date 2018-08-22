@@ -16,7 +16,7 @@
     tools:context=".ui.showweather.ShowWeatherFragment">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/tvResults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MainFragment"
@@ -24,5 +24,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="intert Dummy"
+        android:id="@+id/btnDummy"/>
 
 </android.support.constraint.ConstraintLayout>

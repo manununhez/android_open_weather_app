@@ -8,8 +8,32 @@
 
 package com.openweather.challenge.openweatherapp.ui.showweather;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.openweather.challenge.openweatherapp.AppRepository;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+
+import java.util.List;
+
 public class ShowWeatherViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+    // City the user is looking at
+    private final LiveData<List<WeatherEntity>> mWeather;
+
+    private final AppRepository mRepository;
+
+
+    public ShowWeatherViewModel(AppRepository appRepository) {
+        mRepository = appRepository;
+        mWeather = mRepository.getAllWeather();
+    }
+
+
+    public LiveData<List<WeatherEntity>> getAllWeathers() {
+        return mWeather;
+    }
+
+    public void insertDummyWeather() {
+        mRepository.insertDummyWeather();
+    }
 }

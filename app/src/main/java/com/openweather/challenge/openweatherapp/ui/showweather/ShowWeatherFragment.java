@@ -16,12 +16,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 public class ShowWeatherFragment extends Fragment {
 
     private ShowWeatherViewModel mViewModel;
+    private View view;
 
     public static ShowWeatherFragment newInstance() {
         return new ShowWeatherFragment();
@@ -31,14 +37,36 @@ public class ShowWeatherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.show_weather_fragment, container, false);
+        view = inflater.inflate(R.layout.show_weather_fragment, container, false);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ShowWeatherViewModel.class);
-        // TODO: Use the ViewModel
+
+        TextView message = (TextView) view.findViewById(R.id.tvResults);
+        Button btnDummy = (Button) view.findViewById(R.id.btnDummy);
+
+        ShowWeatherViewModelFactory factory = InjectorUtils.provideShowWeatherViewModelFactory(getActivity().getApplicationContext());
+        mViewModel = ViewModelProviders.of(this, factory).get(ShowWeatherViewModel.class);
+
+
+        mViewModel.getAllWeathers().observe(this, weatherEntities -> {
+            if (weatherEntities != null){
+                //message.setText("");
+                for (WeatherEntity w: weatherEntities){
+                    message.setText(message.getText()+w.toString());
+                }
+            }
+        });
+
+        btnDummy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mViewModel.insertDummyWeather();
+            }
+        });
     }
 
 }

@@ -304,4 +304,36 @@ public class WeatherEntity {
     public void setCod(int cod) {
         this.cod = cod;
     }
+
+    @Override
+    public String toString() {
+        return "WeatherEntity{" +
+                "id=" + id +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                ", weather_id=" + weather_id +
+                ", weather_main='" + weather_main + '\'' +
+                ", weather_description='" + weather_description + '\'' +
+                ", weather_icon='" + weather_icon + '\'' +
+                ", base='" + base + '\'' +
+                ", main_temp=" + main_temp +
+                ", main_pressure=" + main_pressure +
+                ", main_humidity=" + main_humidity +
+                ", main_temp_min=" + main_temp_min +
+                ", main_temp_max=" + main_temp_max +
+                ", visibility=" + visibility +
+                ", wind_speed=" + wind_speed +
+                ", wind_deg=" + wind_deg +
+                ", clouds=" + clouds +
+                ", dt=" + dt +
+                ", sys_type=" + sys_type +
+                ", sys_id=" + sys_id +
+                ", sys_message=" + sys_message +
+                ", sys_country='" + sys_country + '\'' +
+                ", sys_sunrise=" + sys_sunrise +
+                ", sys_sunset=" + sys_sunset +
+                ", name='" + name + '\'' +
+                ", cod=" + cod +
+                '}';
+    }
 }

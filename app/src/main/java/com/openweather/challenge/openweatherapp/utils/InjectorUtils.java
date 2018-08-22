@@ -13,6 +13,7 @@ import android.content.Context;
 import com.openweather.challenge.openweatherapp.AppRepository;
 import com.openweather.challenge.openweatherapp.db.AppRoomDatabase;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityViewModelFactory;
+import com.openweather.challenge.openweatherapp.ui.showweather.ShowWeatherViewModelFactory;
 
 import java.util.Date;
 
@@ -24,7 +25,7 @@ public class InjectorUtils {
     public static AppRepository provideRepository(Context context) {
         AppRoomDatabase database = AppRoomDatabase.getInstance(context.getApplicationContext());
 
-        return AppRepository.getInstance(database.cityDao());
+        return AppRepository.getInstance(database.cityDao(), database.weatherDao());
     }
 
 //    public static WeatherNetworkDataSource provideNetworkDataSource(Context context) {
@@ -38,6 +39,11 @@ public class InjectorUtils {
     public static AddCityViewModelFactory provideAddCityViewModelFactory(Context context) {
         AppRepository repository = provideRepository(context.getApplicationContext());
         return new AddCityViewModelFactory(repository);
+    }
+
+    public static ShowWeatherViewModelFactory provideShowWeatherViewModelFactory(Context context) {
+        AppRepository repository = provideRepository(context.getApplicationContext());
+        return new ShowWeatherViewModelFactory(repository);
     }
 
 //    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {

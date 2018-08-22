@@ -8,13 +8,17 @@
 
 package com.openweather.challenge.openweatherapp;
 
+import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import com.openweather.challenge.openweatherapp.db.dao.CityDao;
+import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 /**
  * Created by manuel on 21,August,2018
@@ -23,21 +27,28 @@ public class AppRepository {
     // For Singleton instantiation
     private static AppRepository INSTANCE;
     private final CityDao mCityDao;
+    private final WeatherDao mWeatherDao;
 
-    public AppRepository(CityDao cityDao) {
+    public AppRepository(CityDao cityDao, WeatherDao weatherDao) {
         mCityDao = cityDao;
+        mWeatherDao = weatherDao;
     }
 
     public synchronized static AppRepository getInstance(
-            CityDao cityDao) {
+            CityDao cityDao, WeatherDao weatherDao) {
         OpenWeatherApp.Logger.d("Getting the repository");
         if (INSTANCE == null) {
             synchronized (AppRepository.class) {
-                INSTANCE = new AppRepository(cityDao);
+                INSTANCE = new AppRepository(cityDao, weatherDao);
                 OpenWeatherApp.Logger.d("Made new repository");
             }
         }
         return INSTANCE;
+    }
+
+    public LiveData<List<WeatherEntity>> getAllWeather(){
+
+        return mWeatherDao.getAllWeathers();
     }
 
     public List<CityEntity> getAllCities() {
@@ -62,9 +73,14 @@ public class AppRepository {
         return null;
     }
 
-//    public LiveData<List<CityEntity>> getAllCities() {
-//        return mCityDao.getAllCities();
-//    }
+    public void insertDummyWeather(){
+        //Remember use a separate thread when you insert elements into database
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mWeatherDao.insert(new WeatherEntity(123, 123.45, 123.45, 123, "frio", "descripcion", "icon",
+                    "base", 25.45, 45, 13, 12.45, 45.12, 1, 45.12, 1, 1,
+                    124564564, 5, 4, 45.4, "PY", 123456, 1321645, "name", 200));
+        });
+    }
 
     private static class RetrieveAllCities extends AsyncTask<Void, Void, List<CityEntity>> {
         CityDao cityDao;

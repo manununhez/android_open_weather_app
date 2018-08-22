@@ -43,44 +43,7 @@ public class AddCityFragment extends Fragment {
     private DataSearchAdapter mAdapter;
 
 
-    private SearchView.OnQueryTextListener onQueryTextListener =
-            new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    OpenWeatherApp.Logger.d("submitted: " + query);
-//                    getDealsFromDb(query);
-                    return true;
-                }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-//                    OpenWeatherApp.Logger.d(newText);
-//                    newText = "%" + newText + "%";
-                    List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
-//                    mAdapter.getFilter().filter(newText);
-                    mAdapter.setItemList(cityEntities);
-                    tvCountResults.setText(mAdapter.getItemCount()+" results");
-                    return true;
-                }
-
-//                private void getDealsFromDb(String searchText) {
-//                    searchText = "%"+searchText+"%";
-//                    localRepository.getDealsListInfo(DealsSearchActivity.this, searchText)
-//                            .observe(DealsSearchActivity.this, new Observer<List<DealInfo>>() {
-//                                @Override
-//                                public void onChanged(@Nullable List<DealInfo> deals) {
-//                                    if (deals == null) {
-//                                        return;
-//                                    }
-//                                    DealsListViewAdapter adapter = new DealsListViewAdapter(
-//                                            DealsSearchActivity.this,
-//                                            R.layout.deal_item_layout, deals);
-//                                    listView.setAdapter(adapter);
-//
-//                                }
-//                            });
-//                }
-            };
 
     public static AddCityFragment newInstance() {
         return new AddCityFragment();
@@ -151,5 +114,43 @@ public class AddCityFragment extends Fragment {
 
 
     }
-//}
+
+    private SearchView.OnQueryTextListener onQueryTextListener =
+            new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    OpenWeatherApp.Logger.d("submitted: " + query);
+//                    getDealsFromDb(query);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+//                    OpenWeatherApp.Logger.d(newText);
+//                    newText = "%" + newText + "%";
+                    List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
+//                    mAdapter.getFilter().filter(newText);
+                    mAdapter.setItemList(cityEntities);
+                    tvCountResults.setText(mAdapter.getItemCount()+" results");
+                    return true;
+                }
+
+//                private void getDealsFromDb(String searchText) {
+//                    searchText = "%"+searchText+"%";
+//                    localRepository.getDealsListInfo(DealsSearchActivity.this, searchText)
+//                            .observe(DealsSearchActivity.this, new Observer<List<DealInfo>>() {
+//                                @Override
+//                                public void onChanged(@Nullable List<DealInfo> deals) {
+//                                    if (deals == null) {
+//                                        return;
+//                                    }
+//                                    DealsListViewAdapter adapter = new DealsListViewAdapter(
+//                                            DealsSearchActivity.this,
+//                                            R.layout.deal_item_layout, deals);
+//                                    listView.setAdapter(adapter);
+//
+//                                }
+//                            });
+//                }
+            };
 }
