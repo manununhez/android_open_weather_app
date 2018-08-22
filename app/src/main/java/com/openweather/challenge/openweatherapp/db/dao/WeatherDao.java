@@ -25,11 +25,11 @@ import java.util.List;
 @Dao // Required annotation for Dao to be recognized by Room
 public interface WeatherDao {
 
-    @Query("SELECT * FROM weather_table ORDER BY name ASC")
+    @Query("SELECT * FROM weather_table")
     LiveData<List<WeatherEntity>> getAllWeathers();
 
     // Inserts single weather
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insert(WeatherEntity weather);
 
     // Inserts multiple weather
@@ -48,5 +48,8 @@ public interface WeatherDao {
 //
 //    @Query("SELECT * FROM weather WHERE date = :date")
 //    WeatherEntity getWeatherByDate(Date date);
+
+    @Query("DELETE FROM weather_table WHERE id in (SELECT id FROM weather_table LIMIT 1)")
+    void deleteDummy();
 
 }

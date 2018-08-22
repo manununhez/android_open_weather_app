@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.openweather.challenge.openweatherapp.R;
 
+import java.util.Objects;
+
 public class AddCityActivity extends AppCompatActivity {
 
     @Override
@@ -27,6 +29,9 @@ public class AddCityActivity extends AppCompatActivity {
                     .replace(R.id.container, AddCityFragment.newInstance())
                     .commitNow();
         }
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Add New City");  // provide compatibility to all the versions
+
     }
 
 

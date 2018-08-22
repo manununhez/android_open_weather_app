@@ -9,6 +9,7 @@
 package com.openweather.challenge.openweatherapp.utils;
 
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
@@ -26,6 +28,7 @@ import java.util.List;
 public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSearchAdapter.ViewHolder> implements Filterable {
     private List<CityEntity> mArrayList;
     private List<CityEntity> mFilteredList;
+    private Context mContext;
 
     public DataFilterSearchAdapter(List<CityEntity> arrayList) {
         mArrayList = arrayList;
@@ -35,6 +38,7 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
     @Override
     public DataFilterSearchAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.search_card_row, viewGroup, false);
+        mContext = view.getContext();
         return new ViewHolder(view);
     }
 
@@ -42,6 +46,13 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
     public void onBindViewHolder(DataFilterSearchAdapter.ViewHolder viewHolder, int i) {
 
         viewHolder.textSearch.setText(mFilteredList.get(i).getName()+","+mFilteredList.get(i).getCountry());
+
+        viewHolder.textSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, mFilteredList.get(i).getName()+" id="+mFilteredList.get(i).getId(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -83,7 +94,7 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mFilteredList = (List<CityEntity>) filterResults.values;
+                //mFilteredList = (List<CityEntity>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
@@ -96,6 +107,8 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
 
             textSearch = (TextView)view.findViewById(R.id.textSearch);
         }
+
+
     }
 
 }

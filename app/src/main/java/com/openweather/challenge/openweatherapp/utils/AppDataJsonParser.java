@@ -16,10 +16,7 @@ import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.model.CityResponse;
-import com.openweather.challenge.openweatherapp.model.Main;
-import com.openweather.challenge.openweatherapp.model.WeatherDescription;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,7 +43,8 @@ public class AppDataJsonParser {
         reader.beginArray();
         while (reader.hasNext()) {
             CityResponse cityResponse = gson.fromJson(reader, CityResponse.class);
-            cityEntityList.add(new CityEntity(cityResponse.id, cityResponse.name, cityResponse.country, cityResponse.coord.getLat(), cityResponse.coord.getLon()));
+            if (!cityResponse.name.isEmpty() && !cityResponse.country.isEmpty())
+                cityEntityList.add(new CityEntity(cityResponse.id, cityResponse.name, cityResponse.country, cityResponse.coord.getLat(), cityResponse.coord.getLon()));
         }
         reader.endArray();
         reader.close();

@@ -36,4 +36,8 @@ public class ShowWeatherViewModel extends ViewModel {
     public void insertDummyWeather() {
         mRepository.insertDummyWeather();
     }
+
+    public void deleteDummyWeather() {
+        mRepository.deleteDummyWeather();
+    }
 }

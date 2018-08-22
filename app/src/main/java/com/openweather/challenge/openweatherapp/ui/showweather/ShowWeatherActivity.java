@@ -13,6 +13,8 @@ import android.os.Bundle;
 
 import com.openweather.challenge.openweatherapp.R;
 
+import java.util.Objects;
+
 public class ShowWeatherActivity extends AppCompatActivity {
 
     @Override
@@ -24,5 +26,7 @@ public class ShowWeatherActivity extends AppCompatActivity {
                     .replace(R.id.container, ShowWeatherFragment.newInstance())
                     .commitNow();
         }
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle("OpenWeatherMap");  // provide compatibility to all the versions
     }
 }

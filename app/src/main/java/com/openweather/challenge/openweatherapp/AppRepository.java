@@ -76,9 +76,18 @@ public class AppRepository {
     public void insertDummyWeather(){
         //Remember use a separate thread when you insert elements into database
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            mWeatherDao.insert(new WeatherEntity(123, 123.45, 123.45, 123, "frio", "descripcion", "icon",
+            mWeatherDao.insert(new WeatherEntity(442, 123.45, 123.45, 123, "frio", "descripcion", "icon",
                     "base", 25.45, 45, 13, 12.45, 45.12, 1, 45.12, 1, 1,
-                    124564564, 5, 4, 45.4, "PY", 123456, 1321645, "name", 200));
+                    11254564, 5, 4, 45.4, "PY", 123456, 1321645, "name", 200));
+            OpenWeatherApp.Logger.d("Dummy object inserted");
+        });
+    }
+
+    public void deleteDummyWeather(){
+        //Remember use a separate thread when you insert elements into database
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mWeatherDao.deleteDummy();
+            OpenWeatherApp.Logger.d("Dummy object deleted");
         });
     }
 

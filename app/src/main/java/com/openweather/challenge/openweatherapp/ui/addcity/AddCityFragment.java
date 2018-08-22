@@ -32,6 +32,7 @@ import com.openweather.challenge.openweatherapp.utils.DataSearchAdapter;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class AddCityFragment extends Fragment {
 
@@ -40,9 +41,7 @@ public class AddCityFragment extends Fragment {
     private TextView tvCountResults;
     private View view;
     private RecyclerView mRecyclerView;
-    private DataSearchAdapter mAdapter;
-
-
+    private DataFilterSearchAdapter mAdapter;
 
 
     public static AddCityFragment newInstance() {
@@ -89,22 +88,34 @@ public class AddCityFragment extends Fragment {
     }
 
     private void initViews() {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rvSearch);
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
 
-        List<CityEntity> cityEntities = mViewModel.getAllCities();
 
-//        mAdapter = new DataFilterSearchAdapter(cityEntities);
-        mAdapter = new DataSearchAdapter(cityEntities);
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.rvSearch);
+            mRecyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(layoutManager);
 
-        mRecyclerView.setAdapter(mAdapter);
+            List<CityEntity> cityEntities = mViewModel.getAllCities();
+
+            mAdapter = new DataFilterSearchAdapter(cityEntities);
+//            mAdapter = new DataSearchAdapter(cityEntities);
+
+            mRecyclerView.setAdapter(mAdapter);
+
+            if(mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
+
+        });
+
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
+
+        menu.findItem(R.id.action_search).setVisible(true);
+        menu.findItem(R.id.action_add_city).setVisible(false);
+        menu.findItem(R.id.action_manage_city).setVisible(false);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
                 .getActionView();
@@ -112,8 +123,8 @@ public class AddCityFragment extends Fragment {
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(onQueryTextListener);
 
-
     }
+
 
     private SearchView.OnQueryTextListener onQueryTextListener =
             new SearchView.OnQueryTextListener() {
@@ -126,12 +137,14 @@ public class AddCityFragment extends Fragment {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
+                    if (!newText.isEmpty()) {
 //                    OpenWeatherApp.Logger.d(newText);
 //                    newText = "%" + newText + "%";
-                    List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
-//                    mAdapter.getFilter().filter(newText);
-                    mAdapter.setItemList(cityEntities);
-                    tvCountResults.setText(mAdapter.getItemCount()+" results");
+                        //List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
+                        mAdapter.getFilter().filter(newText);
+                        //mAdapter.setItemList(cityEntities);
+                    }
+                    if(mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
                     return true;
                 }
 

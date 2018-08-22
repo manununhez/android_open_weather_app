@@ -18,9 +18,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.addcity.AddCityActivity" >
-
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.managecities.ManageCitiesActivity" />
         </activity>
-        <activity android:name=".ui.managecities.ManageCitiesActivity"/>
+        <activity android:name=".ui.managecities.ManageCitiesActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.showweather.ShowWeatherActivity" />
+        </activity>
     </application>
 
 </manifest>
