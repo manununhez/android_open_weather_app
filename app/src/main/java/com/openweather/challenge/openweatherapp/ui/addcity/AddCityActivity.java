@@ -10,6 +10,8 @@ package com.openweather.challenge.openweatherapp.ui.addcity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.View;
 
 import com.openweather.challenge.openweatherapp.R;
@@ -26,5 +28,7 @@ public class AddCityActivity extends AppCompatActivity {
                     .commitNow();
         }
     }
+
+
 
 }

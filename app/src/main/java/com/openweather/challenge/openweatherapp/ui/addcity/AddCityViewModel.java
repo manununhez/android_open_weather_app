@@ -20,14 +20,12 @@ import java.util.List;
 public class AddCityViewModel extends ViewModel {
     // City the user is looking at
 //    private final LiveData<List<CityEntity>> mCityEntity;
-    private final List<CityEntity> mCityEntity;
 
     private final AppRepository mRepository;
 
 
     public AddCityViewModel(AppRepository appRepository) {
         mRepository = appRepository;
-        mCityEntity = mRepository.getAllCities();
     }
 
 //    public LiveData<List<CityEntity>> getAllCities() {
@@ -35,6 +33,10 @@ public class AddCityViewModel extends ViewModel {
 //    }
 
     public List<CityEntity> getAllCities() {
-        return mCityEntity;
+        return mRepository.getAllCities();
+    }
+
+    public List<CityEntity> getCitiesByName(String text) {
+        return mRepository.getCitiesByName(text);
     }
 }

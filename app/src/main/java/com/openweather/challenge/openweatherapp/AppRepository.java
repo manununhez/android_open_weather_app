@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import com.openweather.challenge.openweatherapp.db.dao.CityDao;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -43,13 +42,23 @@ public class AppRepository {
 
     public List<CityEntity> getAllCities() {
         try {
-            return new RetrieveTask(mCityDao).execute().get();
+            return new RetrieveAllCities(mCityDao).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        //return mCityDao.getAllCities();
+        return null;
+    }
+
+    public List<CityEntity> getCitiesByName(String text){
+        try {
+            return new RetrieveCitiesByName(mCityDao).execute(text).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -57,14 +66,11 @@ public class AppRepository {
 //        return mCityDao.getAllCities();
 //    }
 
-    private static class RetrieveTask extends AsyncTask<Void, Void, List<CityEntity>> {
-
-        //        private WeakReference<AddCityFragment> activityReference;
-//        private AddCityViewModel mViewModel;
+    private static class RetrieveAllCities extends AsyncTask<Void, Void, List<CityEntity>> {
         CityDao cityDao;
 
         // only retain a weak reference to the activity
-        RetrieveTask(CityDao cityDao) {
+        RetrieveAllCities(CityDao cityDao) {
            this.cityDao = cityDao;
         }
 
@@ -75,11 +81,26 @@ public class AppRepository {
 
         @Override
         protected void onPostExecute(List<CityEntity> cityEntities) {
+            super.onPostExecute(cityEntities);
+        }
+    }
 
-            for (CityEntity c : cityEntities) {
-                OpenWeatherApp.Logger.d(c.toString());
-            }
+    private static class RetrieveCitiesByName extends AsyncTask<String, Void, List<CityEntity>> {
+        CityDao cityDao;
+
+        // only retain a weak reference to the activity
+        RetrieveCitiesByName(CityDao cityDao) {
+            this.cityDao = cityDao;
         }
 
+        @Override
+        protected List<CityEntity> doInBackground(String... strings) {
+            return cityDao.getCitiesByName(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<CityEntity> cityEntities) {
+            super.onPostExecute(cityEntities);
+        }
     }
 }

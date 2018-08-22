@@ -24,6 +24,8 @@ import java.util.List;
  */
 @Dao // Required annotation for Dao to be recognized by Room
 public interface CityDao {
+    @Query("SELECT * FROM city_table WHERE name LIKE :dealText")
+    List<CityEntity> getCitiesByName(String dealText);
 
     // Returns a list of all cities in the database
     @Query("SELECT * FROM city_table ORDER BY name ASC")
