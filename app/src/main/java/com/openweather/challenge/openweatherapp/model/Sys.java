@@ -16,8 +16,8 @@ public class Sys {
     public int id;
     public double message;
     public String country;
-    public int sunrise;
-    public int sunset;
+    public long sunrise;
+    public long sunset;
 
     @Override
     public String toString() {

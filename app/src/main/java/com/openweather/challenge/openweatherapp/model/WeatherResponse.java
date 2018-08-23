@@ -14,7 +14,6 @@ import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
  * Created by manuel on 23,August,2018
  */
 public class WeatherResponse {
-    public int id;
     public Coordinate coord;
     public WeatherDescription[] weather;
     public String base;
@@ -24,6 +23,7 @@ public class WeatherResponse {
     public Clouds clouds;
     public long dt;
     public Sys sys;
+    public int id;
     public String name;
     public int cod;
 

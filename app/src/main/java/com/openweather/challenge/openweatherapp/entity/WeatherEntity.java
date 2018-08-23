@@ -41,7 +41,7 @@ public class WeatherEntity implements Parcelable {
     private String weather_icon;
     private String base;
     private double main_temp;
-    private int main_pressure;
+    private double main_pressure;
     private int main_humidity;
     private double main_temp_min;
     private double main_temp_max;
@@ -60,7 +60,7 @@ public class WeatherEntity implements Parcelable {
     private int cod;
 
     public WeatherEntity(int id, double lat, double lon, int weather_id, String weather_main, String weather_description,
-                         String weather_icon, String base, double main_temp, int main_pressure, int main_humidity, double main_temp_min,
+                         String weather_icon, String base, double main_temp, double main_pressure, int main_humidity, double main_temp_min,
                          double main_temp_max, int visibility, double wind_speed, int wind_deg, int clouds, long dt, int sys_type, int sys_id,
                          double sys_message, String sys_country, long sys_sunrise, long sys_sunset, String name, int cod) {
         this.id = id;
@@ -90,6 +90,47 @@ public class WeatherEntity implements Parcelable {
         this.name = name;
         this.cod = cod;
     }
+
+    protected WeatherEntity(Parcel in) {
+        id = in.readInt();
+        lat = in.readDouble();
+        lon = in.readDouble();
+        weather_id = in.readInt();
+        weather_main = in.readString();
+        weather_description = in.readString();
+        weather_icon = in.readString();
+        base = in.readString();
+        main_temp = in.readDouble();
+        main_pressure = in.readDouble();
+        main_humidity = in.readInt();
+        main_temp_min = in.readDouble();
+        main_temp_max = in.readDouble();
+        visibility = in.readInt();
+        wind_speed = in.readDouble();
+        wind_deg = in.readInt();
+        clouds = in.readInt();
+        dt = in.readLong();
+        sys_type = in.readInt();
+        sys_id = in.readInt();
+        sys_message = in.readDouble();
+        sys_country = in.readString();
+        sys_sunrise = in.readLong();
+        sys_sunset = in.readLong();
+        name = in.readString();
+        cod = in.readInt();
+    }
+
+    public static final Creator<WeatherEntity> CREATOR = new Creator<WeatherEntity>() {
+        @Override
+        public WeatherEntity createFromParcel(Parcel in) {
+            return new WeatherEntity(in);
+        }
+
+        @Override
+        public WeatherEntity[] newArray(int size) {
+            return new WeatherEntity[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -163,7 +204,7 @@ public class WeatherEntity implements Parcelable {
         this.main_temp = main_temp;
     }
 
-    public int getMain_pressure() {
+    public double getMain_pressure() {
         return main_pressure;
     }
 
@@ -338,6 +379,31 @@ public class WeatherEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
+        parcel.writeInt(id);
+        parcel.writeDouble(lat);
+        parcel.writeDouble(lon);
+        parcel.writeInt(weather_id);
+        parcel.writeString(weather_main);
+        parcel.writeString(weather_description);
+        parcel.writeString(weather_icon);
+        parcel.writeString(base);
+        parcel.writeDouble(main_temp);
+        parcel.writeDouble(main_pressure);
+        parcel.writeInt(main_humidity);
+        parcel.writeDouble(main_temp_min);
+        parcel.writeDouble(main_temp_max);
+        parcel.writeInt(visibility);
+        parcel.writeDouble(wind_speed);
+        parcel.writeInt(wind_deg);
+        parcel.writeInt(clouds);
+        parcel.writeLong(dt);
+        parcel.writeInt(sys_type);
+        parcel.writeInt(sys_id);
+        parcel.writeDouble(sys_message);
+        parcel.writeString(sys_country);
+        parcel.writeLong(sys_sunrise);
+        parcel.writeLong(sys_sunset);
+        parcel.writeString(name);
+        parcel.writeInt(cod);
     }
 }

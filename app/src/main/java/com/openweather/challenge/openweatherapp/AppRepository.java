@@ -143,7 +143,7 @@ public class AppRepository {
     }
 
     public void deleteDummyWeather() {
-        //Remember use a separate thread when you insert elements into database
+        //Remember use a separate thread when you insert/delete elements into database
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.deleteDummy();
             OpenWeatherApp.Logger.d("Dummy object deleted");
@@ -156,7 +156,21 @@ public class AppRepository {
      */
     private void deleteOldData() {
         long today = OpenWeatherDateUtils.getNormalizedUtcMsForToday();
+        //Remember use a separate thread when you insert/delete elements into database
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
         mWeatherDao.deleteOldWeather(today);
+        });
+    }
+
+    /**
+     * Delete an specific weather item
+     * @param item
+     */
+    public void delete(WeatherEntity item) {
+        //Remember use a separate thread when you insert/delete elements into database
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mWeatherDao.delete(item);
+        });
     }
 
     private static class RetrieveAllCities extends AsyncTask<Void, Void, List<CityEntity>> {

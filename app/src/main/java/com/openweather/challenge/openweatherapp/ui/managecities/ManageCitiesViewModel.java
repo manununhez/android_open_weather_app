@@ -8,8 +8,32 @@
 
 package com.openweather.challenge.openweatherapp.ui.managecities;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.openweather.challenge.openweatherapp.AppRepository;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+
+import java.util.List;
+
 public class ManageCitiesViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+    private final LiveData<List<WeatherEntity>> mWeather;
+
+    private final AppRepository mRepository;
+
+
+    public ManageCitiesViewModel(AppRepository appRepository) {
+        mRepository = appRepository;
+        mWeather = mRepository.getCurrentWeathers();
+    }
+
+
+    public LiveData<List<WeatherEntity>> getCurrentWeathers(){
+        return mWeather;
+
+    }
+
+    public void deleteWeather(WeatherEntity item) {
+        mRepository.delete(item);
+    }
 }

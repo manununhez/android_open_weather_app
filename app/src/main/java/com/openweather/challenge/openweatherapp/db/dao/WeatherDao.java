@@ -77,4 +77,7 @@ public interface WeatherDao {
     @Query("DELETE FROM weather_table WHERE id in (SELECT id FROM weather_table LIMIT 1)")
     void deleteDummy();
 
+    @Delete
+    void delete(WeatherEntity weatherEntity);
+
 }

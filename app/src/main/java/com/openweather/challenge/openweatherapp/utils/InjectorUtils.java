@@ -14,6 +14,7 @@ import com.openweather.challenge.openweatherapp.AppRepository;
 import com.openweather.challenge.openweatherapp.db.AppRoomDatabase;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityViewModelFactory;
+import com.openweather.challenge.openweatherapp.ui.managecities.ManageCitiesViewModelFactory;
 import com.openweather.challenge.openweatherapp.ui.showweather.ShowWeatherViewModelFactory;
 
 /**
@@ -42,6 +43,11 @@ public class InjectorUtils {
     public static ShowWeatherViewModelFactory provideShowWeatherViewModelFactory(Context context) {
         AppRepository repository = provideRepository(context.getApplicationContext());
         return new ShowWeatherViewModelFactory(repository);
+    }
+
+    public static ManageCitiesViewModelFactory provideManageCitiesViewModelFactory(Context context) {
+        AppRepository repository = provideRepository(context.getApplicationContext());
+        return new ManageCitiesViewModelFactory(repository);
     }
 
 //    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {

@@ -117,7 +117,7 @@ public class ShowWeatherFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
 
-        menu.findItem(R.id.action_search).setVisible(false);
+///        menu.findItem(R.id.action_search).setVisible(false);
         menu.findItem(R.id.action_add_city).setVisible(false);
         menu.findItem(R.id.action_manage_city).setVisible(true);
 
