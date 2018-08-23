@@ -29,15 +29,12 @@ public class CityEntity {
     private int id;
     private String name;
     private String country;
-    private double lat;
-    private double lon;
 
-    public CityEntity(int id, String name, String country, double lat, double lon) {
+    public CityEntity(int id, String name, String country) {
         this.id = id;
         this.name = name;
         this.country = country;
-        this.lat = lat;
-        this.lon = lon;
+
     }
 
     public int getId() {
@@ -52,13 +49,7 @@ public class CityEntity {
         return country;
     }
 
-    public double getLat() {
-        return lat;
-    }
 
-    public double getLon() {
-        return lon;
-    }
 
     @Override
     public String toString() {
@@ -66,8 +57,6 @@ public class CityEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", country='" + country + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
                 '}';
     }
 }

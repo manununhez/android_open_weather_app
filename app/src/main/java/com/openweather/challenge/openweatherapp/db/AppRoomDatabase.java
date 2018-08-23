@@ -60,13 +60,14 @@ public abstract class AppRoomDatabase extends RoomDatabase {
                                 @Override
                                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                                     super.onOpen(db);
+                                    OpenWeatherApp.Logger.d("Open Database ");
                                 }
 
                                 @Override
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
                                     // Add a delay to simulate a long-running operation
-                                    addDelay();
+                                    //addDelay();
 
                                     //Remember use a separate thread when you insert elements into database
                                     Executors.newSingleThreadScheduledExecutor().execute(() -> {

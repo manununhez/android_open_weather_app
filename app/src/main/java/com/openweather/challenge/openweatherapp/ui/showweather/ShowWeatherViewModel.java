@@ -18,14 +18,13 @@ import java.util.List;
 
 public class ShowWeatherViewModel extends ViewModel {
     // City the user is looking at
-    private final LiveData<List<WeatherEntity>> mWeather;
+//    private final LiveData<List<WeatherEntity>> mWeather;
 
     private final AppRepository mRepository;
 
 
     public ShowWeatherViewModel(AppRepository appRepository) {
         mRepository = appRepository;
-        mWeather = mRepository.getCurrentWeathers();
     }
 
 
@@ -39,7 +38,7 @@ public class ShowWeatherViewModel extends ViewModel {
     }
 
     public LiveData<List<WeatherEntity>> getCurrentWeathers(){
-        return mWeather;
+        return mRepository.getCurrentWeathers();
 
     }
 }

@@ -15,5 +15,4 @@ public class CityResponse {
     public int id;
     public String name;
     public String country;
-    public Coordinate coord;
 }

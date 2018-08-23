@@ -87,7 +87,7 @@ public class NetworkDataSource {
         }
     }
 
-    private void getRequestString(final String webserviceUrl,
+    public void getRequestString(final String webserviceUrl,
                                   final byte[] requestParams, Response.Listener<String> listener, Response.ErrorListener errorListener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, webserviceUrl, listener, errorListener) {
@@ -120,7 +120,7 @@ public class NetworkDataSource {
 
 
     //Image Request
-    private void requestImage(final String webserviceUrl, Response.Listener<Bitmap> bitmapListener,
+    public void requestImage(final String webserviceUrl, Response.Listener<Bitmap> bitmapListener,
                               int maxWidth, int maxHeight, ImageView.ScaleType scaleType,
                               final Bitmap.Config decodeConfig, Response.ErrorListener errorListener) {
 
@@ -148,110 +148,6 @@ public class NetworkDataSource {
             }
         });
     }
-
-    /**
-     * Get the current weather of city by name
-     * @return
-     */
-    public void fetchCurrentWeatherByCityName(String location) {
-        URL url = NetworkUtils.getCurrentWeatherURLByCityName(location);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                OpenWeatherApp.Logger.d("Response: " + response);
-                WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
-                mDownloadedWeatherForecast.postValue(weatherResponse.getWeatherEntity());
-                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String errorMessage = VolleyErrorHelper.getMessage(error, context);
-                OpenWeatherApp.Logger.e(errorMessage);
-                if (errorMessage != null && !errorMessage.isEmpty()) {
-                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-    }
-
-    /**
-     * Get the current weather of all the cities stored
-     * @return
-     */
-    public void fetchCurrentWeathersByCitiesID(String citiesID) {
-        URL url = NetworkUtils.getCurrentWeatherURLByListCityId(citiesID);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                OpenWeatherApp.Logger.d("Response: " + response);
-                WeatherResponse[] weatherResponse = new Gson().fromJson(response, WeatherResponse[].class);
-                WeatherEntity[] weatherEntities = new WeatherEntity[weatherResponse.length];
-
-                //Convert the array of weatherresponse to array of weather entity, to make it use to use with the DB later
-                for(int i = 0; i < weatherResponse.length; i++)
-                    weatherEntities[i] = weatherResponse[i].getWeatherEntity();
-
-                mDownloadedWeatherForecasts.postValue(weatherEntities);
-                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String errorMessage = VolleyErrorHelper.getMessage(error, context);
-                OpenWeatherApp.Logger.e(errorMessage);
-                if (errorMessage != null && !errorMessage.isEmpty()) {
-                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-    }
-
-    /**
-     * Get the current weather of city by ID
-     * @return
-     */
-    public void fetchCurrentWeatherByCityID(String cityID) {
-        URL url = NetworkUtils.getCurrentWeatherURLByCityId(cityID);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                OpenWeatherApp.Logger.d("Response: " + response);
-                WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
-                mDownloadedWeatherForecast.postValue(weatherResponse.getWeatherEntity());
-                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String errorMessage = VolleyErrorHelper.getMessage(error, context);
-                OpenWeatherApp.Logger.e(errorMessage);
-                if (errorMessage != null && !errorMessage.isEmpty()) {
-                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-    }
-
-    /**
-     * Get the current weather of all the cities stored
-     * @return
-     */
-    public LiveData<WeatherEntity[]> getCurrentWeathers(){
-        return mDownloadedWeatherForecasts;
-    }
-
-    /**
-     * Get the current weather of city by name
-     * @return
-     */
-    public LiveData<WeatherEntity> getCurrentWeather(){
-        return mDownloadedWeatherForecast;
-    }
-
 
 
 }

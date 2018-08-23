@@ -17,19 +17,19 @@ import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 import java.util.List;
 
 public class ManageCitiesViewModel extends ViewModel {
-    private final LiveData<List<WeatherEntity>> mWeather;
+//    private final LiveData<List<WeatherEntity>> mWeather;
 
     private final AppRepository mRepository;
 
 
     public ManageCitiesViewModel(AppRepository appRepository) {
         mRepository = appRepository;
-        mWeather = mRepository.getCurrentWeathers();
+//        mWeather = mRepository.getCurrentWeathers();
     }
 
 
     public LiveData<List<WeatherEntity>> getCurrentWeathers(){
-        return mWeather;
+        return mRepository.getCurrentWeathers();
 
     }
 

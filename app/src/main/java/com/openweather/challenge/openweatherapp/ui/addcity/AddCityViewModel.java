@@ -9,11 +9,11 @@
 package com.openweather.challenge.openweatherapp.ui.addcity;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.openweather.challenge.openweatherapp.AppRepository;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 
 import java.util.List;
 
@@ -31,7 +31,17 @@ public class AddCityViewModel extends ViewModel {
         return mRepository.getAllCities();
     }
 
-    public void insertWeather(String cityID) {
-        mRepository.insertWeather(cityID);
+    public void insertWeather(WeatherEntity weatherEntity) {
+        mRepository.insertWeather(weatherEntity);
     }
+
+    public LiveData<WeatherEntity> getResponseWeatherByName() {
+        return mRepository.getResponseWeatherByCityName();
+    }
+
+    public void getWeatherByName(String text){
+        mRepository.fetchCurrentWeatherByCityName(text);
+    }
+
+
 }

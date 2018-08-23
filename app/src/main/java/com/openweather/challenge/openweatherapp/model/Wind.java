@@ -13,5 +13,5 @@ package com.openweather.challenge.openweatherapp.model;
  */
 public class Wind {
     public double speed;
-    public int deg;
+    public double deg;
 }

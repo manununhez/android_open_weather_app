@@ -9,6 +9,8 @@
 package com.openweather.challenge.openweatherapp.model;
 
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
+import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 /**
  * Created by manuel on 23,August,2018
@@ -26,6 +28,7 @@ public class WeatherResponse {
     public int id;
     public String name;
     public int cod;
+
 
     /**
      * Transform a {@link WeatherResponse} object (received from network open weather map) to a {@link WeatherEntity} (format to save it in the DB)

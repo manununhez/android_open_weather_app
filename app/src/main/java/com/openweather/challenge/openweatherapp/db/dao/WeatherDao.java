@@ -30,7 +30,7 @@ public interface WeatherDao {
     LiveData<List<WeatherEntity>> getAllWeathers();
 
     // Inserts single weather
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(WeatherEntity weather);
 
     // Inserts multiple weather
@@ -49,7 +49,7 @@ public interface WeatherDao {
      * @param date A {@link Date} from which to select all future weather
      * @return {@link LiveData} list of all {@link WeatherEntity} objects after date
      */
-    @Query("SELECT * FROM weather_table WHERE dt >= :date")
+    @Query("SELECT * FROM weather_table WHERE dt >= :date ORDER by name ASC ")
     LiveData<List<WeatherEntity>> getCurrentWeather(long date);
 
     /**

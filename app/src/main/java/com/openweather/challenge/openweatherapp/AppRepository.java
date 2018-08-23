@@ -9,15 +9,22 @@
 package com.openweather.challenge.openweatherapp;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.openweather.challenge.openweatherapp.db.dao.CityDao;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.model.WeatherResponse;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
+import com.openweather.challenge.openweatherapp.network.NetworkUtils;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -31,42 +38,43 @@ public class AppRepository {
     private final CityDao mCityDao;
     private final WeatherDao mWeatherDao;
     private final NetworkDataSource mNetworkDataSource;
+    private final MutableLiveData<WeatherEntity> responseWeatherByCityName;
 
     public AppRepository(CityDao cityDao, WeatherDao weatherDao, NetworkDataSource networkDataSource) {
         mCityDao = cityDao;
         mWeatherDao = weatherDao;
         mNetworkDataSource = networkDataSource;
-
-        // As long as the repository exists, observe the network LiveData.
-        // If that LiveData changes, update the database.
-        // Group of weathers that corresponds to the weather of all cities saved in the DB
-        LiveData<WeatherEntity[]> newWeathersFromNetwork = mNetworkDataSource.getCurrentWeathers();
-
-        newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
-            Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                // Deletes old historical data
-                deleteOldData();
-                OpenWeatherApp.Logger.d("Old weather deleted");
-                // Insert our new weather data into Sunshine's database
-                mWeatherDao.bulkInsert(weathersFromNetwork);
-                OpenWeatherApp.Logger.d("New values inserted");
-            });
-        });
-
-
-        // As long as the repository exists, observe the network LiveData.
-        // If that LiveData changes, update the database.
-        // New weather fetch from network (by cityID or cityName)
-
-        LiveData<WeatherEntity> newWeatherFromNetwork = mNetworkDataSource.getCurrentWeather();
-
-        newWeatherFromNetwork.observeForever(weathersFromNetwork -> {
-            Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                // Insert our new weather data into Sunshine's database
-                mWeatherDao.insert(weathersFromNetwork);
-                OpenWeatherApp.Logger.d("New value inserted");
-            });
-        });
+        responseWeatherByCityName = new MutableLiveData<>();
+//        // As long as the repository exists, observe the network LiveData.
+//        // If that LiveData changes, update the database.
+//        // Group of weathers that corresponds to the weather of all cities saved in the DB
+//        LiveData<WeatherEntity[]> newWeathersFromNetwork = getCurrentWeathers();
+//
+//        newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
+//            Executors.newSingleThreadScheduledExecutor().execute(() -> {
+//                // Deletes old historical data
+//                deleteOldData();
+//                OpenWeatherApp.Logger.d("Old weather deleted");
+//                // Insert our new weather data into Sunshine's database
+//                mWeatherDao.bulkInsert(weathersFromNetwork);
+//                OpenWeatherApp.Logger.d("New values inserted");
+//            });
+//        });
+//
+//
+//        // As long as the repository exists, observe the network LiveData.
+//        // If that LiveData changes, update the database.
+//        // New weather fetch from network (by cityID or cityName)
+//
+//        LiveData<WeatherEntity> newWeatherFromNetwork = getCurrentWeather();
+//
+//        newWeatherFromNetwork.observeForever(weathersFromNetwork -> {
+//            Executors.newSingleThreadScheduledExecutor().execute(() -> {
+//                // Insert our new weather data into database
+//                mWeatherDao.insert(weathersFromNetwork);
+//                OpenWeatherApp.Logger.d("New value inserted");
+//            });
+//        });
     }
 
     public synchronized static AppRepository getInstance(
@@ -86,6 +94,25 @@ public class AppRepository {
         long today = OpenWeatherDateUtils.getNormalizedUtcSecondsForToday();
         return mWeatherDao.getCurrentWeather(today);
     }
+
+    //------------------
+
+    public LiveData<WeatherEntity> getResponseWeatherByCityName(){
+        return responseWeatherByCityName;
+    }
+
+        /**
+     * fetchAndInsertWeather from network by city name
+     * @param cityName
+     */
+    public void getWeatherByCityName(String cityName) {
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            fetchCurrentWeatherByCityName(cityName);
+        });
+    }
+
+    //------------------
+
 //
 //    public LiveData<List<WeatherEntity>> getAllWeather(){
 //
@@ -122,15 +149,17 @@ public class AppRepository {
         });
     }
 
-    /**
-     * fetchAndInsertWeather from network by cityID
-     * @param cityID
-     */
-    public void insertWeather(String cityID) {
-        Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            mNetworkDataSource.fetchCurrentWeatherByCityID(cityID);
-        });
-    }
+//    /**
+//     * fetchAndInsertWeather from network by cityID
+//     * @param cityID
+//     */
+//    public void getWeatherByCityID(String cityID) {
+//        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+//            mNetworkDataSource.fetchCurrentWeatherByCityID(cityID);
+//        });
+//    }
+//
+
 
     public void insertDummyWeather() {
         //Remember use a separate thread when you insert elements into database
@@ -158,12 +187,13 @@ public class AppRepository {
         long today = OpenWeatherDateUtils.getNormalizedUtcMsForToday();
         //Remember use a separate thread when you insert/delete elements into database
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-        mWeatherDao.deleteOldWeather(today);
+            mWeatherDao.deleteOldWeather(today);
         });
     }
 
     /**
      * Delete an specific weather item
+     *
      * @param item
      */
     public void delete(WeatherEntity item) {
@@ -171,6 +201,111 @@ public class AppRepository {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.delete(item);
         });
+    }
+
+    /**
+     * Get the current weather of city by name
+     *
+     * @return
+     */
+    public void fetchCurrentWeatherByCityName(String location) {
+        URL url = NetworkUtils.getCurrentWeatherURLByCityName(location);
+        mNetworkDataSource.getRequestString(url.toString(), null, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                OpenWeatherApp.Logger.d("Response: " + response);
+                WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
+                responseWeatherByCityName.postValue(weatherResponse.getWeatherEntity());
+                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                String errorMessage = VolleyErrorHelper.getMessage(error, context);
+//                OpenWeatherApp.Logger.e(errorMessage);
+//                if (errorMessage != null && !errorMessage.isEmpty()) {
+//                    OpenWeatherApp.Logger.d("Response: " + errorMessage);
+//                }
+                OpenWeatherApp.Logger.d("Response JSON: " + error.getMessage());
+
+            }
+        });
+
+    }
+
+    private void insertBulk(WeatherEntity[] weathersFromNetwork) {
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            // Deletes old historical data
+            deleteOldData();
+            OpenWeatherApp.Logger.d("Old weather deleted");
+            // Insert our new weather data into Sunshine's database
+            mWeatherDao.bulkInsert(weathersFromNetwork);
+            OpenWeatherApp.Logger.d("New values inserted");
+        });
+    }
+
+    /**
+     * Get the current weather of all the cities stored
+     *
+     * @return
+     */
+    public void fetchCurrentWeathersByCitiesID(String citiesID) {
+        URL url = NetworkUtils.getCurrentWeatherURLByListCityId(citiesID);
+        mNetworkDataSource.getRequestString(url.toString(), null, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                OpenWeatherApp.Logger.d("Response: " + response);
+                WeatherResponse[] weatherResponse = new Gson().fromJson(response, WeatherResponse[].class);
+                WeatherEntity[] weatherEntities = new WeatherEntity[weatherResponse.length];
+
+                //Convert the array of weatherresponse to array of weather entity, to make it use to use with the DB later
+                for (int i = 0; i < weatherResponse.length; i++)
+                    weatherEntities[i] = weatherResponse[i].getWeatherEntity();
+
+                insertBulk(weatherEntities);
+
+                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                String errorMessage = VolleyErrorHelper.getMessage(error, context);
+//                OpenWeatherApp.Logger.e(errorMessage);
+//                if (errorMessage != null && !errorMessage.isEmpty()) {
+                OpenWeatherApp.Logger.d("Response JSON: " + error.getMessage());
+//                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+//                }
+            }
+        });
+
+    }
+
+    /**
+     * Get the current weather of city by ID
+     *
+     * @return
+     */
+    public void fetchCurrentWeatherByCityID(String cityID) {
+        URL url = NetworkUtils.getCurrentWeatherURLByCityId(cityID);
+        mNetworkDataSource.getRequestString(url.toString(), null, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                OpenWeatherApp.Logger.d("Response: " + response);
+                WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
+//                mDownloadedWeatherForecast.postValue(weatherResponse.getWeatherEntity());
+                OpenWeatherApp.Logger.d("Response JSON: " + weatherResponse.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                String errorMessage = VolleyErrorHelper.getMessage(error, context);
+//                OpenWeatherApp.Logger.e(errorMessage);
+//                if (errorMessage != null && !errorMessage.isEmpty()) {
+//                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+//                }
+            }
+        });
+
     }
 
     private static class RetrieveAllCities extends AsyncTask<Void, Void, List<CityEntity>> {
@@ -210,4 +345,22 @@ public class AppRepository {
             super.onPostExecute(cityEntities);
         }
     }
+
+//    /**
+//     * Get the current weather of all the cities stored
+//     * @return
+//     */
+//    public LiveData<WeatherEntity[]> getCurrentWeathers(){
+//        return mDownloadedWeatherForecasts;
+//    }
+//
+//    /**
+//     * Get the current weather of city by name
+//     * @return
+//     */
+//    public LiveData<WeatherEntity> getCurrentWeather(){
+//        return mDownloadedWeatherForecast;
+//    }
+
+
 }

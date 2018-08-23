@@ -89,7 +89,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
 //                    Toast.makeText(mContext, item.getName() + " id=" + item.getId(), Toast.LENGTH_SHORT).show();
 
                     itemClickListener.onItemClick(item);
-                    Toast.makeText(mContext, "Click", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, "Click", Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -99,7 +99,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
                 @Override
                 public boolean onLongClick(View view) {
                     longItemClickListener.onLongItemClick(item);
-                    Toast.makeText(mContext, "LongClick", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, "LongClick", Toast.LENGTH_SHORT).show();
 
                     return false;
                 }
