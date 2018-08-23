@@ -9,11 +9,21 @@
 package com.openweather.challenge.openweatherapp.model;
 
 /**
- * Created by manuel on 21,August,2018
+ * Created by manuel on 23,August,2018
  */
-public class WeatherDescription {
-    private int id;
-    private String main;
-    private String description;
-    private String icon;
+class WeatherDescription {
+    public int id;
+    public String main;
+    public String description;
+    public String icon;
+
+    @Override
+    public String toString() {
+        return "WeatherDescription{" +
+                "id=" + id +
+                ", main='" + main + '\'' +
+                ", description='" + description + '\'' +
+                ", icon='" + icon + '\'' +
+                '}';
+    }
 }

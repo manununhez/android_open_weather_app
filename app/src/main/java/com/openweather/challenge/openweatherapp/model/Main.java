@@ -12,11 +12,11 @@ package com.openweather.challenge.openweatherapp.model;
  * Created by manuel on 21,August,2018
  */
 public class Main {
-    private float temp;
-    private float pressure;
-    private int humidity;
-    private float temp_min;
-    private float temp_max;
+    public double temp;
+    public int pressure;
+    public int humidity;
+    public double temp_min;
+    public double temp_max;
 
     @Override
     public String toString() {

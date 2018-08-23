@@ -91,6 +91,11 @@ public final class OpenWeatherDateUtils {
     }
 
 
+    public static long getNormalizedUtcSecondsForToday() {
+        return getNormalizedUtcMsForToday() / 1000;
+    }
+
+
     public static Date getNormalizedUtcDateForToday() {
         long normalizedMilli = getNormalizedUtcMsForToday();
         return new Date(normalizedMilli);

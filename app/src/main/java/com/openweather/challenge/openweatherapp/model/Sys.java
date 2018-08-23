@@ -12,12 +12,12 @@ package com.openweather.challenge.openweatherapp.model;
  * Created by manuel on 21,August,2018
  */
 public class Sys {
-    private int type;
-    private int id;
-    private float message;
-    private String country;
-    private int sunrise;
-    private int sunset;
+    public int type;
+    public int id;
+    public double message;
+    public String country;
+    public int sunrise;
+    public int sunset;
 
     @Override
     public String toString() {

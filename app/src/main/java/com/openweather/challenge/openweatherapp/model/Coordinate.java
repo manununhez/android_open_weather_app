@@ -12,24 +12,9 @@ package com.openweather.challenge.openweatherapp.model;
  * Created by manuel on 21,August,2018
  */
 public class Coordinate {
-    private float lat;
-    private float lon;
+    public double lat;
+    public double lon;
 
-    public float getLat() {
-        return lat;
-    }
-
-    public void setLat(float lat) {
-        this.lat = lat;
-    }
-
-    public float getLon() {
-        return lon;
-    }
-
-    public void setLon(float lon) {
-        this.lon = lon;
-    }
 
     @Override
     public String toString() {

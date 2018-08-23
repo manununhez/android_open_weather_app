@@ -69,7 +69,7 @@ public class ShowWeatherFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this, factory).get(ShowWeatherViewModel.class);
 
 
-        mViewModel.getAllWeathers().observe(this, weatherEntities -> {
+        mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             if (weatherEntities != null) {
                 //message.setText("");
                 List<WeatherDescriptionFragment> weatherDescriptionFragments = new ArrayList<>();
@@ -102,7 +102,7 @@ public class ShowWeatherFragment extends Fragment {
         });
 
 
-        mViewModel.getCurrentWeather("Warsaw,PL");
+        //mViewModel.getCurrentWeather("Warsaw,PL");
     }
 
 

@@ -16,6 +16,7 @@ import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
+import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,37 @@ public class AppRepository {
         mCityDao = cityDao;
         mWeatherDao = weatherDao;
         mNetworkDataSource = networkDataSource;
+
+        // As long as the repository exists, observe the network LiveData.
+        // If that LiveData changes, update the database.
+        // Group of weathers that corresponds to the weather of all cities saved in the DB
+        LiveData<WeatherEntity[]> newWeathersFromNetwork = mNetworkDataSource.getCurrentWeathers();
+
+        newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
+            Executors.newSingleThreadScheduledExecutor().execute(() -> {
+                // Deletes old historical data
+                deleteOldData();
+                OpenWeatherApp.Logger.d("Old weather deleted");
+                // Insert our new weather data into Sunshine's database
+                mWeatherDao.bulkInsert(weathersFromNetwork);
+                OpenWeatherApp.Logger.d("New values inserted");
+            });
+        });
+
+
+        // As long as the repository exists, observe the network LiveData.
+        // If that LiveData changes, update the database.
+        // New weather fetch from network (by cityID or cityName)
+
+        LiveData<WeatherEntity> newWeatherFromNetwork = mNetworkDataSource.getCurrentWeather();
+
+        newWeatherFromNetwork.observeForever(weathersFromNetwork -> {
+            Executors.newSingleThreadScheduledExecutor().execute(() -> {
+                // Insert our new weather data into Sunshine's database
+                mWeatherDao.insert(weathersFromNetwork);
+                OpenWeatherApp.Logger.d("New value inserted");
+            });
+        });
     }
 
     public synchronized static AppRepository getInstance(
@@ -50,14 +82,15 @@ public class AppRepository {
     }
 
 
-    public void getCurrentWeather(String location){ //Livedata?
-        mNetworkDataSource.getCurrentWeather(location);
+    public LiveData<List<WeatherEntity>> getCurrentWeathers(){
+        long today = OpenWeatherDateUtils.getNormalizedUtcSecondsForToday();
+        return mWeatherDao.getCurrentWeather(today);
     }
-
-    public LiveData<List<WeatherEntity>> getAllWeather(){
-
-        return mWeatherDao.getAllWeathers();
-    }
+//
+//    public LiveData<List<WeatherEntity>> getAllWeather(){
+//
+//        return mWeatherDao.getAllWeathers();
+//    }
 
     public List<CityEntity> getAllCities() {
         try {
@@ -86,7 +119,7 @@ public class AppRepository {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.insert(new WeatherEntity(442, 123.45, 123.45, 123, "frio", "descripcion", "icon",
                     "base", 25.45, 45, 13, 12.45, 45.12, 1, 45.12, 1, 1,
-                    11254564, 5, 4, 45.4, "PY", 123456, 1321645, "name", 200));
+                    1535013592, 5, 4, 45.4, "PY", 123456, 1321645, "name", 200));
             OpenWeatherApp.Logger.d("Dummy object inserted");
         });
     }
@@ -97,6 +130,15 @@ public class AppRepository {
             mWeatherDao.deleteDummy();
             OpenWeatherApp.Logger.d("Dummy object deleted");
         });
+    }
+
+
+    /**
+     * Deletes old weather data because we don't need to keep multiple days' data
+     */
+    private void deleteOldData() {
+        long today = OpenWeatherDateUtils.getNormalizedUtcMsForToday();
+        mWeatherDao.deleteOldWeather(today);
     }
 
     private static class RetrieveAllCities extends AsyncTask<Void, Void, List<CityEntity>> {

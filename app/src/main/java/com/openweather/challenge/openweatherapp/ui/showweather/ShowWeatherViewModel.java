@@ -25,13 +25,10 @@ public class ShowWeatherViewModel extends ViewModel {
 
     public ShowWeatherViewModel(AppRepository appRepository) {
         mRepository = appRepository;
-        mWeather = mRepository.getAllWeather();
+        mWeather = mRepository.getCurrentWeathers();
     }
 
 
-    public LiveData<List<WeatherEntity>> getAllWeathers() {
-        return mWeather;
-    }
 
     public void insertDummyWeather() {
         mRepository.insertDummyWeather();
@@ -41,7 +38,8 @@ public class ShowWeatherViewModel extends ViewModel {
         mRepository.deleteDummyWeather();
     }
 
-    public void getCurrentWeather(String location){
-        mRepository.getCurrentWeather(location);
+    public LiveData<List<WeatherEntity>> getCurrentWeathers(){
+        return mWeather;
+
     }
 }

@@ -44,7 +44,7 @@ public class AppDataJsonParser {
         while (reader.hasNext()) {
             CityResponse cityResponse = gson.fromJson(reader, CityResponse.class);
             if (!cityResponse.name.isEmpty() && !cityResponse.country.isEmpty())
-                cityEntityList.add(new CityEntity(cityResponse.id, cityResponse.name, cityResponse.country, cityResponse.coord.getLat(), cityResponse.coord.getLon()));
+                cityEntityList.add(new CityEntity(cityResponse.id, cityResponse.name, cityResponse.country, cityResponse.coord.lat, cityResponse.coord.lon));
         }
         reader.endArray();
         reader.close();
