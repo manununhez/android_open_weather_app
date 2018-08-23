@@ -100,6 +100,9 @@ public class ShowWeatherFragment extends Fragment {
                 mViewModel.deleteDummyWeather();
             }
         });
+
+
+        mViewModel.getCurrentWeather("Warsaw,PL");
     }
 
 

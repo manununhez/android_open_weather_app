@@ -13,15 +13,6 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.Room;
 
-import com.openweather.challenge.openweatherapp.model.Clouds;
-import com.openweather.challenge.openweatherapp.model.Coordinate;
-import com.openweather.challenge.openweatherapp.model.Main;
-import com.openweather.challenge.openweatherapp.model.Sys;
-import com.openweather.challenge.openweatherapp.model.WeatherDescription;
-import com.openweather.challenge.openweatherapp.model.Wind;
-
-import java.util.ArrayList;
-
 /**
  * Created by manuel on 21,August,2018
  */

@@ -15,6 +15,7 @@ import com.openweather.challenge.openweatherapp.db.dao.CityDao;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -28,22 +29,29 @@ public class AppRepository {
     private static AppRepository INSTANCE;
     private final CityDao mCityDao;
     private final WeatherDao mWeatherDao;
+    private final NetworkDataSource mNetworkDataSource;
 
-    public AppRepository(CityDao cityDao, WeatherDao weatherDao) {
+    public AppRepository(CityDao cityDao, WeatherDao weatherDao, NetworkDataSource networkDataSource) {
         mCityDao = cityDao;
         mWeatherDao = weatherDao;
+        mNetworkDataSource = networkDataSource;
     }
 
     public synchronized static AppRepository getInstance(
-            CityDao cityDao, WeatherDao weatherDao) {
+            CityDao cityDao, WeatherDao weatherDao, NetworkDataSource networkDataSource) {
         OpenWeatherApp.Logger.d("Getting the repository");
         if (INSTANCE == null) {
             synchronized (AppRepository.class) {
-                INSTANCE = new AppRepository(cityDao, weatherDao);
+                INSTANCE = new AppRepository(cityDao, weatherDao, networkDataSource);
                 OpenWeatherApp.Logger.d("Made new repository");
             }
         }
         return INSTANCE;
+    }
+
+
+    public void getCurrentWeather(String location){ //Livedata?
+        mNetworkDataSource.getCurrentWeather(location);
     }
 
     public LiveData<List<WeatherEntity>> getAllWeather(){

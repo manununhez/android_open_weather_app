@@ -12,10 +12,9 @@ import android.content.Context;
 
 import com.openweather.challenge.openweatherapp.AppRepository;
 import com.openweather.challenge.openweatherapp.db.AppRoomDatabase;
+import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityViewModelFactory;
 import com.openweather.challenge.openweatherapp.ui.showweather.ShowWeatherViewModelFactory;
-
-import java.util.Date;
 
 /**
  * Provides static methods to inject the various classes needed for Sunshine
@@ -24,17 +23,16 @@ public class InjectorUtils {
 
     public static AppRepository provideRepository(Context context) {
         AppRoomDatabase database = AppRoomDatabase.getInstance(context.getApplicationContext());
-
-        return AppRepository.getInstance(database.cityDao(), database.weatherDao());
+        NetworkDataSource networkDataSource = NetworkDataSource.getInstance(context.getApplicationContext());
+        return AppRepository.getInstance(database.cityDao(), database.weatherDao(), networkDataSource);
     }
 
-//    public static WeatherNetworkDataSource provideNetworkDataSource(Context context) {
-//        // This call to provide repository is necessary if the app starts from a service - in this
-//        // case the repository will not exist unless it is specifically created.
-//        provideRepository(context.getApplicationContext());
-//        AppExecutors executors = AppExecutors.getInstance();
-//        return WeatherNetworkDataSource.getInstance(context.getApplicationContext(), executors);
-//    }
+    public static NetworkDataSource provideNetworkDataSource(Context context) {
+        // This call to provide repository is necessary if the app starts from a service - in this
+        // case the repository will not exist unless it is specifically created.
+        provideRepository(context.getApplicationContext());
+        return NetworkDataSource.getInstance(context.getApplicationContext());
+    }
 
     public static AddCityViewModelFactory provideAddCityViewModelFactory(Context context) {
         AppRepository repository = provideRepository(context.getApplicationContext());

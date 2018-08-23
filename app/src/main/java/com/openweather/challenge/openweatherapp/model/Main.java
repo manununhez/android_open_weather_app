@@ -17,4 +17,15 @@ public class Main {
     private int humidity;
     private float temp_min;
     private float temp_max;
+
+    @Override
+    public String toString() {
+        return "Main{" +
+                "temp=" + temp +
+                ", pressure=" + pressure +
+                ", humidity=" + humidity +
+                ", temp_min=" + temp_min +
+                ", temp_max=" + temp_max +
+                '}';
+    }
 }

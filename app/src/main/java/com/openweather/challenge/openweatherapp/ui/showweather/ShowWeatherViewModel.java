@@ -40,4 +40,8 @@ public class ShowWeatherViewModel extends ViewModel {
     public void deleteDummyWeather() {
         mRepository.deleteDummyWeather();
     }
+
+    public void getCurrentWeather(String location){
+        mRepository.getCurrentWeather(location);
+    }
 }

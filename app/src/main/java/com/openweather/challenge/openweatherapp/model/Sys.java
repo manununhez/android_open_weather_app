@@ -18,4 +18,16 @@ public class Sys {
     private String country;
     private int sunrise;
     private int sunset;
+
+    @Override
+    public String toString() {
+        return "Sys{" +
+                "type=" + type +
+                ", id=" + id +
+                ", message=" + message +
+                ", country='" + country + '\'' +
+                ", sunrise=" + sunrise +
+                ", sunset=" + sunset +
+                '}';
+    }
 }

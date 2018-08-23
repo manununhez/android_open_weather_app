@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.openweather.challenge.openweatherapp">
 
+    <!-- This permission is necessary to perform network access. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".OpenWeatherApp"
         android:allowBackup="true"

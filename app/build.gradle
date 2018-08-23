@@ -30,7 +30,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.code.gson:gson:2.8.5'
-
+    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.1.2'
 
     // Support libraries
