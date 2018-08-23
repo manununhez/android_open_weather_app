@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
+import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+
+import java.util.Objects;
 
 /**
  * Created by manuel on 22,August,2018
@@ -24,23 +27,22 @@ public class WeatherDescriptionFragment extends Fragment {
     // Store instance variables
     private String title;
     private int page;
+    private WeatherEntity weatherEntity;
 
     // newInstance constructor for creating fragment with arguments
-    public static WeatherDescriptionFragment newInstance(int page, String title) {
-        WeatherDescriptionFragment fragmentFirst = new WeatherDescriptionFragment();
+    public static WeatherDescriptionFragment newInstance(WeatherEntity weatherEntity) {
+        WeatherDescriptionFragment weatherDescriptionFragment = new WeatherDescriptionFragment();
         Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentFirst.setArguments(args);
-        return fragmentFirst;
+        args.putParcelable("weather",weatherEntity);
+        weatherDescriptionFragment.setArguments(args);
+        return weatherDescriptionFragment;
     }
 
     // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("someTitle");
+        weatherEntity = (WeatherEntity) (Objects.requireNonNull(getArguments()).getParcelable("weather"));
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -49,7 +51,7 @@ public class WeatherDescriptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather_description, container, false);
         TextView tvLabel = (TextView) view.findViewById(R.id.tvLabel);
-        tvLabel.setText(page + " -- " + title);
+        tvLabel.setText(weatherEntity.getName() + " , " + weatherEntity.getSys_country());
         return view;
     }
 }

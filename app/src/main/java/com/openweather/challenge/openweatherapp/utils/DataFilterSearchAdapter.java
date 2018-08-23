@@ -9,6 +9,8 @@
 package com.openweather.challenge.openweatherapp.utils;
 
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,13 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSearchAdapter.ViewHolder> implements Filterable {
+    private final OnItemClickListener mListener;
     private List<CityEntity> mArrayList;
     private List<CityEntity> mFilteredList;
     private Context mContext;
 
-    public DataFilterSearchAdapter(List<CityEntity> arrayList) {
+    public DataFilterSearchAdapter(List<CityEntity> arrayList, OnItemClickListener listener) {
         mArrayList = arrayList;
         mFilteredList = arrayList;
+        mListener = listener;
     }
 
     @Override
@@ -43,17 +47,12 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
     }
 
     @Override
-    public void onBindViewHolder(DataFilterSearchAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(DataFilterSearchAdapter.ViewHolder viewHolder, int position) {
+        viewHolder.bind(mFilteredList.get(position), mListener);
 
-        viewHolder.textSearch.setText(mFilteredList.get(i).getName()+","+mFilteredList.get(i).getCountry());
-
-        viewHolder.textSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, mFilteredList.get(i).getName()+" id="+mFilteredList.get(i).getId(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -76,7 +75,7 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
 
                     ArrayList<CityEntity> filteredList = new ArrayList<>();
 
-                    for (CityEntity cityEntity: mArrayList) {
+                    for (CityEntity cityEntity : mArrayList) {
 
                         if (cityEntity.getName().toLowerCase().contains(charString) || cityEntity.getCountry().toLowerCase().contains(charString)) {
 
@@ -94,18 +93,38 @@ public class DataFilterSearchAdapter extends RecyclerView.Adapter<DataFilterSear
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                //mFilteredList = (List<CityEntity>) filterResults.values;
+                mFilteredList = (List<CityEntity>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public interface OnItemClickListener {
+        void onItemClick(CityEntity item);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textSearch;
+
         public ViewHolder(View view) {
             super(view);
 
-            textSearch = (TextView)view.findViewById(R.id.textSearch);
+            textSearch = (TextView) view.findViewById(R.id.textSearch);
+        }
+
+        public void bind(CityEntity item, OnItemClickListener mListener) {
+
+            textSearch.setText(item.getName() + "," + item.getCountry());
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, item.getName() + " id=" + item.getId(), Toast.LENGTH_SHORT).show();
+
+                    mListener.onItemClick(item);
+                }
+            });
         }
 
 

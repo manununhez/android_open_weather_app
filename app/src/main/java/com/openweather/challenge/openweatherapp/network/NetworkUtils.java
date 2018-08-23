@@ -114,7 +114,7 @@ public class NetworkUtils {
     }
 
     public static URL getCurrentWeatherURLByCityId(String cityID){
-        return buildUrlByListCityId(cityID);
+        return buildUrlByCityId(cityID);
     }
 
     public static URL getImageURL(String imageId){

@@ -71,18 +71,15 @@ public class ShowWeatherFragment extends Fragment {
 
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             if (weatherEntities != null) {
-                //message.setText("");
+
                 List<WeatherDescriptionFragment> weatherDescriptionFragments = new ArrayList<>();
                 int i = 0;
-                for (WeatherEntity w : weatherEntities) {
-//                    message.setText(message.getText() + w.toString());
+                for (WeatherEntity weatherEntity : weatherEntities) {
 
-
-                    weatherDescriptionFragments.add(WeatherDescriptionFragment.newInstance(i++, "Page # "+i++));
+                    weatherDescriptionFragments.add(WeatherDescriptionFragment.newInstance(weatherEntity));
                 }
 
                 pagerAdapter.addItems(weatherDescriptionFragments);
-                //pagerAdapter.notifyDataSetChanged();
 
             }
         });

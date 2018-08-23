@@ -82,7 +82,7 @@ public class AppRepository {
     }
 
 
-    public LiveData<List<WeatherEntity>> getCurrentWeathers(){
+    public LiveData<List<WeatherEntity>> getCurrentWeathers() {
         long today = OpenWeatherDateUtils.getNormalizedUtcSecondsForToday();
         return mWeatherDao.getCurrentWeather(today);
     }
@@ -103,7 +103,7 @@ public class AppRepository {
         return null;
     }
 
-    public List<CityEntity> getCitiesByName(String text){
+    public List<CityEntity> getCitiesByName(String text) {
         try {
             return new RetrieveCitiesByName(mCityDao).execute(text).get();
         } catch (InterruptedException e) {
@@ -114,7 +114,25 @@ public class AppRepository {
         return null;
     }
 
-    public void insertDummyWeather(){
+
+    public void insertWeather(WeatherEntity weatherEntity) {
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mWeatherDao.insert(weatherEntity);
+            OpenWeatherApp.Logger.d("Weather object inserted: " + weatherEntity.toString());
+        });
+    }
+
+    /**
+     * fetchAndInsertWeather from network by cityID
+     * @param cityID
+     */
+    public void insertWeather(String cityID) {
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mNetworkDataSource.fetchCurrentWeatherByCityID(cityID);
+        });
+    }
+
+    public void insertDummyWeather() {
         //Remember use a separate thread when you insert elements into database
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.insert(new WeatherEntity(442, 123.45, 123.45, 123, "frio", "descripcion", "icon",
@@ -124,7 +142,7 @@ public class AppRepository {
         });
     }
 
-    public void deleteDummyWeather(){
+    public void deleteDummyWeather() {
         //Remember use a separate thread when you insert elements into database
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.deleteDummy();
@@ -146,7 +164,7 @@ public class AppRepository {
 
         // only retain a weak reference to the activity
         RetrieveAllCities(CityDao cityDao) {
-           this.cityDao = cityDao;
+            this.cityDao = cityDao;
         }
 
         @Override

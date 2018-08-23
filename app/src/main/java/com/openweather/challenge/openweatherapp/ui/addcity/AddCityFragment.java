@@ -8,6 +8,7 @@
 
 package com.openweather.challenge.openweatherapp.ui.addcity;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,7 +29,6 @@ import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.CityEntity;
 import com.openweather.challenge.openweatherapp.utils.DataFilterSearchAdapter;
-import com.openweather.challenge.openweatherapp.utils.DataSearchAdapter;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.List;
@@ -42,7 +42,48 @@ public class AddCityFragment extends Fragment {
     private View view;
     private RecyclerView mRecyclerView;
     private DataFilterSearchAdapter mAdapter;
+    private LiveData<CityEntity> newWeathersFromNetwork;
+    private SearchView.OnQueryTextListener onQueryTextListener =
+            new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    OpenWeatherApp.Logger.d("submitted: " + query);
+//                    getDealsFromDb(query);
+                    return true;
+                }
 
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (!newText.isEmpty()) {
+//                    OpenWeatherApp.Logger.d(newText);
+//                    newText = "%" + newText + "%";
+                        //List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
+                        mAdapter.getFilter().filter(newText);
+                        //mAdapter.setItemList(cityEntities);
+                    }
+                    if (mAdapter != null)
+                        tvCountResults.setText(mAdapter.getItemCount() + " results");
+                    return true;
+                }
+
+//                private void getDealsFromDb(String searchText) {
+//                    searchText = "%"+searchText+"%";
+//                    localRepository.getDealsListInfo(DealsSearchActivity.this, searchText)
+//                            .observe(DealsSearchActivity.this, new Observer<List<DealInfo>>() {
+//                                @Override
+//                                public void onChanged(@Nullable List<DealInfo> deals) {
+//                                    if (deals == null) {
+//                                        return;
+//                                    }
+//                                    DealsListViewAdapter adapter = new DealsListViewAdapter(
+//                                            DealsSearchActivity.this,
+//                                            R.layout.deal_item_layout, deals);
+//                                    listView.setAdapter(adapter);
+//
+//                                }
+//                            });
+//                }
+            };
 
     public static AddCityFragment newInstance() {
         return new AddCityFragment();
@@ -85,6 +126,10 @@ public class AddCityFragment extends Fragment {
         initViews();
 
 
+
+
+
+
     }
 
     private void initViews() {
@@ -98,12 +143,25 @@ public class AddCityFragment extends Fragment {
 
             List<CityEntity> cityEntities = mViewModel.getAllCities();
 
-            mAdapter = new DataFilterSearchAdapter(cityEntities);
+            mAdapter = new DataFilterSearchAdapter(cityEntities, new DataFilterSearchAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(CityEntity item) {
+                    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+                        // Insert our new weather data into Sunshine's database
+                        mViewModel.insertWeather(String.valueOf(item.getId()));
+                        OpenWeatherApp.Logger.d("New values inserted");
+                        getActivity().finish();
+
+                    });
+                }
+            });
 //            mAdapter = new DataSearchAdapter(cityEntities);
 
             mRecyclerView.setAdapter(mAdapter);
 
-            if(mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
+            if (mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
+
+
 
         });
 
@@ -124,46 +182,4 @@ public class AddCityFragment extends Fragment {
         searchView.setOnQueryTextListener(onQueryTextListener);
 
     }
-
-
-    private SearchView.OnQueryTextListener onQueryTextListener =
-            new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    OpenWeatherApp.Logger.d("submitted: " + query);
-//                    getDealsFromDb(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    if (!newText.isEmpty()) {
-//                    OpenWeatherApp.Logger.d(newText);
-//                    newText = "%" + newText + "%";
-                        //List<CityEntity> cityEntities = mViewModel.getCitiesByName(newText);
-                        mAdapter.getFilter().filter(newText);
-                        //mAdapter.setItemList(cityEntities);
-                    }
-                    if(mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
-                    return true;
-                }
-
-//                private void getDealsFromDb(String searchText) {
-//                    searchText = "%"+searchText+"%";
-//                    localRepository.getDealsListInfo(DealsSearchActivity.this, searchText)
-//                            .observe(DealsSearchActivity.this, new Observer<List<DealInfo>>() {
-//                                @Override
-//                                public void onChanged(@Nullable List<DealInfo> deals) {
-//                                    if (deals == null) {
-//                                        return;
-//                                    }
-//                                    DealsListViewAdapter adapter = new DealsListViewAdapter(
-//                                            DealsSearchActivity.this,
-//                                            R.layout.deal_item_layout, deals);
-//                                    listView.setAdapter(adapter);
-//
-//                                }
-//                            });
-//                }
-            };
 }

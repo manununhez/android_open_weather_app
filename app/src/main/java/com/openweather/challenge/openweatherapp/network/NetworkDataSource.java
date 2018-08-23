@@ -213,7 +213,7 @@ public class NetworkDataSource {
      * Get the current weather of city by ID
      * @return
      */
-    public void fetchCurrentWeathersByCityID(String cityID) {
+    public void fetchCurrentWeatherByCityID(String cityID) {
         URL url = NetworkUtils.getCurrentWeatherURLByCityId(cityID);
         getRequestString(url.toString(), null, new Response.Listener<String>() {
             @Override
