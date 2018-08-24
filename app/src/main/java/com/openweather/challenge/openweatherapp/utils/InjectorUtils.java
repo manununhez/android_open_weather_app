@@ -2,7 +2,7 @@ package com.openweather.challenge.openweatherapp.utils;
 
 import android.content.Context;
 
-import com.openweather.challenge.openweatherapp.AppRepository;
+import com.openweather.challenge.openweatherapp.repository.AppRepository;
 import com.openweather.challenge.openweatherapp.db.AppRoomDatabase;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityViewModelFactory;

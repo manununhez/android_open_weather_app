@@ -3,8 +3,8 @@ package com.openweather.challenge.openweatherapp.ui.managecities;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.openweather.challenge.openweatherapp.AppRepository;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.repository.AppRepository;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 
 import java.util.List;
 

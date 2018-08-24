@@ -7,7 +7,7 @@ import android.content.Context;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 
 /**
  * Created by manuel on 21,August,2018

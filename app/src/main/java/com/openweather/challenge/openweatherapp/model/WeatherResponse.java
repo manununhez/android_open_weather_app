@@ -1,6 +1,6 @@
 package com.openweather.challenge.openweatherapp.model;
 
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 
 /**
  * Created by manuel on 23,August,2018

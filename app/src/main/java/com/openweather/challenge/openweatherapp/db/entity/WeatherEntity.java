@@ -1,4 +1,4 @@
-package com.openweather.challenge.openweatherapp.entity;
+package com.openweather.challenge.openweatherapp.db.entity;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;

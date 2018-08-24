@@ -10,32 +10,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 import java.util.List;
 
-public class DataSearchAdapter extends RecyclerView.Adapter<DataSearchAdapter.ViewHolder> {
+public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdapter.ViewHolder> {
     private final OnItemClickListener mListener;
 
     private final List<WeatherEntity> mArrayList;
     private Context mContext;
 
-    public DataSearchAdapter(List<WeatherEntity> arrayList, OnItemClickListener listener) {
+    public AddCitySearchAdapter(List<WeatherEntity> arrayList, OnItemClickListener listener) {
         mArrayList = arrayList;
         mListener = listener;
 
     }
 
     @Override
-    public DataSearchAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public AddCitySearchAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row, viewGroup, false);
         mContext = view.getContext();
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DataSearchAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(AddCitySearchAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.bind(mArrayList.get(position), mListener);
 

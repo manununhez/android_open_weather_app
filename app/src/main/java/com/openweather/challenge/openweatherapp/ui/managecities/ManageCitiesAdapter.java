@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 import java.util.List;

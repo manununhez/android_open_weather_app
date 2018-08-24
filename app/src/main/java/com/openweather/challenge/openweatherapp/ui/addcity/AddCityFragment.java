@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
-public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, DataSearchAdapter.OnItemClickListener {
+public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, AddCitySearchAdapter.OnItemClickListener {
 
     static final String QUERY = "query_search";
     static final String WEATHER_ENTITIES = "weather_entities_search";
@@ -31,7 +31,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     private TextView tvCountResults;
     private View view;
     private RecyclerView mRecyclerView;
-    private DataSearchAdapter mAdapter;
+    private AddCitySearchAdapter mAdapter;
     private LiveData<WeatherEntity> weatherSearchByNameResponse;
     private SearchView searchView;
     private ArrayList<WeatherEntity> weatherEntities;
@@ -101,7 +101,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new DataSearchAdapter(weatherEntities, this);
+        mAdapter = new AddCitySearchAdapter(weatherEntities, this);
         mRecyclerView.setAdapter(mAdapter);
 
         weatherSearchByNameResponse = mViewModel.getResponseWeatherByName();

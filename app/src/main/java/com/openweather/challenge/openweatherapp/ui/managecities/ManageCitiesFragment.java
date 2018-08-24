@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.openweather.challenge.openweatherapp.R;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityActivity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 import com.openweather.challenge.openweatherapp.utils.Utils;

@@ -25,9 +25,11 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.google.gson.Gson;
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.model.WeatherResponse;
 import com.openweather.challenge.openweatherapp.model.WeathersResponse;
+import com.openweather.challenge.openweatherapp.network.services.OpenWeatherAppFirebaseJobService;
+import com.openweather.challenge.openweatherapp.network.services.OpenWeatherAppSyncIntentService;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;

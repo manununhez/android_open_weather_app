@@ -3,7 +3,7 @@ package com.openweather.challenge.openweatherapp.ui.managecities;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.openweather.challenge.openweatherapp.AppRepository;
+import com.openweather.challenge.openweatherapp.repository.AppRepository;
 
 /**
  * Created by manuel on 21,August,2018

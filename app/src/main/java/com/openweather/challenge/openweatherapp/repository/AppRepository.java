@@ -1,9 +1,18 @@
-package com.openweather.challenge.openweatherapp;
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.openweather.challenge.openweatherapp.repository;
 
 import android.arch.lifecycle.LiveData;
 
+import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
-import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 import com.openweather.challenge.openweatherapp.utils.Utils;
@@ -64,18 +73,21 @@ public class AppRepository {
         if (mInitialized) return;
         mInitialized = true;
 
-        // This method call triggers Sunshine to create its task to synchronize weather data
+        // This method call triggers OpenWeatherApp to create its task to synchronize weather data
         // periodically.
         mNetworkDataSource.scheduleRecurringFetchWeatherSync();
 
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            if (isFetchNeeded()) { //TODO implement isFetchNeeded
+            if (isFetchNeeded()) {
                 deleteOldData();
                 startFetchWeatherService();
             }
         });
     }
 
+    /******************************
+     * DB related operation
+     *****************************/
 
     /**
      * Checks if at least exist one weather entry, that would be mean that exists at least one selected and stored weather-city in the DB,
@@ -89,6 +101,12 @@ public class AppRepository {
         long lastUpdate = mWeatherDao.getLastUpdateTime();
         return (count > 0 && mNetworkDataSource.isSyncNeeded(now, lastUpdate));
     }
+
+
+    /**
+     *
+     * @param weatherEntity
+     */
 
     public void insertWeather(WeatherEntity weatherEntity) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
@@ -121,23 +139,29 @@ public class AppRepository {
     }
 
 
-    //------------------
-
     /**
-     * Network related operation
+     *
+     * @return
      */
-
-    private void startFetchWeatherService() {
-        mNetworkDataSource.startFetchWeatherService();
-    }
-
-
     public LiveData<List<WeatherEntity>> getCurrentWeathers() {
         initializeData();
 
         return mWeatherDao.getCurrentWeather();
     }
 
+
+
+
+    /******************************
+     * Network related operation
+     *****************************/
+
+    /**
+     *
+     */
+    private void startFetchWeatherService() {
+        mNetworkDataSource.startFetchWeatherService();
+    }
 
     /**
      * fetchAndInsertWeather from network by city name
@@ -150,10 +174,18 @@ public class AppRepository {
         });
     }
 
+    /**
+     *
+     * @return
+     */
     public LiveData<WeatherEntity> getResponseWeatherByCityName() {
         return mNetworkDataSource.getCurrentWeatherByCityName();
     }
 
+
+    /**
+     *
+     */
     public void fetchCurrentWeathersByCityIDs() {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             List<Integer> list = mWeatherDao.getAllWeathersId(); //We get the list of weather ID from the DB
