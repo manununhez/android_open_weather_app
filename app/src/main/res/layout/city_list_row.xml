@@ -12,6 +12,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
     android:background="@color/colorAccent">
 
     <TextView
@@ -33,12 +34,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
         android:text="25"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/tvWeatherCondition"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvWeatherCondition"
+        app:layout_constraintStart_toStartOf="@+id/tvWeatherCondition"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -48,7 +48,18 @@
         android:layout_marginEnd="14dp"
         android:layout_marginRight="14dp"
         android:layout_marginBottom="4dp"
-        android:text="Cloudy"
+        android:text="Cloudyasdasdds"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvWeatherCondition"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/ic_launcher_background" />
 </android.support.constraint.ConstraintLayout>

@@ -10,7 +10,6 @@ package com.openweather.challenge.openweatherapp.utils;
 import android.content.Context;
 import android.text.format.DateUtils;
 
-
 import com.openweather.challenge.openweatherapp.R;
 
 import java.text.SimpleDateFormat;
@@ -90,6 +89,11 @@ public final class OpenWeatherDateUtils {
         return TimeUnit.DAYS.toMillis(daysSinceEpochLocal);
     }
 
+    public static String getHourFromLongTimeSeconds(long time) {
+        Date date = new Date(time);
+        SimpleDateFormat df2 = new SimpleDateFormat("HH:mm");
+        return df2.format(date);
+    }
 
     public static long getNormalizedUtcSecondsForToday() {
         return getNormalizedUtcMsForToday() / 1000;

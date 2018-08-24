@@ -213,6 +213,7 @@ public class AppRepository {
         mNetworkDataSource.getRequestString(url.toString(), null, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                //TODO add control to "not found city" according to "cod" = 400. Cod = 200, success. Cod = 400, Not found
                 OpenWeatherApp.Logger.d("Response: " + response);
                 WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
                 responseWeatherByCityName.postValue(weatherResponse.getWeatherEntity());

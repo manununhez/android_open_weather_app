@@ -25,7 +25,8 @@ import android.os.Parcelable;
  * forecast. The date is used as an {@link Index} so that its uniqueness can be ensured. Indexes
  * also allow for fast lookup for the column.
  */
-@Entity(tableName = "weather_table", indices = {@Index(value = {"dt"}, unique = true)})
+//@Entity(tableName = "weather_table", indices = {@Index(value = {"dt"}, unique = true)})
+@Entity(tableName = "weather_table")
 public class WeatherEntity implements Parcelable {
 
     /**

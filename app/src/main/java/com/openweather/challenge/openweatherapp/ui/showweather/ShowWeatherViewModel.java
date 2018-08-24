@@ -28,14 +28,14 @@ public class ShowWeatherViewModel extends ViewModel {
     }
 
 
-
-    public void insertDummyWeather() {
-        mRepository.insertDummyWeather();
-    }
-
-    public void deleteDummyWeather() {
-        mRepository.deleteDummyWeather();
-    }
+//
+//    public void insertDummyWeather() {
+//        mRepository.insertDummyWeather();
+//    }
+//
+//    public void deleteDummyWeather() {
+//        mRepository.deleteDummyWeather();
+//    }
 
     public LiveData<List<WeatherEntity>> getCurrentWeathers(){
         return mRepository.getCurrentWeathers();

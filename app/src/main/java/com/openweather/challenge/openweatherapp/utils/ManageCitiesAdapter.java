@@ -80,7 +80,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
 
             tvCityName.setText(item.getName());
             tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
-            tvWeatherCondition.setText(OpenWeatherUtils.getStringForWeatherCondition(mContext, item.getCod()));
+            tvWeatherCondition.setText(item.getWeather_main());
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

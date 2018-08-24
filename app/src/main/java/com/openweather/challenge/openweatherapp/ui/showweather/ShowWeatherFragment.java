@@ -59,9 +59,9 @@ public class ShowWeatherFragment extends Fragment {
         setHasOptionsMenu(true); //search menu functionality
 
 
-        TextView message = view.findViewById(R.id.tvResults);
-        Button btnDummy = view.findViewById(R.id.btnDummy);
-        Button btnDummyDelete = view.findViewById(R.id.btnDummyDelete);
+//        TextView message = view.findViewById(R.id.tvResults);
+//        Button btnDummy = view.findViewById(R.id.btnDummy);
+//        Button btnDummyDelete = view.findViewById(R.id.btnDummyDelete);
 
         viewPagerSettings();
 
@@ -84,19 +84,19 @@ public class ShowWeatherFragment extends Fragment {
             }
         });
 
-        btnDummy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mViewModel.insertDummyWeather();
-            }
-        });
-
-        btnDummyDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mViewModel.deleteDummyWeather();
-            }
-        });
+//        btnDummy.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mViewModel.insertDummyWeather();
+//            }
+//        });
+//
+//        btnDummyDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mViewModel.deleteDummyWeather();
+//            }
+//        });
 
 
         //mViewModel.getCurrentWeather("Warsaw,PL");
