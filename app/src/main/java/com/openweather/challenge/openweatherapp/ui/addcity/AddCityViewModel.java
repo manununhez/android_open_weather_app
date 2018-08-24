@@ -27,9 +27,9 @@ public class AddCityViewModel extends ViewModel {
     }
 
 
-    public List<CityEntity> getAllCities() {
-        return mRepository.getAllCities();
-    }
+//    public List<CityEntity> getAllCities() {
+//        return mRepository.getAllCities();
+//    }
 
     public void insertWeather(WeatherEntity weatherEntity) {
         mRepository.insertWeather(weatherEntity);
@@ -40,7 +40,7 @@ public class AddCityViewModel extends ViewModel {
     }
 
     public void getWeatherByName(String text){
-        mRepository.fetchCurrentWeatherByCityName(text);
+        mRepository.getWeatherByCityName(text);
     }
 
 

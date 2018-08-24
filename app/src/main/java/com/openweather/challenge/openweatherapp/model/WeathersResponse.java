@@ -8,16 +8,20 @@
 
 package com.openweather.challenge.openweatherapp.model;
 
+import java.util.Arrays;
+
 /**
- * Created by manuel on 21,August,2018
+ * Created by manuel on 24,August,2018
  */
-public class Clouds {
-    public int all;
+public class WeathersResponse {
+    public int cnt;
+    public WeatherResponse[] list;
 
     @Override
     public String toString() {
-        return "Clouds{" +
-                "all=" + all +
+        return "WeathersResponse{" +
+                "cnt=" + cnt +
+                ", list=" + Arrays.toString(list) +
                 '}';
     }
 }

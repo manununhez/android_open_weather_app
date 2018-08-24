@@ -29,6 +29,21 @@ public interface WeatherDao {
     @Query("SELECT * FROM weather_table")
     LiveData<List<WeatherEntity>> getAllWeathers();
 
+    @Query("SELECT id FROM weather_table")
+    List<Integer> getAllWeathersId();
+
+    //Last update. We get the oldest dt, thats why we order dt by ASC
+    @Query("SELECT dt FROM weather_table ORDER by dt ASC LIMIT 1")
+    long getLastUpdateTime();
+
+    /**
+     * Selects all ids entries after a give date, inclusive. This is for easily seeing
+     * what entries are in the database without pulling all of the data.
+     *
+     */
+    @Query("SELECT count(*) FROM weather_table")
+    int getCountCurrentWeathers();
+
     // Inserts single weather
     @Insert
     void insert(WeatherEntity weather);
@@ -45,12 +60,11 @@ public interface WeatherDao {
      * Selects all {@link WeatherEntity} entries after a give date, inclusive. The LiveData will
      * be kept in sync with the database, so that it will automatically notify observers when the
      * values in the table change.
-     *
-     * @param date A {@link Date} from which to select all future weather
+    // * @param date A {@link Date} from which to select all future weather WHERE dt >= :date
      * @return {@link LiveData} list of all {@link WeatherEntity} objects after date
      */
-    @Query("SELECT * FROM weather_table WHERE dt < :date ORDER by name ASC ")
-    LiveData<List<WeatherEntity>> getCurrentWeather(long date);
+    @Query("SELECT * FROM weather_table ORDER by name ASC ")
+    LiveData<List<WeatherEntity>> getCurrentWeather();
 
     /**
      * Inserts a list of {@link WeatherEntity} into the weather table. If there is a conflicting id
@@ -73,11 +87,13 @@ public interface WeatherDao {
 //
 //    @Query("SELECT * FROM weather WHERE date = :date")
 //    WeatherEntity getWeatherByDate(Date date);
-
-    @Query("DELETE FROM weather_table WHERE id in (SELECT id FROM weather_table LIMIT 1)")
-    void deleteDummy();
+//
+//    @Query("DELETE FROM weather_table WHERE id in (SELECT id FROM weather_table LIMIT 1)")
+//    void deleteDummy();
 
     @Delete
     void delete(WeatherEntity weatherEntity);
+
+
 
 }

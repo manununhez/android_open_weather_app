@@ -72,6 +72,7 @@ public class WeatherDescriptionFragment extends Fragment {
         TextView tvHumidity = (TextView) view.findViewById(R.id.tvHumidity);
         TextView tvSunrise = (TextView) view.findViewById(R.id.tvSunrise);
         TextView tvSunset = (TextView) view.findViewById(R.id.tvSunset);
+        TextView tvLastUpdate = (TextView) view.findViewById(R.id.tvLastUpdate);
 
         tvCityName.setText(weatherEntity.getName() + " , " + weatherEntity.getSys_country());
         tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp()));
@@ -85,5 +86,8 @@ public class WeatherDescriptionFragment extends Fragment {
         tvHumidity.setText(weatherEntity.getMain_humidity()+"%");
         tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
+
+        tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntity.getDt())); //Update last update value
+
     }
 }

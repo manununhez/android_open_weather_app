@@ -1,7 +1,7 @@
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  - This file contains all of the strings used throughout Sunshine. They can be accessed       -
+  - This file contains all of the strings used throughout OpenWeatherApp. They can be accessed       -
   - through calls to Context#getString. This strings are organized by where they are used in   -
-  - Sunshine.                                                                                  -
+  - OpenWeatherApp.                                                                                  -
   -                                                                                            -
   - Throughout this file, you will see <xliff:g> tags. These help any potential translators    -
   - properly translate your strings and also give developers that are looking at your strings  -

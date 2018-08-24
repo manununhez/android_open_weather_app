@@ -50,7 +50,7 @@ public class WeatherEntity implements Parcelable {
     private double wind_speed;
     private double wind_deg;
     private int clouds;
-    private long dt;
+    private long dt; //Unix epoch time in SECS
     private int sys_type;
     private int sys_id;
     private double sys_message;

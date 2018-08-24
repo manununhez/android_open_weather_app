@@ -32,6 +32,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.showweather.ShowWeatherActivity" />
         </activity>
+
+        <!--This is required for immediate syncs -->
+        <service
+            android:name=".network.OpenWeatherAppSyncIntentService"
+            android:exported="false" />
+
+        <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+        <service
+            android:name=".network.OpenWeatherAppFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

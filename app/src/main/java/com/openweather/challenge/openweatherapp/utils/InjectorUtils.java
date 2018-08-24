@@ -18,7 +18,7 @@ import com.openweather.challenge.openweatherapp.ui.managecities.ManageCitiesView
 import com.openweather.challenge.openweatherapp.ui.showweather.ShowWeatherViewModelFactory;
 
 /**
- * Provides static methods to inject the various classes needed for Sunshine
+ * Provides static methods to inject the various classes needed for OpenWeatherApp
  */
 public class InjectorUtils {
 

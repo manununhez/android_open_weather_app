@@ -41,4 +41,8 @@ public class ShowWeatherViewModel extends ViewModel {
         return mRepository.getCurrentWeathers();
 
     }
+
+//    public List<Integer> getAllWeatherID(){
+//        return mRepository.fetchCurrentWeathersByCityIDs();
+//    }
 }

@@ -40,7 +40,7 @@ public class Utils {
             //if the value is not the last element of the list
             //then append the comma(,) as well
             if ( i != list.size()-1){
-                commaSepValueBuilder.append(", ");
+                commaSepValueBuilder.append(",");
             }
         }
 

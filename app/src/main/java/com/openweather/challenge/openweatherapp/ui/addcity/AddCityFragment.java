@@ -178,7 +178,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     @Override
     public void onItemClick(WeatherEntity item) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            // Insert our new weather data into Sunshine's database
+            // Insert our new weather data into OpenWeatherApp's database
             mViewModel.insertWeather(item);
             OpenWeatherApp.Logger.d("New values inserted");
             getActivity().finish();
