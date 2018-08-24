@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
         private TextView tvTemperature;
         private TextView tvCityName;
         private TextView tvWeatherCondition;
+        private ImageView ivWeatherCondition;
 
         public ViewHolder(View view) {
             super(view);
@@ -74,14 +76,17 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
             tvCityName = (TextView) view.findViewById(R.id.tvCityName);
             tvTemperature = (TextView) view.findViewById(R.id.tvTemperature);
             tvWeatherCondition = (TextView) view.findViewById(R.id.tvWeatherCondition);
+            ivWeatherCondition = (ImageView) view.findViewById(R.id.ivWeatherCondition);
         }
 
         public void bind(WeatherEntity item, OnItemClickListener itemClickListener, OnLongItemClickListener longItemClickListener) {
+            int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(item.getWeather_id());
 
-            tvCityName.setText(item.getName());
+            tvCityName.setText(item.getName()+", "+item.getSys_country());
             tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
             tvWeatherCondition.setText(item.getWeather_main());
 
+            ivWeatherCondition.setImageResource(weatherImageId);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

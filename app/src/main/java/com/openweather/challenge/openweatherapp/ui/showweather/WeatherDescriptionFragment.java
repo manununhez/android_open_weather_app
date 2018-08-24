@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
@@ -73,6 +74,10 @@ public class WeatherDescriptionFragment extends Fragment {
         TextView tvSunrise = (TextView) view.findViewById(R.id.tvSunrise);
         TextView tvSunset = (TextView) view.findViewById(R.id.tvSunset);
         TextView tvLastUpdate = (TextView) view.findViewById(R.id.tvLastUpdate);
+        ImageView ivWeatherCondition = (ImageView) view.findViewById(R.id.ivWeatherCondition);
+
+        int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.getWeather_id());
+
 
         tvCityName.setText(weatherEntity.getName() + " , " + weatherEntity.getSys_country());
         tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp()));
@@ -88,6 +93,9 @@ public class WeatherDescriptionFragment extends Fragment {
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
 
         tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntity.getDt())); //Update last update value
+
+
+        ivWeatherCondition.setImageResource(weatherImageId);
 
     }
 }

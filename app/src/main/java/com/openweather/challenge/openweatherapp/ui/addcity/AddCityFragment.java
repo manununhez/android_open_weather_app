@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
-import com.openweather.challenge.openweatherapp.utils.DataSearchAdapter;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 //        btnTest = (Button) view.findViewById(R.id.btnTest);
         tvCountResults = (TextView) view.findViewById(R.id.tvCountResults);
         searchView = (SearchView) view.findViewById(R.id.searchView);
-        searchView.setQueryHint("Search View");
+        searchView.setQueryHint("Search City");
         searchView.setOnQueryTextListener(this);
 //        btnTest.setOnClickListener(new View.OnClickListener() {
 //            @Override
