@@ -201,7 +201,7 @@ public class WeatherEntity implements Parcelable {
         return main_pressure;
     }
 
-    public void setMain_pressure(int main_pressure) {
+    public void setMain_pressure(double main_pressure) {
         this.main_pressure = main_pressure;
     }
 
@@ -249,7 +249,7 @@ public class WeatherEntity implements Parcelable {
         return wind_deg;
     }
 
-    public void setWind_deg(int wind_deg) {
+    public void setWind_deg(double wind_deg) {
         this.wind_deg = wind_deg;
     }
 

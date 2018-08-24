@@ -20,11 +20,12 @@ import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, DataSearchAdapter.OnItemClickListener {
 
+    static final String QUERY = "query_search";
+    static final String WEATHER_ENTITIES = "weather_entities_search";
     private AddCityViewModel mViewModel;
     //    private Button btnTest;
     private TextView tvCountResults;
@@ -33,8 +34,8 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSearchAdapter mAdapter;
     private LiveData<WeatherEntity> weatherSearchByNameResponse;
     private SearchView searchView;
-    private List<WeatherEntity> weatherEntities;
-    private List<String> queriesHistory;
+    private ArrayList<WeatherEntity> weatherEntities;
+    private ArrayList<String> queriesHistory;
 
     public static AddCityFragment newInstance() {
         return new AddCityFragment();
@@ -49,8 +50,33 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putStringArrayList(QUERY, queriesHistory);
+        savedInstanceState.putParcelableArrayList(WEATHER_ENTITIES, weatherEntities);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null &&
+                savedInstanceState.getStringArrayList(QUERY) != null &&
+                savedInstanceState.getParcelableArrayList(WEATHER_ENTITIES) != null) { //In this way, after onDestroyView() might happen and restart, we will sure to init with variables not null
+            // Restore value of members from saved state
+            queriesHistory = savedInstanceState.getStringArrayList(QUERY);
+            weatherEntities = savedInstanceState.getParcelableArrayList(WEATHER_ENTITIES);
+        } else {
+            // Probably initialize members with default values for a new instance
+            queriesHistory = new ArrayList<>();
+            weatherEntities = new ArrayList<>();
+
+        }
+
 
         // Get the ViewModel from the factory
         AddCityViewModelFactory factory = InjectorUtils.provideAddCityViewModelFactory(getActivity().getApplicationContext());
@@ -62,19 +88,18 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         searchView.setQueryHint("Search City");
         searchView.setOnQueryTextListener(this);
 
-        queriesHistory = new ArrayList<>();
 
         initRecyclerView();
 
 
     }
 
+
     private void initRecyclerView() {
         mRecyclerView = view.findViewById(R.id.rvSearch);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-        weatherEntities = new ArrayList<>();
 
         mAdapter = new DataSearchAdapter(weatherEntities, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -83,15 +108,28 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         weatherSearchByNameResponse.observeForever(response -> {
             OpenWeatherApp.Logger.d("AddCityFragment = " + response.toString());
             //TODO this can be improved
-            if (queriesHistory.size() > 0) { // If at least one query was made, this response is correct. This avoid to have elements in the recyclerView from previous searches.
-                weatherEntities.add(response);
+            if (queriesHistory != null && !queriesHistory.isEmpty()) { // If at least one query was made, this response is correct. This avoid to have elements in the recyclerView from previous searches.
+                if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
+                    weatherEntities.add(response);
 
-                mAdapter.notifyDataSetChanged();
-                if (mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
+                    mAdapter.notifyDataSetChanged();
+                    if (mAdapter != null)
+                        tvCountResults.setText(mAdapter.getItemCount() + " results");
+
+                }
             }
         });
 
 
+    }
+
+
+    private boolean findItemInTheList(ArrayList<WeatherEntity> weatherEntities, WeatherEntity weatherEntity) {
+        for (WeatherEntity w : weatherEntities) {
+            if (w.getId() == weatherEntity.getId() && w.getDt() == weatherEntity.getDt()) //Id and datetime
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -102,7 +140,6 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
     @Override
     public boolean onQueryTextChange(String s) {
-
         if (!s.isEmpty()) {
             String allRemoved = s.replaceAll("^\\s+|\\s+$", ""); //trim white spaces, front and back of the text
             if (!queriesHistory.contains(allRemoved)) { //Avoid repeat the same queries to prevent inaccuracies calls
@@ -116,7 +153,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
             if (mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
 
         }
-        return false;
+        return true;
     }
 
     //FilterClick

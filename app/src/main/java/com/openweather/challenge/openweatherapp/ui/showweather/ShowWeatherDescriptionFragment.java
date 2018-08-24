@@ -19,42 +19,58 @@ import java.util.Objects;
 /**
  * Created by manuel on 22,August,2018
  */
-public class WeatherDescriptionFragment extends Fragment {
+public class ShowWeatherDescriptionFragment extends Fragment {
     // Store instance variables
     private String title;
     private int page;
     private WeatherEntity weatherEntity;
     private View view;
+    private static String WEATHER = "weather";
+//    private static String WEATHER_SAVED = "weather_saved";
 
     // newInstance constructor for creating fragment with arguments
-    public static WeatherDescriptionFragment newInstance(WeatherEntity weatherEntity) {
-        WeatherDescriptionFragment weatherDescriptionFragment = new WeatherDescriptionFragment();
+    public static ShowWeatherDescriptionFragment newInstance(WeatherEntity weatherEntity) {
+        ShowWeatherDescriptionFragment showWeatherDescriptionFragment = new ShowWeatherDescriptionFragment();
         Bundle args = new Bundle();
-        args.putParcelable("weather", weatherEntity);
-        weatherDescriptionFragment.setArguments(args);
-        return weatherDescriptionFragment;
+        args.putParcelable(WEATHER, weatherEntity);
+        showWeatherDescriptionFragment.setArguments(args);
+        return showWeatherDescriptionFragment;
     }
+
+
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+//        // Save the user's current game state
+//        savedInstanceState.putParcelable(WEATHER_SAVED, weatherEntity);
+//
+//        // Always call the superclass so it can save the view hierarchy state
+//        super.onSaveInstanceState(savedInstanceState);
+//    }
 
     // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weatherEntity = Objects.requireNonNull(getArguments()).getParcelable("weather");
+        weatherEntity = Objects.requireNonNull(getArguments()).getParcelable(WEATHER);
     }
 
     // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_weather_description, container, false);
-
-
+        view = inflater.inflate(R.layout.fragment_show_weather_description, container, false);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+//
+//        // Check whether we're recreating a previously destroyed instance
+//        if (savedInstanceState != null) {
+//            // Restore value of members from saved state
+//            weatherEntity = savedInstanceState.getParcelable(WEATHER_SAVED);
+//        }
 
         TextView tvCityName = view.findViewById(R.id.tvCityName);
         TextView tvCurrentTemp = view.findViewById(R.id.tvCurrentTemp);

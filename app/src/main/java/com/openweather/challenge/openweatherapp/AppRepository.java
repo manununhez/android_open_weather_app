@@ -24,37 +24,22 @@ public class AppRepository {
     private AppRepository(WeatherDao weatherDao, NetworkDataSource networkDataSource) {
         mWeatherDao = weatherDao;
         mNetworkDataSource = networkDataSource;
-//        responseWeatherByCityName = new MutableLiveData<>();
-//        // As long as the repository exists, observe the network LiveData.
-//        // If that LiveData changes, update the database.
-//        // Group of weathers that corresponds to the weather of all cities saved in the DB
+
+        // As long as the repository exists, observe the network LiveData.
+        // If that LiveData changes, update the database.
+        // Group of weathers that corresponds to the weather of all cities saved in the DB
         LiveData<WeatherEntity[]> newWeathersFromNetwork = mNetworkDataSource.getCurrentWeathers();
 
         newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
             Executors.newSingleThreadScheduledExecutor().execute(() -> {
                 // Deletes old historical data
-                deleteOldData();
+                //deleteOldData();
                 OpenWeatherApp.Logger.d("Old weather deleted");
                 // Insert our new weather data into OpenWeatherApp's database
                 mWeatherDao.bulkInsert(weathersFromNetwork);
                 OpenWeatherApp.Logger.d("New values inserted");
             });
         });
-//
-//
-//        // As long as the repository exists, observe the network LiveData.
-//        // If that LiveData changes, update the database.
-//        // New weather fetch from network (by cityID or cityName)
-//
-//        LiveData<WeatherEntity> newWeatherFromNetwork = getCurrentWeather();
-//
-//        newWeatherFromNetwork.observeForever(weathersFromNetwork -> {
-//            Executors.newSingleThreadScheduledExecutor().execute(() -> {
-//                // Insert our new weather data into database
-//                mWeatherDao.insert(weathersFromNetwork);
-//                OpenWeatherApp.Logger.d("New value inserted");
-//            });
-//        });
     }
 
     public synchronized static AppRepository getInstance(WeatherDao weatherDao, NetworkDataSource networkDataSource) {

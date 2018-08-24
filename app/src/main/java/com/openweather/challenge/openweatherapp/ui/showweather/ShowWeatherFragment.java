@@ -13,13 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.ui.managecities.ManageCitiesActivity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
-import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 import com.openweather.challenge.openweatherapp.utils.ZoomOutPageTransformer;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
@@ -31,8 +29,8 @@ public class ShowWeatherFragment extends Fragment {
 
     private ShowWeatherViewModel mViewModel;
     private View view;
-    private WeatherPagerAdapter pagerAdapter;
-    private TextView tvLastUpdate;
+    private ShowWeatherPagerAdapter pagerAdapter;
+//    private TextView tvLastUpdate;
 
     public static ShowWeatherFragment newInstance() {
         return new ShowWeatherFragment();
@@ -54,26 +52,26 @@ public class ShowWeatherFragment extends Fragment {
 
         viewPagerSettings();
 
-        tvLastUpdate = view.findViewById(R.id.tvLastUpdate);
+//        tvLastUpdate = view.findViewById(R.id.tvLastUpdate);
 
         ShowWeatherViewModelFactory factory = InjectorUtils.provideShowWeatherViewModelFactory(Objects.requireNonNull(getActivity()).getApplicationContext());
         mViewModel = ViewModelProviders.of(this, factory).get(ShowWeatherViewModel.class);
 
 
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
-            if (weatherEntities != null && weatherEntities.size() > 0) {
+            if (weatherEntities != null && !weatherEntities.isEmpty()) {
 
-                List<WeatherDescriptionFragment> weatherDescriptionFragments = new ArrayList<>();
+                List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments = new ArrayList<>();
                 int i = 0;
                 for (WeatherEntity weatherEntity : weatherEntities) {
 
-                    weatherDescriptionFragments.add(WeatherDescriptionFragment.newInstance(weatherEntity));
+                    showWeatherDescriptionFragments.add(ShowWeatherDescriptionFragment.newInstance(weatherEntity));
                 }
 
-                pagerAdapter.addItems(weatherDescriptionFragments);
+                pagerAdapter.addItems(showWeatherDescriptionFragments);
 
 
-                tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntities.get(0).getDt())); //Update last update value
+//                tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntities.get(0).getDt())); //Update last update value
             }
         });
 
@@ -85,7 +83,8 @@ public class ShowWeatherFragment extends Fragment {
         ViewPager viewPager = view.findViewById(R.id.view_pager);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-        pagerAdapter = new WeatherPagerAdapter(getFragmentManager());
+
+        pagerAdapter = new ShowWeatherPagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         dotsIndicator.setViewPager(viewPager);
     }

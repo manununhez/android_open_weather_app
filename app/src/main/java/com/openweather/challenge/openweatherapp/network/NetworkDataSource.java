@@ -39,19 +39,24 @@ public class NetworkDataSource {
     private static final String TAG = NetworkDataSource.class
             .getSimpleName();
     private static final int TIMEOUT_MS = 60000; //60 segundos
+
     // Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
     // Acording to https://openweathermap.org/price, free account allows Weather API data update < 2 hours. So, we decide an interval every 3 hours
     private static final int SYNC_INTERVAL_HOURS = 3;
-    private static final int SYNC_INTERVAL_SECONDS = 60;//(int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
+    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
     private static final String WEATHER_SYNC_TAG = "weather-sync";
+
     // For Singleton instantiation
     private static NetworkDataSource INSTANCE;
+
     // LiveData storing the latest downloaded weather forecasts
     private final MutableLiveData<WeatherEntity[]> responseFromGetCurrentWeathers;
     private final MutableLiveData<WeatherEntity> responseWeatherByCityName;
-    private RequestQueue mRequestQueue;
     private final Context context;
+
+    // Volley requestQueue
+    private RequestQueue mRequestQueue;
 
 
     private NetworkDataSource(Context context) {
@@ -73,6 +78,87 @@ public class NetworkDataSource {
         }
         return INSTANCE;
     }
+
+    /**************************************
+     *              SERVICES
+     ******************************************/
+
+
+    /**
+     * Starts an intent service to fetch the weather.
+     */
+    public void startFetchWeatherService() {
+        Intent intentToFetch = new Intent(context, OpenWeatherAppSyncIntentService.class);
+        context.startService(intentToFetch);
+        OpenWeatherApp.Logger.d("Service created");
+    }
+
+
+    /**
+     * Schedules a repeating job service which fetches the weather.
+     */
+    public void scheduleRecurringFetchWeatherSync() {
+        Driver driver = new GooglePlayDriver(context);
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
+
+        // Create the Job to periodically sync Sunshine
+        Job syncSunshineJob = dispatcher.newJobBuilder()
+                /* The Service that will be used to sync Sunshine's data */
+                .setService(OpenWeatherAppFirebaseJobService.class)
+                /* Set the UNIQUE tag used to identify this Job */
+                .setTag(WEATHER_SYNC_TAG)
+                /*
+                 * Network constraints on which this Job should run. We choose to run on any
+                 * network, but you can also choose to run only on un-metered networks or when the
+                 * device is charging. It might be a good idea to include a preference for this,
+                 * as some users may not want to download any data on their mobile plan. ($$$)
+                 */
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                /*
+                 * setLifetime sets how long this job should persist. The options are to keep the
+                 * Job "forever" or to have it die the next time the device boots up.
+                 */
+                .setLifetime(Lifetime.FOREVER)
+                /*
+                 * We want Sunshine's weather data to stay up to date, so we tell this Job to recur.
+                 */
+                .setRecurring(true)
+                /*
+                 * We want the weather data to be synced every 3 to 4 hours. The first argument for
+                 * Trigger's static executionWindow method is the start of the time frame when the
+                 * sync should be performed. The second argument is the latest point in time at
+                 * which the data should be synced. Please note that this end time is not
+                 * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
+                 */
+                .setTrigger(Trigger.executionWindow(
+                        SYNC_INTERVAL_SECONDS,
+                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
+                /*
+                 * If a Job with the tag with provided already exists, this new job will replace
+                 * the old one.
+                 */
+                .setReplaceCurrent(true)
+                /* Once the Job is ready, call the builder's build method to return the Job */
+                .build();
+
+        // Schedule the Job with the dispatcher
+        dispatcher.schedule(syncSunshineJob);
+        OpenWeatherApp.Logger.d("Job scheduled");
+    }
+
+    /**
+     * @param today
+     * @param lastUpdate
+     * @return
+     */
+    public boolean isSyncNeeded(long today, long lastUpdate) {
+        return ((lastUpdate - today) >= (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS));
+    }
+
+
+    /**************************************
+     *              Volley Configuration
+     ******************************************/
 
     private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
@@ -165,67 +251,9 @@ public class NetworkDataSource {
         });
     }
 
-    /**
-     * Starts an intent service to fetch the weather.
-     */
-    public void startFetchWeatherService() {
-        Intent intentToFetch = new Intent(context, OpenWeatherAppSyncIntentService.class);
-        context.startService(intentToFetch);
-        OpenWeatherApp.Logger.d("Service created");
-    }
-
-
-    /**
-     * Schedules a repeating job service which fetches the weather.
-     */
-    public void scheduleRecurringFetchWeatherSync() {
-        Driver driver = new GooglePlayDriver(context);
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
-        // Create the Job to periodically sync Sunshine
-        Job syncSunshineJob = dispatcher.newJobBuilder()
-                /* The Service that will be used to sync Sunshine's data */
-                .setService(OpenWeatherAppFirebaseJobService.class)
-                /* Set the UNIQUE tag used to identify this Job */
-                .setTag(WEATHER_SYNC_TAG)
-                /*
-                 * Network constraints on which this Job should run. We choose to run on any
-                 * network, but you can also choose to run only on un-metered networks or when the
-                 * device is charging. It might be a good idea to include a preference for this,
-                 * as some users may not want to download any data on their mobile plan. ($$$)
-                 */
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                /*
-                 * setLifetime sets how long this job should persist. The options are to keep the
-                 * Job "forever" or to have it die the next time the device boots up.
-                 */
-                .setLifetime(Lifetime.FOREVER)
-                /*
-                 * We want Sunshine's weather data to stay up to date, so we tell this Job to recur.
-                 */
-                .setRecurring(true)
-                /*
-                 * We want the weather data to be synced every 3 to 4 hours. The first argument for
-                 * Trigger's static executionWindow method is the start of the time frame when the
-                 * sync should be performed. The second argument is the latest point in time at
-                 * which the data should be synced. Please note that this end time is not
-                 * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
-                 */
-                .setTrigger(Trigger.executionWindow(
-                        SYNC_INTERVAL_SECONDS,
-                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
-                /*
-                 * If a Job with the tag with provided already exists, this new job will replace
-                 * the old one.
-                 */
-                .setReplaceCurrent(true)
-                /* Once the Job is ready, call the builder's build method to return the Job */
-                .build();
-
-        // Schedule the Job with the dispatcher
-        dispatcher.schedule(syncSunshineJob);
-        OpenWeatherApp.Logger.d("Job scheduled");
-    }
+    /**************************************
+     *              Network requests
+     ******************************************/
 
 
     /**
@@ -259,9 +287,6 @@ public class NetworkDataSource {
 
     }
 
-    public void testService() {
-        OpenWeatherApp.Logger.d("Testing service call");
-    }
 
     /**
      * Get the current weather of all the cities stored
@@ -346,7 +371,5 @@ public class NetworkDataSource {
         return responseWeatherByCityName;
     }
 
-    public boolean isSyncNeeded(long today, long lastUpdate) {
-        return ((lastUpdate - today) >= (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS));
-    }
+
 }

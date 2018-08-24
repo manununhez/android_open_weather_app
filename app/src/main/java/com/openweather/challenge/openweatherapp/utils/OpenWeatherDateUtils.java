@@ -175,7 +175,7 @@ public final class OpenWeatherDateUtils {
     }
 
     public static String getFriendlyDateString(long utcTimeInSecs) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm");
         //sdf.setTimeZone(TimeZone.getTimeZone("UTC"));   // This line converts the given date into UTC time zone
         return sdf.format(new Date(utcTimeInSecs * 1000L));
     }
