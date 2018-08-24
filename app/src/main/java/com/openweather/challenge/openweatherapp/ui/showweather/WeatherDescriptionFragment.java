@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.openweather.challenge.openweatherapp.ui.showweather;
 
 import android.os.Bundle;
@@ -47,7 +39,7 @@ public class WeatherDescriptionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        weatherEntity = (WeatherEntity) (Objects.requireNonNull(getArguments()).getParcelable("weather"));
+        weatherEntity = Objects.requireNonNull(getArguments()).getParcelable("weather");
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -64,17 +56,17 @@ public class WeatherDescriptionFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        TextView tvCityName = (TextView) view.findViewById(R.id.tvCityName);
-        TextView tvCurrentTemp = (TextView) view.findViewById(R.id.tvCurrentTemp);
-        TextView tvWeatherMain = (TextView) view.findViewById(R.id.tvWeatherMain);
-        TextView tvMinMaxTemp = (TextView) view.findViewById(R.id.tvMinMaxTemp);
-        TextView tvWeatherDescription = (TextView) view.findViewById(R.id.tvWeatherDescription);
-        TextView tvWindSpeed = (TextView) view.findViewById(R.id.tvWindSpeed);
-        TextView tvHumidity = (TextView) view.findViewById(R.id.tvHumidity);
-        TextView tvSunrise = (TextView) view.findViewById(R.id.tvSunrise);
-        TextView tvSunset = (TextView) view.findViewById(R.id.tvSunset);
-        TextView tvLastUpdate = (TextView) view.findViewById(R.id.tvLastUpdate);
-        ImageView ivWeatherCondition = (ImageView) view.findViewById(R.id.ivWeatherCondition);
+        TextView tvCityName = view.findViewById(R.id.tvCityName);
+        TextView tvCurrentTemp = view.findViewById(R.id.tvCurrentTemp);
+        TextView tvWeatherMain = view.findViewById(R.id.tvWeatherMain);
+        TextView tvMinMaxTemp = view.findViewById(R.id.tvMinMaxTemp);
+        TextView tvWeatherDescription = view.findViewById(R.id.tvWeatherDescription);
+        TextView tvWindSpeed = view.findViewById(R.id.tvWindSpeed);
+        TextView tvHumidity = view.findViewById(R.id.tvHumidity);
+        TextView tvSunrise = view.findViewById(R.id.tvSunrise);
+        TextView tvSunset = view.findViewById(R.id.tvSunset);
+        TextView tvLastUpdate = view.findViewById(R.id.tvLastUpdate);
+        ImageView ivWeatherCondition = view.findViewById(R.id.ivWeatherCondition);
 
         int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.getWeather_id());
 
@@ -83,12 +75,12 @@ public class WeatherDescriptionFragment extends Fragment {
         tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp()));
         tvWeatherMain.setText(weatherEntity.getWeather_main());
         tvWeatherDescription.setText(weatherEntity.getWeather_description());
-        tvMinMaxTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(),weatherEntity.getMain_temp_max()) + " / " +
-                OpenWeatherUtils.formatTemperature(getActivity(),weatherEntity.getMain_temp_min()));
+        tvMinMaxTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_max()) + " / " +
+                OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_min()));
 
         tvWindSpeed.setText(OpenWeatherUtils.getFormattedWind(getActivity(), weatherEntity.getWind_speed(), weatherEntity.getWind_deg()));
 
-        tvHumidity.setText(weatherEntity.getMain_humidity()+"%");
+        tvHumidity.setText(weatherEntity.getMain_humidity() + "%");
         tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
 

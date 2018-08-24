@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.openweather.challenge.openweatherapp.db.dao;
 
 import android.arch.lifecycle.LiveData;
@@ -32,14 +24,13 @@ public interface WeatherDao {
     @Query("SELECT id FROM weather_table")
     List<Integer> getAllWeathersId();
 
-    //Last update. We get the oldest dt, thats why we order dt by ASC
+    //Last update. We get the oldest dt, that's why we order dt by ASC
     @Query("SELECT dt FROM weather_table ORDER by dt ASC LIMIT 1")
     long getLastUpdateTime();
 
     /**
      * Selects all ids entries after a give date, inclusive. This is for easily seeing
      * what entries are in the database without pulling all of the data.
-     *
      */
     @Query("SELECT count(*) FROM weather_table")
     int getCountCurrentWeathers();
@@ -52,15 +43,13 @@ public interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<WeatherEntity> weathers);
 
-    // Deletes all weather from the database
-    @Query("DELETE FROM weather_table")
-    void deleteAll();
 
     /**
      * Selects all {@link WeatherEntity} entries after a give date, inclusive. The LiveData will
      * be kept in sync with the database, so that it will automatically notify observers when the
      * values in the table change.
-    // * @param date A {@link Date} from which to select all future weather WHERE dt >= :date
+     * // * @param date A {@link Date} from which to select all future weather WHERE dt >= :date
+     *
      * @return {@link LiveData} list of all {@link WeatherEntity} objects after date
      */
     @Query("SELECT * FROM weather_table ORDER by name ASC ")
@@ -76,6 +65,11 @@ public interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void bulkInsert(WeatherEntity... weather);
 
+
+    // Deletes all weather from the database
+    @Query("DELETE FROM weather_table")
+    void deleteAll();
+
     /**
      * Deletes any weather data older than the given day
      *
@@ -84,16 +78,9 @@ public interface WeatherDao {
     @Query("DELETE FROM weather_table WHERE dt < :date")
     void deleteOldWeather(long date);
 
-//
-//    @Query("SELECT * FROM weather WHERE date = :date")
-//    WeatherEntity getWeatherByDate(Date date);
-//
-//    @Query("DELETE FROM weather_table WHERE id in (SELECT id FROM weather_table LIMIT 1)")
-//    void deleteDummy();
 
     @Delete
     void delete(WeatherEntity weatherEntity);
-
 
 
 }

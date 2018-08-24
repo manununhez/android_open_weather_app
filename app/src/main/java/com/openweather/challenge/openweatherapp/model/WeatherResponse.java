@@ -1,37 +1,28 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.openweather.challenge.openweatherapp.model;
 
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
-import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
-import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 /**
  * Created by manuel on 23,August,2018
  */
 public class WeatherResponse {
-    public Coordinate coord;
-    public WeatherDescription[] weather;
-    public String base;
-    public Main main;
-    public int visibility;
-    public Wind wind;
-    public Clouds clouds;
-    public long dt;
-    public Sys sys;
-    public int id;
-    public String name;
-    public int cod;
+    private Coordinate coord;
+    private WeatherDescription[] weather;
+    private String base;
+    private Main main;
+    private int visibility;
+    private Wind wind;
+    private Clouds clouds;
+    private long dt;
+    private Sys sys;
+    private int id;
+    private String name;
+    private int cod;
 
 
     /**
      * Transform a {@link WeatherResponse} object (received from network open weather map) to a {@link WeatherEntity} (format to save it in the DB)
+     *
      * @return
      */
     public WeatherEntity getWeatherEntity() {

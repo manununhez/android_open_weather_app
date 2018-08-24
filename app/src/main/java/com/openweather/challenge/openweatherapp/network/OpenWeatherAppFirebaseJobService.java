@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
 package com.openweather.challenge.openweatherapp.network;
 
 
@@ -34,10 +27,6 @@ public class OpenWeatherAppFirebaseJobService extends JobService {
     public boolean onStartJob(final JobParameters jobParameters) {
         Log.d(LOG_TAG, "Job service started");
 
-//        NetworkDataSource networkDataSource =
-//                InjectorUtils.provideNetworkDataSource(this.getApplicationContext());
-////        networkDataSource.fetchWeather();
-//        networkDataSource.testService();
 
         AppRepository appRepository = InjectorUtils.provideRepository(this.getApplicationContext());
         appRepository.fetchCurrentWeathersByCityIDs();

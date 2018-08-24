@@ -1,6 +1,5 @@
 package com.openweather.challenge.openweatherapp.network;
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
@@ -12,19 +11,18 @@ import java.net.URL;
  * Created by ramya on 11/8/17.
  */
 
-public class NetworkUtils {
-    public static final String OPEN_WEATHER_API = "http://api.openweathermap.org/data/2.5/weather";
-    public static final String OPEN_WEATHER_GROUP_API = "http://api.openweathermap.org/data/2.5/group";
-    public static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
-    public static final String WEATHER_FORECAST_PARAM = "q";
-    public static final String CITY_ID = "id";
-    public static final String UNITS_PARAM = "units";
-    public static final String METRICS_PARAM = "metric"; //Temperature unit in CELSIUS
-    public static final String APP_ID_PARAM = "APPID";
-    public static final String API_KEY = "0d43146b57d6b8c35d753502656efe4c";
-    public static final String PNG_EXTENSION = ".png";
+class NetworkUtils {
+    private static final String OPEN_WEATHER_API = "http://api.openweathermap.org/data/2.5/weather";
+    private static final String OPEN_WEATHER_GROUP_API = "http://api.openweathermap.org/data/2.5/group";
+    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
+    private static final String WEATHER_FORECAST_PARAM = "q";
+    private static final String CITY_ID = "id";
+    private static final String UNITS_PARAM = "units";
+    private static final String METRICS_PARAM = "metric"; //Temperature unit in CELSIUS
+    private static final String APP_ID_PARAM = "APPID";
+    private static final String API_KEY = "0d43146b57d6b8c35d753502656efe4c";
+    private static final String PNG_EXTENSION = ".png";
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    private Context context;
 
 
     private NetworkUtils() {
@@ -81,7 +79,7 @@ public class NetworkUtils {
                 .build();
 
         try {
-            URL weatherQueryUrl = new URL(weatherQueryUri.toString().replace("%2C",",")); //Error encoding wwith list between commas. %2C -> comma
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString().replace("%2C", ",")); //Error encoding wwith list between commas. %2C -> comma
             OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
@@ -91,7 +89,7 @@ public class NetworkUtils {
     }
 
     private static URL buildUrlGetImage(String imageId) {
-        Uri uri  = Uri.parse(OPEN_WEATHER_IMAGE_API).buildUpon()
+        Uri uri = Uri.parse(OPEN_WEATHER_IMAGE_API).buildUpon()
                 .appendPath(imageId + PNG_EXTENSION)
                 .build();
 
@@ -105,19 +103,19 @@ public class NetworkUtils {
         }
     }
 
-    public static URL getCurrentWeatherURLByCityName(String locationQuery){
+    public static URL getCurrentWeatherURLByCityName(String locationQuery) {
         return buildUrlByCityName(locationQuery);
     }
 
-    public static URL getCurrentWeatherURLByListCityId(String listCityID){
+    public static URL getCurrentWeatherURLByListCityId(String listCityID) {
         return buildUrlByListCityId(listCityID);
     }
 
-    public static URL getCurrentWeatherURLByCityId(String cityID){
+    public static URL getCurrentWeatherURLByCityId(String cityID) {
         return buildUrlByCityId(cityID);
     }
 
-    public static URL getImageURL(String imageId){
+    public static URL getImageURL(String imageId) {
         return buildUrlGetImage(imageId);
     }
 }

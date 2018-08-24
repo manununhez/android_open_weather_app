@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.openweather.challenge.openweatherapp.ui.managecities;
 
 import android.arch.lifecycle.ViewModel;
@@ -19,7 +11,7 @@ import com.openweather.challenge.openweatherapp.AppRepository;
 
 /**
  * Factory method that allows us to create a ViewModel with a constructor that takes a
- * {@link AppRepository} and an ID for the current {@link com.openweather.challenge.openweatherapp.entity.CityEntity}
+ * {@link AppRepository}
  */
 public class ManageCitiesViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 

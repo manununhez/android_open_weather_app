@@ -9,7 +9,6 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.openweather.challenge.openweatherapp.R;
 
 import org.json.JSONObject;

@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
@@ -40,24 +39,19 @@ public class NetworkDataSource {
     private static final String TAG = NetworkDataSource.class
             .getSimpleName();
     private static final int TIMEOUT_MS = 60000; //60 segundos
-    private RequestQueue mRequestQueue;
-
-    // For Singleton instantiation
-    private static NetworkDataSource INSTANCE;
-    private Context context;
-
-    // LiveData storing the latest downloaded weather forecasts
-    private final MutableLiveData<WeatherEntity[]> responseFromGetCurrentWeathers;
-    private final MutableLiveData<WeatherEntity> responseWeatherByCityName;
-
-
     // Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
     // Acording to https://openweathermap.org/price, free account allows Weather API data update < 2 hours. So, we decide an interval every 3 hours
     private static final int SYNC_INTERVAL_HOURS = 3;
     private static final int SYNC_INTERVAL_SECONDS = 60;//(int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
     private static final String WEATHER_SYNC_TAG = "weather-sync";
-
+    // For Singleton instantiation
+    private static NetworkDataSource INSTANCE;
+    // LiveData storing the latest downloaded weather forecasts
+    private final MutableLiveData<WeatherEntity[]> responseFromGetCurrentWeathers;
+    private final MutableLiveData<WeatherEntity> responseWeatherByCityName;
+    private RequestQueue mRequestQueue;
+    private final Context context;
 
 
     private NetworkDataSource(Context context) {
@@ -109,7 +103,7 @@ public class NetworkDataSource {
         }
     }
 
-    public void getRequestString(final String webserviceUrl,
+    private void getRequestString(final String webserviceUrl,
                                   final byte[] requestParams, Response.Listener<String> listener, Response.ErrorListener errorListener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, webserviceUrl, listener, errorListener) {
@@ -142,7 +136,7 @@ public class NetworkDataSource {
 
 
     //Image Request
-    public void requestImage(final String webserviceUrl, Response.Listener<Bitmap> bitmapListener,
+    private void requestImage(final String webserviceUrl, Response.Listener<Bitmap> bitmapListener,
                               int maxWidth, int maxHeight, ImageView.ScaleType scaleType,
                               final Bitmap.Config decodeConfig, Response.ErrorListener errorListener) {
 
@@ -234,7 +228,6 @@ public class NetworkDataSource {
     }
 
 
-
     /**
      * Get the current weather of city by name
      *
@@ -266,7 +259,7 @@ public class NetworkDataSource {
 
     }
 
-    public void testService(){
+    public void testService() {
         OpenWeatherApp.Logger.d("Testing service call");
     }
 
@@ -335,19 +328,21 @@ public class NetworkDataSource {
 
     }
 
-        /**
+    /**
      * Get the current weather of all the cities stored
+     *
      * @return
      */
-    public LiveData<WeatherEntity[]> getCurrentWeathers(){
+    public LiveData<WeatherEntity[]> getCurrentWeathers() {
         return responseFromGetCurrentWeathers;
     }
 
     /**
      * Get the current weather of city by name
+     *
      * @return
      */
-    public LiveData<WeatherEntity> getCurrentWeatherByCityName(){
+    public LiveData<WeatherEntity> getCurrentWeatherByCityName() {
         return responseWeatherByCityName;
     }
 

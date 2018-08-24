@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.openweather.challenge.openweatherapp.utils;
+package com.openweather.challenge.openweatherapp.ui.managecities;
 
 
 import android.content.Context;
@@ -16,17 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 import java.util.List;
 
 public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapter.ViewHolder> {
     private final OnItemClickListener itemClickListener;
     private final OnLongItemClickListener longItemClickListener;
-    private List<WeatherEntity> mArrayList;
+    private final List<WeatherEntity> mArrayList;
     private Context mContext;
 
     public ManageCitiesAdapter(List<WeatherEntity> arrayList, OnItemClickListener listener, OnLongItemClickListener mLongListener) {
@@ -55,7 +55,6 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
     }
 
 
-
     public interface OnItemClickListener {
         void onItemClick(WeatherEntity item);
     }
@@ -65,24 +64,24 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTemperature;
-        private TextView tvCityName;
-        private TextView tvWeatherCondition;
-        private ImageView ivWeatherCondition;
+        private final TextView tvTemperature;
+        private final TextView tvCityName;
+        private final TextView tvWeatherCondition;
+        private final ImageView ivWeatherCondition;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
 
-            tvCityName = (TextView) view.findViewById(R.id.tvCityName);
-            tvTemperature = (TextView) view.findViewById(R.id.tvTemperature);
-            tvWeatherCondition = (TextView) view.findViewById(R.id.tvWeatherCondition);
-            ivWeatherCondition = (ImageView) view.findViewById(R.id.ivWeatherCondition);
+            tvCityName = view.findViewById(R.id.tvCityName);
+            tvTemperature = view.findViewById(R.id.tvTemperature);
+            tvWeatherCondition = view.findViewById(R.id.tvWeatherCondition);
+            ivWeatherCondition = view.findViewById(R.id.ivWeatherCondition);
         }
 
-        public void bind(WeatherEntity item, OnItemClickListener itemClickListener, OnLongItemClickListener longItemClickListener) {
+        void bind(WeatherEntity item, OnItemClickListener itemClickListener, OnLongItemClickListener longItemClickListener) {
             int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(item.getWeather_id());
 
-            tvCityName.setText(item.getName()+", "+item.getSys_country());
+            tvCityName.setText(item.getName() + ", " + item.getSys_country());
             tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
             tvWeatherCondition.setText(item.getWeather_main());
 
@@ -91,12 +90,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Toast.makeText(mContext, item.getName() + " id=" + item.getId(), Toast.LENGTH_SHORT).show();
-
                     itemClickListener.onItemClick(item);
-//                    Toast.makeText(mContext, "Click", Toast.LENGTH_SHORT).show();
-
-
                 }
             });
 
@@ -104,8 +98,6 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
                 @Override
                 public boolean onLongClick(View view) {
                     longItemClickListener.onLongItemClick(item);
-//                    Toast.makeText(mContext, "LongClick", Toast.LENGTH_SHORT).show();
-
                     return false;
                 }
             });

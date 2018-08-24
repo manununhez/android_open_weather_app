@@ -11,7 +11,7 @@ import com.openweather.challenge.openweatherapp.AppRepository;
 
 /**
  * Factory method that allows us to create a ViewModel with a constructor that takes a
- * {@link AppRepository} and an ID for the current {@link com.openweather.challenge.openweatherapp.entity.CityEntity}
+ * {@link AppRepository}
  */
 public class AddCityViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 

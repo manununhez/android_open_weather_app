@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
 package com.openweather.challenge.openweatherapp.utils;
 
 import android.content.Context;
@@ -13,7 +6,6 @@ import android.text.format.DateUtils;
 import com.openweather.challenge.openweatherapp.R;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +41,7 @@ public final class OpenWeatherDateUtils {
      * @return The number of milliseconds (UTC / GMT) for today's date at midnight in the local
      * time zone
      */
-    public static long getNormalizedUtcMsForToday() {
+    private static long getNormalizedUtcMsForToday() {
 
         /*
          * This number represents the number of milliseconds that have elapsed since January
