@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.ui.addcity.AddCityActivity;
 import com.openweather.challenge.openweatherapp.ui.managecities.ManageCitiesActivity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 import com.openweather.challenge.openweatherapp.utils.ZoomOutPageTransformer;
@@ -24,13 +25,14 @@ import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 
 public class ShowWeatherFragment extends Fragment {
 
     private ShowWeatherViewModel mViewModel;
-    private View view;
+    private View rootView;
     private ShowWeatherPagerAdapter pagerAdapter;
-//    private TextView tvLastUpdate;
+    private ViewPager viewPager;
 
     public static ShowWeatherFragment newInstance() {
         return new ShowWeatherFragment();
@@ -40,8 +42,8 @@ public class ShowWeatherFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.show_weather_fragment, container, false);
-        return view;
+        rootView = inflater.inflate(R.layout.show_weather_fragment, container, false);
+        return rootView;
     }
 
     @Override
@@ -50,12 +52,21 @@ public class ShowWeatherFragment extends Fragment {
 
         setHasOptionsMenu(true); //search menu functionality
 
-        viewPagerSettings();
+        initializeViewPager();
 
-//        tvLastUpdate = view.findViewById(R.id.tvLastUpdate);
+//        tvLastUpdate = rootView.findViewById(R.id.tvLastUpdate);
 
         ShowWeatherViewModelFactory factory = InjectorUtils.provideShowWeatherViewModelFactory(Objects.requireNonNull(getActivity()).getApplicationContext());
         mViewModel = ViewModelProviders.of(this, factory).get(ShowWeatherViewModel.class);
+
+
+        /**
+         * if there are not weather to display, we go to addCity directly
+         */
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            if (mViewModel.getCountCurrentWeathers() == 0)
+                goToAddCityActivity();
+        });
 
 
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
@@ -68,6 +79,8 @@ public class ShowWeatherFragment extends Fragment {
                     showWeatherDescriptionFragments.add(ShowWeatherDescriptionFragment.newInstance(weatherEntity));
                 }
 
+//                setViewPager(viewPager, showWeatherDescriptionFragments);
+
                 pagerAdapter.addItems(showWeatherDescriptionFragments);
 
 
@@ -78,15 +91,21 @@ public class ShowWeatherFragment extends Fragment {
     }
 
 
-    private void viewPagerSettings() {
-        DotsIndicator dotsIndicator = view.findViewById(R.id.dots_indicator);
-        ViewPager viewPager = view.findViewById(R.id.view_pager);
+    private void initializeViewPager() {
+        DotsIndicator dotsIndicator = rootView.findViewById(R.id.dots_indicator);
+        viewPager = rootView.findViewById(R.id.view_pager);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
+        List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments = new ArrayList<>();
 
-        pagerAdapter = new ShowWeatherPagerAdapter(getFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
+        setViewPager(viewPager, showWeatherDescriptionFragments);
         dotsIndicator.setViewPager(viewPager);
+
+    }
+
+    private void setViewPager(ViewPager viewPager, List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments) {
+        pagerAdapter = new ShowWeatherPagerAdapter(getFragmentManager(), showWeatherDescriptionFragments);
+        viewPager.setAdapter(pagerAdapter);
     }
 
 
@@ -103,11 +122,19 @@ public class ShowWeatherFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_manage_city:
-                startActivity(new Intent(getActivity(), ManageCitiesActivity.class));
+                goToManageCitiesActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void goToManageCitiesActivity() {
+        startActivity(new Intent(getActivity(), ManageCitiesActivity.class));
+    }
+
+    private void goToAddCityActivity() {
+        startActivity(new Intent(getActivity(), AddCityActivity.class));
     }
 }
 

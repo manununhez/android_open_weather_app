@@ -22,4 +22,7 @@ class ShowWeatherViewModel extends ViewModel {
 
     }
 
+    public int getCountCurrentWeathers() {
+        return mRepository.getCountCurrentWeathers();
+    }
 }

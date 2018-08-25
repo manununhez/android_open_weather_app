@@ -10,9 +10,9 @@ import java.util.List;
 class ShowWeatherPagerAdapter extends FragmentPagerAdapter {
     private List<ShowWeatherDescriptionFragment> mShowWeatherDescriptionFragmentList;
 
-    public ShowWeatherPagerAdapter(FragmentManager fragmentManager) {
+    public ShowWeatherPagerAdapter(FragmentManager fragmentManager, List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments) {
         super(fragmentManager);
-        mShowWeatherDescriptionFragmentList = new ArrayList<>();
+        mShowWeatherDescriptionFragmentList = showWeatherDescriptionFragments;
     }
 
     // Returns total number of pages

@@ -24,7 +24,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     private String title;
     private int page;
     private WeatherEntity weatherEntity;
-    private View view;
+    private View rootView;
     private static String WEATHER = "weather";
 //    private static String WEATHER_SAVED = "weather_saved";
 
@@ -43,7 +43,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
 //        // Save the user's current game state
 //        savedInstanceState.putParcelable(WEATHER_SAVED, weatherEntity);
 //
-//        // Always call the superclass so it can save the view hierarchy state
+//        // Always call the superclass so it can save the rootView hierarchy state
 //        super.onSaveInstanceState(savedInstanceState);
 //    }
 
@@ -54,12 +54,12 @@ public class ShowWeatherDescriptionFragment extends Fragment {
         weatherEntity = Objects.requireNonNull(getArguments()).getParcelable(WEATHER);
     }
 
-    // Inflate the view for the fragment based on layout XML
+    // Inflate the rootView for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_show_weather_description, container, false);
-        return view;
+        rootView = inflater.inflate(R.layout.show_weather_description_fragment, container, false);
+        return rootView;
     }
 
     @Override
@@ -72,17 +72,17 @@ public class ShowWeatherDescriptionFragment extends Fragment {
 //            weatherEntity = savedInstanceState.getParcelable(WEATHER_SAVED);
 //        }
 
-        TextView tvCityName = view.findViewById(R.id.tvCityName);
-        TextView tvCurrentTemp = view.findViewById(R.id.tvCurrentTemp);
-        TextView tvWeatherMain = view.findViewById(R.id.tvWeatherMain);
-        TextView tvMinMaxTemp = view.findViewById(R.id.tvMinMaxTemp);
-        TextView tvWeatherDescription = view.findViewById(R.id.tvWeatherDescription);
-        TextView tvWindSpeed = view.findViewById(R.id.tvWindSpeed);
-        TextView tvHumidity = view.findViewById(R.id.tvHumidity);
-        TextView tvSunrise = view.findViewById(R.id.tvSunrise);
-        TextView tvSunset = view.findViewById(R.id.tvSunset);
-        TextView tvLastUpdate = view.findViewById(R.id.tvLastUpdate);
-        ImageView ivWeatherCondition = view.findViewById(R.id.ivWeatherCondition);
+        TextView tvCityName = rootView.findViewById(R.id.tvCityName);
+        TextView tvCurrentTemp = rootView.findViewById(R.id.tvCurrentTemp);
+        TextView tvWeatherMain = rootView.findViewById(R.id.tvWeatherMain);
+        TextView tvMinMaxTemp = rootView.findViewById(R.id.tvMinMaxTemp);
+        TextView tvWeatherDescription = rootView.findViewById(R.id.tvWeatherDescription);
+        TextView tvWindSpeed = rootView.findViewById(R.id.tvWindSpeed);
+        TextView tvHumidity = rootView.findViewById(R.id.tvHumidity);
+        TextView tvSunrise = rootView.findViewById(R.id.tvSunrise);
+        TextView tvSunset = rootView.findViewById(R.id.tvSunset);
+        TextView tvLastUpdate = rootView.findViewById(R.id.tvLastUpdate);
+        ImageView ivWeatherCondition = rootView.findViewById(R.id.ivWeatherCondition);
 
         int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.getWeather_id());
 

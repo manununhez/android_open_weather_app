@@ -2,6 +2,7 @@ package com.openweather.challenge.openweatherapp.ui.addcity;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.ui.showweather.ShowWeatherActivity;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     private AddCityViewModel mViewModel;
     //    private Button btnTest;
     private TextView tvCountResults;
-    private View view;
+    private View rootView;
     private RecyclerView mRecyclerView;
     private AddCitySearchAdapter mAdapter;
     private LiveData<WeatherEntity> weatherSearchByNameResponse;
@@ -45,8 +47,8 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.add_city_fragment, container, false);
-        return view;
+        rootView = inflater.inflate(R.layout.add_city_fragment, container, false);
+        return rootView;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         savedInstanceState.putStringArrayList(QUERY, queriesHistory);
         savedInstanceState.putParcelableArrayList(WEATHER_ENTITIES, weatherEntities);
 
-        // Always call the superclass so it can save the view hierarchy state
+        // Always call the superclass so it can save the rootView hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -82,10 +84,9 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         AddCityViewModelFactory factory = InjectorUtils.provideAddCityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(this, factory).get(AddCityViewModel.class);
 
-        tvCountResults = view.findViewById(R.id.tvCountResults);
+        tvCountResults = rootView.findViewById(R.id.tvCountResults);
 
-        searchView = view.findViewById(R.id.searchView);
-        searchView.setQueryHint("Search City");
+        searchView = rootView.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(this);
 
 
@@ -96,7 +97,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
 
     private void initRecyclerView() {
-        mRecyclerView = view.findViewById(R.id.rvSearch);
+        mRecyclerView = rootView.findViewById(R.id.rvSearch);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -104,7 +105,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         mAdapter = new AddCitySearchAdapter(weatherEntities, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        weatherSearchByNameResponse = mViewModel.getResponseWeatherByName();
+        weatherSearchByNameResponse = mViewModel.responseWeatherByCityName();
         weatherSearchByNameResponse.observeForever(response -> {
             OpenWeatherApp.Logger.d("AddCityFragment = " + response.toString());
             //TODO this can be improved
@@ -143,7 +144,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         if (!s.isEmpty()) {
             String allRemoved = s.replaceAll("^\\s+|\\s+$", ""); //trim white spaces, front and back of the text
             if (!queriesHistory.contains(allRemoved)) { //Avoid repeat the same queries to prevent inaccuracies calls
-                mViewModel.getWeatherByName(allRemoved);
+                mViewModel.getWeatherByCityName(allRemoved);
                 queriesHistory.add(allRemoved);
             }
 
@@ -163,6 +164,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
             // Insert our new weather data into OpenWeatherApp's database
             mViewModel.insertWeather(item);
             OpenWeatherApp.Logger.d("New values inserted");
+
             getActivity().finish();
 
         });

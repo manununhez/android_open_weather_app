@@ -44,7 +44,7 @@ public class NetworkDataSource {
 
     // Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
     // Acording to https://openweathermap.org/price, free account allows Weather API data update < 2 hours. So, we decide an interval every 3 hours
-    private static final int SYNC_INTERVAL_HOURS = 3;
+    private static final int SYNC_INTERVAL_HOURS = 1;
     private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
     private static final String WEATHER_SYNC_TAG = "weather-sync";
@@ -149,12 +149,12 @@ public class NetworkDataSource {
     }
 
     /**
-     * @param today
+     * @param now
      * @param lastUpdate
      * @return
      */
-    public boolean isSyncNeeded(long today, long lastUpdate) {
-        return ((lastUpdate - today) >= (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS));
+    public boolean isSyncNeeded(long now, long lastUpdate) {
+        return ((lastUpdate - now) >= (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS));
     }
 
 
@@ -237,6 +237,12 @@ public class NetworkDataSource {
     }
 
 
+
+
+    /**************************************
+     *              Network requests
+     ******************************************/
+
     public void getIconImage(String imageId) {
         URL url = NetworkUtils.getImageURL(imageId);
 
@@ -252,11 +258,6 @@ public class NetworkDataSource {
             }
         });
     }
-
-    /**************************************
-     *              Network requests
-     ******************************************/
-
 
     /**
      * Get the current weather of city by name
@@ -360,7 +361,7 @@ public class NetworkDataSource {
      *
      * @return
      */
-    public LiveData<WeatherEntity[]> getCurrentWeathers() {
+    public LiveData<WeatherEntity[]> responseFromGetCurrentWeathers() {
         return responseFromGetCurrentWeathers;
     }
 
@@ -369,7 +370,7 @@ public class NetworkDataSource {
      *
      * @return
      */
-    public LiveData<WeatherEntity> getCurrentWeatherByCityName() {
+    public LiveData<WeatherEntity> responseWeatherByCityName() {
         return responseWeatherByCityName;
     }
 

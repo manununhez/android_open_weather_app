@@ -37,7 +37,7 @@ public class AppRepository {
         // As long as the repository exists, observe the network LiveData.
         // If that LiveData changes, update the database.
         // Group of weathers that corresponds to the weather of all cities saved in the DB
-        LiveData<WeatherEntity[]> newWeathersFromNetwork = mNetworkDataSource.getCurrentWeathers();
+        LiveData<WeatherEntity[]> newWeathersFromNetwork = responseFromGetCurrentWeathers();
 
         newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
             Executors.newSingleThreadScheduledExecutor().execute(() -> {
@@ -45,11 +45,14 @@ public class AppRepository {
                 //deleteOldData();
                 OpenWeatherApp.Logger.d("Old weather deleted");
                 // Insert our new weather data into OpenWeatherApp's database
-                mWeatherDao.bulkInsert(weathersFromNetwork);
+                bulkInsert(weathersFromNetwork);
+
                 OpenWeatherApp.Logger.d("New values inserted");
             });
         });
     }
+
+
 
     public synchronized static AppRepository getInstance(WeatherDao weatherDao, NetworkDataSource networkDataSource) {
         OpenWeatherApp.Logger.d("Getting the repository");
@@ -97,14 +100,43 @@ public class AppRepository {
      */
     private boolean isFetchNeeded() {
         long now = OpenWeatherDateUtils.getUnixTimeNowInSecs();
-        int count = mWeatherDao.getCountCurrentWeathers();
-        long lastUpdate = mWeatherDao.getLastUpdateTime();
-        return (count > 0 && mNetworkDataSource.isSyncNeeded(now, lastUpdate));
+        int count = getCountCurrentWeathers();
+        long lastUpdate = getLastUpdateTime();
+        return (count > 0 && isSyncNeeded(now, lastUpdate));
+    }
+
+    /**
+     * @return
+     */
+    public long getLastUpdateTime() {
+        return mWeatherDao.getLastUpdateTime();
+    }
+
+    /**
+     * @return
+     */
+
+    public List<Integer> getAllWeathersId() {
+        return mWeatherDao.getAllWeathersId();
     }
 
 
     /**
-     *
+     * @return
+     */
+    public int getCountCurrentWeathers() {
+        return mWeatherDao.getCountCurrentWeathers();
+    }
+
+    /**
+     * @param weathersFromNetwork
+     */
+    private void bulkInsert(WeatherEntity[] weathersFromNetwork) {
+        mWeatherDao.bulkInsert(weathersFromNetwork);
+    }
+
+
+    /**
      * @param weatherEntity
      */
 
@@ -140,16 +172,12 @@ public class AppRepository {
 
 
     /**
-     *
      * @return
      */
     public LiveData<List<WeatherEntity>> getCurrentWeathers() {
         initializeData();
-
         return mWeatherDao.getCurrentWeather();
     }
-
-
 
 
     /******************************
@@ -158,9 +186,22 @@ public class AppRepository {
 
     /**
      *
+     * @return
+     */
+    private LiveData<WeatherEntity[]> responseFromGetCurrentWeathers() {
+        return mNetworkDataSource.responseFromGetCurrentWeathers();
+    }
+
+    /**
+     *
      */
     private void startFetchWeatherService() {
         mNetworkDataSource.startFetchWeatherService();
+    }
+
+
+    private boolean isSyncNeeded(long now, long lastUpdate) {
+        return mNetworkDataSource.isSyncNeeded(now, lastUpdate);
     }
 
     /**
@@ -175,11 +216,10 @@ public class AppRepository {
     }
 
     /**
-     *
      * @return
      */
-    public LiveData<WeatherEntity> getResponseWeatherByCityName() {
-        return mNetworkDataSource.getCurrentWeatherByCityName();
+    public LiveData<WeatherEntity> responseWeatherByCityName() {
+        return mNetworkDataSource.responseWeatherByCityName();
     }
 
 
@@ -188,7 +228,7 @@ public class AppRepository {
      */
     public void fetchCurrentWeathersByCityIDs() {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            List<Integer> list = mWeatherDao.getAllWeathersId(); //We get the list of weather ID from the DB
+            List<Integer> list = getAllWeathersId(); //We get the list of weather ID from the DB
             String idList = Utils.listToCommaValues(list);
 
             mNetworkDataSource.fetchCurrentWeathersByCitiesID(idList);

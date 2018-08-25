@@ -28,7 +28,7 @@ import java.util.Objects;
 public class ManageCitiesFragment extends Fragment {
 
     private ManageCitiesViewModel mViewModel;
-    private View view;
+    private View rootView;
     private RecyclerView mRecyclerView;
     private ManageCitiesAdapter mAdapter;
 
@@ -40,8 +40,8 @@ public class ManageCitiesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.manage_cities_fragment, container, false);
-        return view;
+        rootView = inflater.inflate(R.layout.manage_cities_fragment, container, false);
+        return rootView;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ManageCitiesFragment extends Fragment {
 
     private void initRecyclerView() {
 
-        mRecyclerView = view.findViewById(R.id.rvManageCity);
+        mRecyclerView = rootView.findViewById(R.id.rvManageCity);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);

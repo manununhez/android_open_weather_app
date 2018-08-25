@@ -29,9 +29,9 @@ public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdap
 
     @Override
     public AddCitySearchAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row, viewGroup, false);
-        mContext = view.getContext();
-        return new ViewHolder(view);
+        View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row, viewGroup, false);
+        mContext = rootView.getContext();
+        return new ViewHolder(rootView);
     }
 
     @Override
