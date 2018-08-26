@@ -26,7 +26,7 @@ public class OpenWeatherAppSyncIntentService extends IntentService {
         Log.d(LOG_TAG, "Intent service started");
 
         AppRepository appRepository = InjectorUtils.provideRepository(this.getApplicationContext());
-        appRepository.fetchCurrentWeathersByCityIDs();
+        appRepository.requestCurrentWeathersByCityIDs();
 
     }
 }

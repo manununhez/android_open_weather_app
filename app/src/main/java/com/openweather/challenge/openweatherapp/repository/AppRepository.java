@@ -1,10 +1,11 @@
 package com.openweather.challenge.openweatherapp.repository;
 
 import android.arch.lifecycle.LiveData;
+import android.util.Log;
 
-import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.model.Resource;
 import com.openweather.challenge.openweatherapp.network.NetworkDataSource;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 import com.openweather.challenge.openweatherapp.utils.Utils;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
  * Created by manuel on 21,August,2018
  */
 public class AppRepository {
+    private final static String TAG = AppRepository.class.getSimpleName();
     // For Singleton instantiation
     private static AppRepository INSTANCE;
     private final WeatherDao mWeatherDao;
@@ -28,29 +30,33 @@ public class AppRepository {
 
         // As long as the repository exists, observe the network LiveData.
         // If that LiveData changes, update the database.
-        // Group of weathers that corresponds to the weather of all cities saved in the DB
-        LiveData<WeatherEntity[]> newWeathersFromNetwork = responseFromCurrentWeathersByCityIDs();
+        // Group of current weathers that corresponds to the weather of all cities saved in the DB. Updated
+        // using job schedules
+        LiveData<Resource<WeatherEntity[]>> newWeathersFromNetwork = responseFromCurrentWeathersByCityIDs();
 
         newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
-            Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                // Deletes old historical data
-                //deleteOldData();
-                OpenWeatherApp.Logger.d("Old weather deleted");
-                // Insert our new weather data into OpenWeatherApp's database
-                bulkInsert(weathersFromNetwork);
+            if (weathersFromNetwork != null) {
+                if (weathersFromNetwork.status.equals(Resource.Status.SUCCESS)) {
+                    // Insert our new weather data into OpenWeatherApp's database
+                    bulkInsert(weathersFromNetwork.data);
 
-                OpenWeatherApp.Logger.d("New values inserted");
-            });
+                    Log.d(TAG, "New values inserted");
+                } else if (weathersFromNetwork.status.equals(Resource.Status.ERROR)) {
+                    //TODO do something
+                    Log.d(TAG, weathersFromNetwork.message);
+                }
+            }
+
         });
     }
 
 
     public synchronized static AppRepository getInstance(WeatherDao weatherDao, NetworkDataSource networkDataSource) {
-        OpenWeatherApp.Logger.d("Getting the repository");
+        Log.d(TAG, "Getting the repository");
         if (INSTANCE == null) {
             synchronized (AppRepository.class) {
                 INSTANCE = new AppRepository(weatherDao, networkDataSource);
-                OpenWeatherApp.Logger.d("Made new repository");
+                Log.d(TAG, "Made new repository");
             }
         }
         return INSTANCE;
@@ -79,12 +85,12 @@ public class AppRepository {
         });
     }
 
-    /*****************************
-     DB related operation
-     */
+    //*****************************
+    //  Database related operation
+    //****************************
 
     /**
-     * Checks if at least exist one weather entry, that would be mean that exists at least one selected and stored weather-city in the DB,
+     * Checks if at least one weather entry exist, that would be mean that exists at least one selected and stored weather-city in the DB,
      * and the lastUpdateTime should not be older than the time of SYNC_INTERVAL ({@link NetworkDataSource})
      *
      * @return Whether a fetch is needed
@@ -96,45 +102,68 @@ public class AppRepository {
         return (count > 0 && isSyncNeeded(now, lastUpdate));
     }
 
+
     /**
-     * @return
+     * List of current weather entries stored in DB.
+     *
+     * @return {@link LiveData} to observe and retrieve the current weather
+     */
+    public LiveData<List<WeatherEntity>> getCurrentWeathers() {
+        initializeData();
+        return mWeatherDao.getCurrentWeather();
+    }
+
+
+    /**
+     * Obtains the last dt of the weather entries in DB. This is used to determine
+     * if new values should be fetched from the weather server.
+     *
+     * @return long dt
      */
     public long getLastUpdateTime() {
         return mWeatherDao.getLastUpdateTime();
     }
 
     /**
-     * @return
+     * List of all city weathers ID available in DB.
+     *
+     * @return list of ID int
      */
-
     public List<Integer> getAllWeathersId() {
         return mWeatherDao.getAllWeathersId();
     }
 
 
     /**
-     * @return
+     * Returns how many weathers entries are in DB.
+     *
+     * @return int count entries
      */
     public int getCountCurrentWeathers() {
         return mWeatherDao.getCountCurrentWeathers();
     }
 
     /**
-     * @param weathersFromNetwork
+     * Inserts the list of current weather IDs just fetched from the weather server.
+     *
+     * @param weathersFromNetwork List of updated weather entries, ready to be inserted into the DB.
      */
     private void bulkInsert(WeatherEntity[] weathersFromNetwork) {
-        mWeatherDao.bulkInsert(weathersFromNetwork);
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mWeatherDao.bulkInsert(weathersFromNetwork);
+        });
     }
 
 
     /**
-     * @param weatherEntity
+     * Inserts an specific weather entry into DB.
+     *
+     * @param weatherEntity new weather entry
      */
-
     public void insertWeather(WeatherEntity weatherEntity) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.insert(weatherEntity);
-            OpenWeatherApp.Logger.d("Weather object inserted: " + weatherEntity.toString());
+            Log.d(TAG, "Weather object inserted: " + weatherEntity.toString());
         });
     }
 
@@ -147,12 +176,14 @@ public class AppRepository {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mWeatherDao.deleteOldWeather(today);
         });
+        Log.d(TAG, "Old weather deleted");
+
     }
 
     /**
      * Delete an specific weather item
      *
-     * @param item
+     * @param item Weather entry
      */
     public void delete(WeatherEntity item) {
         //Remember use a separate thread when you insert/delete elements into database
@@ -162,56 +193,56 @@ public class AppRepository {
     }
 
 
-    /**
-     * @return
-     */
-    public LiveData<List<WeatherEntity>> getCurrentWeathers() {
-        initializeData();
-        return mWeatherDao.getCurrentWeather();
-    }
-
-
-    /*****************************
-     Network related operation
-     */
-
+    //***********************************
+    //     Network related operation
+    //*********************************
 
 
     /**
-     *
+     * Starts a service to fetch updated data
      */
     private void startFetchWeatherService() {
         mNetworkDataSource.startFetchWeatherService();
     }
 
-
+    /**
+     * Verifies if a syncronization with new data from the weather server is needed. Compare the last updated time from the DB
+     * with the current time, and according to a established SYNC INTERVAL time in {@link NetworkDataSource}, determines if it is needed a sync.
+     *
+     * @param now        Current time
+     * @param lastUpdate Last updated time
+     * @return
+     */
     private boolean isSyncNeeded(long now, long lastUpdate) {
         return mNetworkDataSource.isSyncNeeded(now, lastUpdate);
     }
 
     /**
-     * fetchAndInsertWeather from network by city name
+     * Fetch And Insert Weather from network by city name
      *
-     * @param cityName
+     * @param cityName Name of the city
      */
-    public void fetchCurrentWeatherByCityName(String cityName) {
+    public void requestCurrentWeatherByCityName(String cityName) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mNetworkDataSource.fetchCurrentWeatherByCityName(cityName);
         });
     }
 
-    /** Used by search by city name and city coords
-     * @return Current weather searched
+    /**
+     * Used for search weather by city name.
+     *
+     * @return Current weather by city name
      */
-    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityName() {
+    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityName() {
         return mNetworkDataSource.responseFromCurrentWeatherByCityName();
     }
 
 
     /**
-     *
+     * Retrieves the ID weather entries from DB and fetch updated data for these from
+     * the weather server. Fetch And Insert Weathers from network.
      */
-    public void fetchCurrentWeathersByCityIDs() {
+    public void requestCurrentWeathersByCityIDs() {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             List<Integer> list = getAllWeathersId(); //We get the list of weather ID from the DB
             String idList = Utils.listToCommaValues(list);
@@ -221,24 +252,33 @@ public class AppRepository {
     }
 
     /**
-     * @return
+     * Used to keep updated all the weather entries from DB every SYNC_INTERVAL established in {@link NetworkDataSource}
+     *
+     * @return Current weather by city Ids
      */
-    private LiveData<WeatherEntity[]> responseFromCurrentWeathersByCityIDs() {
+    private LiveData<Resource<WeatherEntity[]>> responseFromCurrentWeathersByCityIDs() {
         return mNetworkDataSource.responseFromCurrentWeathersByCityIDs();
     }
 
     /**
+     * Fetch And Insert Weather from network by city coords.
      *
-     *
+     * @param lat Latitude
+     * @param lon Longitude
      */
-    public void fetchCurrentWeatherByCityCoords(String lat, String lon) {
+    public void requestCurrentWeatherByCityCoords(String lat, String lon) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mNetworkDataSource.fetchCurrentWeatherByCityCoord(lat, lon);
         });
     }
 
 
-    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord() {
-            return mNetworkDataSource.responseFromCurrentWeatherByCityCoord();
+    /**
+     * Used for search weather by city coordinates.
+     *
+     * @return Current weather by city coordinate
+     */
+    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityCoord() {
+        return mNetworkDataSource.responseFromCurrentWeatherByCityCoord();
     }
 }

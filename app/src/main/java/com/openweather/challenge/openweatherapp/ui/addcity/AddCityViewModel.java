@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.openweather.challenge.openweatherapp.repository.AppRepository;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
+import com.openweather.challenge.openweatherapp.model.Resource;
 
 class AddCityViewModel extends ViewModel {
 
@@ -20,20 +21,20 @@ class AddCityViewModel extends ViewModel {
         mRepository.insertWeather(weatherEntity);
     }
 
-    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityName() {
+    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityName() {
         return mRepository.responseFromCurrentWeatherByCityName();
     }
 
-    public void fetchCurrentWeatherByCityName(String text) {
-        mRepository.fetchCurrentWeatherByCityName(text);
-    }
 
-    public void fetchCurrentWeatherByCityCoords(String lat, String lon) {
-        mRepository.fetchCurrentWeatherByCityCoords(lat, lon);
-    }
-
-
-    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord() {
+    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityCoord() {
         return mRepository.responseFromCurrentWeatherByCityCoord();
+    }
+
+    public void requestCurrentWeatherByCityName(String text) {
+        mRepository.requestCurrentWeatherByCityName(text);
+    }
+
+    public void requestCurrentWeatherByCityCoords(String lat, String lon) {
+        mRepository.requestCurrentWeatherByCityCoords(lat, lon);
     }
 }

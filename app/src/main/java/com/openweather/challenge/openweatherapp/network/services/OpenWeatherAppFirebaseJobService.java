@@ -29,7 +29,7 @@ public class OpenWeatherAppFirebaseJobService extends JobService {
 
 
         AppRepository appRepository = InjectorUtils.provideRepository(this.getApplicationContext());
-        appRepository.fetchCurrentWeathersByCityIDs();
+        appRepository.requestCurrentWeathersByCityIDs();
 
         jobFinished(jobParameters, false);
 

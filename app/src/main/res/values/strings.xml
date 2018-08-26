@@ -81,4 +81,5 @@
     <string name="sunset_title">Sunset</string>
     <string name="value_to_complete_placeholder">--</string>
     <string name="last_update_title">Last update:</string>
+    <string name="title_loading">Loading...</string>
 </resources>

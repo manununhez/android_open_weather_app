@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.util.Log;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
@@ -17,10 +18,9 @@ import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
  * {@link AppRoomDatabase} database for the application including a table for {@link WeatherEntity}
  * with the DAO {@link WeatherDao}.
  */
-
-// List of the entry classes
 @Database(entities = {WeatherEntity.class}, version = 1)
 public abstract class AppRoomDatabase extends RoomDatabase {
+    private static final String TAG = AppRoomDatabase.class.getSimpleName();
     private static final String DATABASE_NAME = "weather_database";
     // For Singleton instantiation
     private static AppRoomDatabase INSTANCE;
@@ -34,7 +34,7 @@ public abstract class AppRoomDatabase extends RoomDatabase {
                             .fallbackToDestructiveMigration()
                             .build();
 
-                    OpenWeatherApp.Logger.d("Created a New Database ");
+                    Log.d(TAG, "Created a New Database ");
 
 
                 }

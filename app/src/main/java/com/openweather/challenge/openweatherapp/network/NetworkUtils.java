@@ -1,21 +1,18 @@
 package com.openweather.challenge.openweatherapp.network;
 
 import android.net.Uri;
-
-import com.openweather.challenge.openweatherapp.OpenWeatherApp;
+import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by ramya on 11/8/17.
- */
 
 class NetworkUtils {
+    private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
     private static final String OPEN_WEATHER_API = "weather";
     private static final String OPEN_WEATHER_GROUP_API = "group";
-//    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
+    //    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
     private static final String WEATHER_FORECAST_PARAM = "q";
     private static final String CITY_ID = "id";
     private static final String CITY_COORD_LAT = "lat";
@@ -25,15 +22,13 @@ class NetworkUtils {
     private static final String APP_ID_PARAM = "APPID";
     private static final String API_KEY = "0d43146b57d6b8c35d753502656efe4c";
     private static final String PNG_EXTENSION = ".png";
-    private static final String TAG = NetworkUtils.class.getSimpleName();
 
 
     private NetworkUtils() {
     }
 
     /**
-     * Builds the URL used to talk to the weather server using a location. This location is based
-     * on the query capabilities of the weather provider that we are using.
+     * Builds the URL used to talk to the weather server using a location.
      *
      * @param locationQuery The location that will be queried for.
      * @return The URL to use to query the weather server.
@@ -47,7 +42,7 @@ class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString());
-            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+            Log.d(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -55,7 +50,12 @@ class NetworkUtils {
         }
     }
 
-
+    /**
+     * Builds the URL used to talk to the weather server using an ID.
+     *
+     * @param cityID The City ID that will be queried for.
+     * @return The URL to use to query the weather server.
+     */
     private static URL buildUrlByCityId(String cityID) {
         Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_API)).buildUpon()
                 .appendQueryParameter(CITY_ID, cityID)
@@ -65,7 +65,7 @@ class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString());
-            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+            Log.d(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -73,6 +73,13 @@ class NetworkUtils {
         }
     }
 
+    /**
+     * Builds the URL used to talk to the weather server using coordinates lat and lon.
+     *
+     * @param lat Latitude
+     * @param lon Longitude
+     * @return The URL to use to query the weather server.
+     */
     private static URL buildUrlByCityCoordinates(String lat, String lon) {
         Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_API)).buildUpon()
                 .appendQueryParameter(CITY_COORD_LAT, lat)
@@ -83,7 +90,7 @@ class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString());
-            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+            Log.d(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -91,7 +98,13 @@ class NetworkUtils {
         }
     }
 
-    private static URL buildUrlByListCityId(String listCityID) {
+    /**
+     * Builds the URL used to talk to the weather server using a list of cities ID separated by comma.
+     *
+     * @param listCityID The list of cities ID that will be queried for.
+     * @return The URL to use to query the weather server.
+     */
+    private static URL buildUrlByCityIdsList(String listCityID) {
         Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_GROUP_API)).buildUpon()
                 .appendQueryParameter(CITY_ID, listCityID)
                 .appendQueryParameter(UNITS_PARAM, METRICS_PARAM)
@@ -100,13 +113,47 @@ class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString().replace("%2C", ",")); //Error encoding with list between commas. %2C -> comma
-            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+            Log.d(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+
+    /**
+     * Returns the URL used to talk to the weather server using a location.
+     *
+     * @param locationQuery The location that will be queried for.
+     * @return The URL to use to query the weather server.
+     */
+    public static URL getCurrentWeatherURLByCityName(String locationQuery) {
+        return buildUrlByCityName(locationQuery);
+    }
+
+    /**
+     * Returns the URL used to talk to the weather server using a list of cities ID separated by comma.
+     *
+     * @param listCityID The list of cities ID that will be queried for.
+     * @return The URL to use to query the weather server.
+     */
+    public static URL getCurrentWeatherURLByListCityId(String listCityID) {
+        return buildUrlByCityIdsList(listCityID);
+    }
+
+
+    /**
+     * Returns the URL used to talk to the weather server using coordinates lat and lon.
+     *
+     * @param lat Latitude
+     * @param lon Longitude
+     * @return The URL to use to query the weather server.
+     */
+    public static URL getCurrentWeatherURLByCityCoord(String lat, String lon) {
+        return buildUrlByCityCoordinates(lat, lon);
+    }
+
 
 //    private static URL buildUrlGetImage(String imageId) {
 //        Uri uri = Uri.parse(OPEN_WEATHER_IMAGE_API).buildUpon()
@@ -115,7 +162,7 @@ class NetworkUtils {
 //
 //        try {
 //            URL weatherQueryUrl = new URL(uri.toString());
-//            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+//            Log.d(TAG,"URL: " + weatherQueryUrl);
 //            return weatherQueryUrl;
 //        } catch (MalformedURLException e) {
 //            e.printStackTrace();
@@ -123,21 +170,14 @@ class NetworkUtils {
 //        }
 //    }
 
-    public static URL getCurrentWeatherURLByCityName(String locationQuery) {
-        return buildUrlByCityName(locationQuery);
-    }
-
-    public static URL getCurrentWeatherURLByListCityId(String listCityID) {
-        return buildUrlByListCityId(listCityID);
-    }
-
-    public static URL getCurrentWeatherURLByCityId(String cityID) {
-        return buildUrlByCityId(cityID);
-    }
-
-    public static URL getCurrentWeatherURLByCityCoord(String lat, String lon){
-        return buildUrlByCityCoordinates(lat, lon);
-    }
+//    /**
+//     //     *
+//     //     * @param cityID
+//     //     * @return
+//     //     */
+//    public static URL getCurrentWeatherURLByCityId(String cityID) {
+//        return buildUrlByCityId(cityID);
+//    }
 
 //    public static URL getImageURL(String imageId) {
 //        return buildUrlGetImage(imageId);
