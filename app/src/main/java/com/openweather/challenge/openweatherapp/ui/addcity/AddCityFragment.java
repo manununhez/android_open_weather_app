@@ -1,6 +1,7 @@
 package com.openweather.challenge.openweatherapp.ui.addcity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -25,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
@@ -44,6 +44,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     private static final boolean PRESSED = true;
     private static final boolean NOT_PRESSED = false;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1000;
+    private static final int REQUEST_CODE_SOURCE_SETTINGS = 2000;
     private final String TAG = AddCityFragment.class.getSimpleName();
     private AddCityViewModel mViewModel;
     private Button btnCurrenLocation;
@@ -259,12 +260,21 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-       // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 startReceivingCoordinates();
             }
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        //if (resultCode == Activity.RESULT_OK)
+            if (requestCode == REQUEST_CODE_SOURCE_SETTINGS)
+                startReceivingCoordinates();
+
     }
 
     private void startReceivingCoordinates() {
@@ -295,7 +305,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            getActivity().startActivity(myIntent);
+                            startActivityForResult(myIntent, REQUEST_CODE_SOURCE_SETTINGS);
                         }
                     }, getActivity().getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                         @Override
