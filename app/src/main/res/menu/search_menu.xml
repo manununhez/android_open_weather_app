@@ -5,9 +5,9 @@
     <item android:id="@+id/action_manage_city"
         android:icon="@drawable/ic_city"
         app:showAsAction="ifRoom|collapseActionView"
-        android:title="Manage" />
+        android:title="@string/manage_title_toolbar" />
     <item android:id="@+id/action_add_city"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_add"
-        android:title="Add new..." />
+        android:title="@string/add_new_title_toolbar" />
 </menu>

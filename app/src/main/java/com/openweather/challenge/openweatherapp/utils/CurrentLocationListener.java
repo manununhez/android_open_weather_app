@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class CurrentLocationListener extends LiveData<Location> {
 
     private static CurrentLocationListener instance;
-    LocationCallback mLocationCallback = new LocationCallback() {
+    final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             for (Location location : locationResult.getLocations()) {
@@ -25,7 +25,7 @@ public class CurrentLocationListener extends LiveData<Location> {
             }
         }
     };
-    private FusedLocationProviderClient mFusedLocationClient;
+    private final FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
 
     private CurrentLocationListener(Context appContext) {
@@ -63,8 +63,7 @@ public class CurrentLocationListener extends LiveData<Location> {
     @Override
     protected void onInactive() {
         super.onInactive();
-        if (mLocationCallback != null)
-            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
 

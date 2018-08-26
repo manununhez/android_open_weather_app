@@ -99,7 +99,7 @@ class NetworkUtils {
                 .build();
 
         try {
-            URL weatherQueryUrl = new URL(weatherQueryUri.toString().replace("%2C", ",")); //Error encoding wwith list between commas. %2C -> comma
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString().replace("%2C", ",")); //Error encoding with list between commas. %2C -> comma
             OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {

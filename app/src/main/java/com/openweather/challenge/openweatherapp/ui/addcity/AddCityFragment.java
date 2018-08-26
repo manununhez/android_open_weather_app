@@ -1,7 +1,6 @@
 package com.openweather.challenge.openweatherapp.ui.addcity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -35,29 +34,25 @@ import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 import com.openweather.challenge.openweatherapp.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, AddCitySearchAdapter.OnItemClickListener, View.OnClickListener {
 
-    static final String QUERY = "query_search";
-    static final String WEATHER_ENTITIES = "weather_entities_search";
+    private static final String QUERY = "query_search";
+    private static final String WEATHER_ENTITIES = "weather_entities_search";
     private static final boolean PRESSED = true;
     private static final boolean NOT_PRESSED = false;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1000;
     private static final int REQUEST_CODE_SOURCE_SETTINGS = 2000;
     private final String TAG = AddCityFragment.class.getSimpleName();
     private AddCityViewModel mViewModel;
-    private Button btnCurrenLocation;
     private TextView tvCountResults;
     private View rootView;
-    private RecyclerView mRecyclerView;
     private AddCitySearchAdapter mAdapter;
-    private LiveData<WeatherEntity> weatherSearchByNameResponse;
-    private LiveData<WeatherEntity> weatherSearchByCityCoordResponse;
-    private SearchView searchView;
     private ArrayList<WeatherEntity> weatherEntities;
     private ArrayList<String> queriesHistory;
-    private boolean ifBtnLocationHasBeenPressed = false;
+    private boolean ifBtnLocationHasBeenPressed = NOT_PRESSED;
 
     public static AddCityFragment newInstance() {
         return new AddCityFragment();
@@ -72,7 +67,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         // Save the user's current game state
         savedInstanceState.putStringArrayList(QUERY, queriesHistory);
         savedInstanceState.putParcelableArrayList(WEATHER_ENTITIES, weatherEntities);
@@ -84,8 +79,6 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        Context context = getActivity();
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null &&
@@ -103,13 +96,13 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
 
         // Get the ViewModel from the factory
-        AddCityViewModelFactory factory = InjectorUtils.provideAddCityViewModelFactory(getActivity().getApplicationContext());
+        AddCityViewModelFactory factory = InjectorUtils.provideAddCityViewModelFactory(Objects.requireNonNull(getActivity()).getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(AddCityViewModel.class);
 
         tvCountResults = rootView.findViewById(R.id.tvCountResults);
-        btnCurrenLocation = rootView.findViewById(R.id.btnCurrenLocation);
+        Button btnCurrenLocation = rootView.findViewById(R.id.btnCurrentLocation);
         btnCurrenLocation.setOnClickListener(this);
-        searchView = rootView.findViewById(R.id.searchView);
+        SearchView searchView = rootView.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(this);
 
 
@@ -120,7 +113,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
 
     private void initRecyclerView() {
-        mRecyclerView = rootView.findViewById(R.id.rvSearch);
+        RecyclerView mRecyclerView = rootView.findViewById(R.id.rvSearch);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -128,9 +121,9 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         mAdapter = new AddCitySearchAdapter(weatherEntities, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        weatherSearchByNameResponse = mViewModel.responseFromCurrentWeatherByCityName();
+        LiveData<WeatherEntity> weatherSearchByNameResponse = mViewModel.responseFromCurrentWeatherByCityName();
         weatherSearchByNameResponse.observe(this, response -> {
-            OpenWeatherApp.Logger.d("AddCityFragment = " + response.toString());
+            OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
             //TODO getActivity() can be improved
             if (queriesHistory != null && !queriesHistory.isEmpty()) { // If at least one query was made, getActivity() response is correct. getActivity() avoid to have elements in the recyclerView from previous searches.
                 if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
@@ -138,22 +131,22 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
                     mAdapter.notifyDataSetChanged();
                     if (mAdapter != null)
-                        tvCountResults.setText(mAdapter.getItemCount() + " results");
+                        tvCountResults.setText(getString(R.string.found_results, mAdapter.getItemCount()));
 
                 }
             }
         });
 
 
-        weatherSearchByCityCoordResponse = mViewModel.responseFromCurrentWeatherByCityCoord();
+        LiveData<WeatherEntity> weatherSearchByCityCoordResponse = mViewModel.responseFromCurrentWeatherByCityCoord();
 //weatherSearchByCityCoordResponse.re
         weatherSearchByCityCoordResponse.observe(this, response -> {
             if (ifBtnLocationHasBeenPressed) { //we read the values of this observer only if the user has selected to get current location
-                OpenWeatherApp.Logger.d("AddCityFragment = " + response.toString());
+                OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
                 OpenWeatherApp.Logger.d("New values inserted");
 
                 mViewModel.insertWeather(response);
-                getActivity().finish();
+                Objects.requireNonNull(getActivity()).finish();
 //                if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
 //                    weatherEntities.add(response);
 //
@@ -195,7 +188,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         } else {
             weatherEntities.clear();
             mAdapter.notifyDataSetChanged();
-            if (mAdapter != null) tvCountResults.setText(mAdapter.getItemCount() + " results");
+            if (mAdapter != null) tvCountResults.setText(getString(R.string.found_results, mAdapter.getItemCount()));
 
         }
         return true;
@@ -209,7 +202,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
             mViewModel.insertWeather(item);
             OpenWeatherApp.Logger.d("New values inserted");
 
-            getActivity().finish();
+            Objects.requireNonNull(getActivity()).finish();
 
         });
     }
@@ -218,7 +211,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnCurrenLocation:
+            case R.id.btnCurrentLocation:
                 startReceivingCoordinates();
                 break;
             default:
@@ -227,7 +220,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
 
     private void checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -284,18 +277,20 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
     private void checkLocationServices() {
 
-        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
 
         try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            gps_enabled = Objects.requireNonNull(lm).isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
         }
 
         try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            network_enabled = Objects.requireNonNull(lm).isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
         }
 
         if (!gps_enabled && !network_enabled) {

@@ -30,7 +30,6 @@ public class ManageCitiesFragment extends Fragment {
     private ManageCitiesViewModel mViewModel;
     private View rootView;
     private RecyclerView mRecyclerView;
-    private ManageCitiesAdapter mAdapter;
 
     public static ManageCitiesFragment newInstance() {
         return new ManageCitiesFragment();
@@ -72,7 +71,7 @@ public class ManageCitiesFragment extends Fragment {
     }
 
     private void setRecyclerView(List<WeatherEntity> weatherEntities) {
-        mAdapter = new ManageCitiesAdapter(weatherEntities, new ManageCitiesAdapter.OnItemClickListener() {
+        ManageCitiesAdapter mAdapter = new ManageCitiesAdapter(weatherEntities, new ManageCitiesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(WeatherEntity item) {
                 //TODO go to specific weather TAB in ShowWeatherActivity

@@ -1,15 +1,8 @@
-/*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.openweather.challenge.openweatherapp.ui.managecities;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,15 +28,16 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
         longItemClickListener = mLongListener;
     }
 
+    @NonNull
     @Override
-    public ManageCitiesAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ManageCitiesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row, viewGroup, false);
         mContext = rootView.getContext();
         return new ViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ManageCitiesAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ManageCitiesAdapter.ViewHolder viewHolder, int position) {
         viewHolder.bind(mArrayList.get(position), itemClickListener, longItemClickListener);
 
     }
@@ -81,7 +75,7 @@ public class ManageCitiesAdapter extends RecyclerView.Adapter<ManageCitiesAdapte
         void bind(WeatherEntity item, OnItemClickListener itemClickListener, OnLongItemClickListener longItemClickListener) {
             int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(item.getWeather_id());
 
-            tvCityName.setText(item.getName() + ", " + item.getSys_country());
+            tvCityName.setText(mContext.getString(R.string.full_city_name,item.getName(), item.getSys_country()));
             tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
             tvWeatherCondition.setText(item.getWeather_main());
 

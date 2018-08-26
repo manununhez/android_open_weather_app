@@ -83,9 +83,9 @@ public class NetworkDataSource {
         return INSTANCE;
     }
 
-    /**************************************
-     *              SERVICES
-     ******************************************/
+    /*************************************
+     SERVICES
+     */
 
 
     /**
@@ -194,7 +194,7 @@ public class NetworkDataSource {
     }
 
     private void getRequestString(final String webserviceUrl,
-                                  final byte[] requestParams, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+                                  Response.Listener<String> listener, Response.ErrorListener errorListener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, webserviceUrl, listener, errorListener) {
             @Override
@@ -204,10 +204,6 @@ public class NetworkDataSource {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                final byte[] body = requestParams;
-                if (body != null) {
-                    return body;
-                }
                 return super.getBody();
             }
         };
@@ -239,9 +235,9 @@ public class NetworkDataSource {
     }
 
 
-    /**************************************
-     *              Network requests
-     ******************************************/
+    /*************************************
+     Network requests
+     */
 
 //    public void getIconImage(String imageId) {
 //        URL url = NetworkUtils.getImageURL(imageId);
@@ -266,7 +262,7 @@ public class NetworkDataSource {
      */
     public void fetchCurrentWeatherByCityName(String location) {
         URL url = NetworkUtils.getCurrentWeatherURLByCityName(location);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
+        getRequestString(url.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //TODO add control to "not found city" according to "cod" = 400. Cod = 200, success. Cod = 400, Not found
@@ -298,7 +294,7 @@ public class NetworkDataSource {
      */
     public void fetchCurrentWeathersByCityIDs(String citiesID) {
         URL url = NetworkUtils.getCurrentWeatherURLByListCityId(citiesID);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
+        getRequestString(url.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 OpenWeatherApp.Logger.d("fetchCurrentWeathersByCityIDs Response: " + response);
@@ -335,7 +331,7 @@ public class NetworkDataSource {
      */
     public void fetchCurrentWeatherByCityID(String cityID) {
         URL url = NetworkUtils.getCurrentWeatherURLByCityId(cityID);
-        getRequestString(url.toString(), null, new Response.Listener<String>() {
+        getRequestString(url.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityID Response: " + response);
@@ -363,7 +359,7 @@ public class NetworkDataSource {
      */
     public void fetchCurrentWeatherByCityCoord(String lat, String lon){
             URL url = NetworkUtils.getCurrentWeatherURLByCityCoord(lat, lon);
-            getRequestString(url.toString(), null, new Response.Listener<String>() {
+            getRequestString(url.toString(), new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityCoord Response: " + response);

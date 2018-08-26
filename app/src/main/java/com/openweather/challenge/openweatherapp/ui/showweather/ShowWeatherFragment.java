@@ -32,7 +32,6 @@ public class ShowWeatherFragment extends Fragment {
     private ShowWeatherViewModel mViewModel;
     private View rootView;
     private ShowWeatherPagerAdapter pagerAdapter;
-    private ViewPager viewPager;
 
     public static ShowWeatherFragment newInstance() {
         return new ShowWeatherFragment();
@@ -60,8 +59,8 @@ public class ShowWeatherFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this, factory).get(ShowWeatherViewModel.class);
 
 
-        /**
-         * if there are not weather to display, we go to addCity directly
+        /*
+          if there are not weather to display, we go to addCity directly
          */
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             if (mViewModel.getCountCurrentWeathers() == 0)
@@ -69,8 +68,8 @@ public class ShowWeatherFragment extends Fragment {
         });
 
 
-        /**
-         * Update viewpager witch the current weathers stored
+        /*
+          Update viewpager witch the current weathers stored
          */
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             if (weatherEntities != null && !weatherEntities.isEmpty()) {
@@ -96,7 +95,7 @@ public class ShowWeatherFragment extends Fragment {
 
     private void initializeViewPager() {
         DotsIndicator dotsIndicator = rootView.findViewById(R.id.dots_indicator);
-        viewPager = rootView.findViewById(R.id.view_pager);
+        ViewPager viewPager = rootView.findViewById(R.id.view_pager);
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments = new ArrayList<>();

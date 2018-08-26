@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
-/**
- * Created by manuel on 21,August,2018
+/*
+  Created by manuel on 21,August,2018
  */
 
 /**

@@ -4,11 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class ShowWeatherPagerAdapter extends FragmentPagerAdapter {
-    private List<ShowWeatherDescriptionFragment> mShowWeatherDescriptionFragmentList;
+    private final List<ShowWeatherDescriptionFragment> mShowWeatherDescriptionFragmentList;
 
     public ShowWeatherPagerAdapter(FragmentManager fragmentManager, List<ShowWeatherDescriptionFragment> showWeatherDescriptionFragments) {
         super(fragmentManager);

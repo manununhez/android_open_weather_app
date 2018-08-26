@@ -4,12 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorPrimaryLight">#C5CAE9</color>
     <color name="colorAccent">#ff5252</color>
-    <color name="colorPrimaryText">#212121</color>
-    <color name="colorSecondaryText">#757575</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
-    <color name="searchViewBackground">#7fbbfc</color>
     <color name="white">#ffffff</color>
-    <color name="gray">#535353</color>
-    <color name="light_gray">#b7b4b4b4</color>
 </resources>

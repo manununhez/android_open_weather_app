@@ -21,9 +21,6 @@
     <string name="tomorrow">Tomorrow</string>
 
     <!-- Date format -->
-    <string name="format_full_friendly_date">
-        <xliff:g id="month">%1$s</xliff:g>, <xliff:g id="day">%2$s</xliff:g>
-    </string>
 
 
     <!-- - - - - - - - - - - - - - - - -
@@ -35,7 +32,6 @@
         <xliff:g id="temp">%1.0f</xliff:g>\u00B0
     </string>
 
-    <string name="wind_label">Wind</string>
     <!-- Wind in kph -->
     <string name="format_wind_kmh">
         <xliff:g id="speed">%1$1.0f</xliff:g> km/h
@@ -43,82 +39,12 @@
     </string>
 
     <!-- Wind in mph -->
-    <string name="format_wind_mph">
-        <xliff:g id="speed">%1$1.0f</xliff:g> mph
-        <xliff:g id="direction">%2$s</xliff:g>
-    </string>
 
-    <string name="pressure_label">Pressure</string>
     <!-- Pressure format -->
-    <string name="format_pressure">
-        <xliff:g id="pressure">%1.0f</xliff:g> hPa
-    </string>
 
-    <string name="humidity_label">Humidity</string>
     <!-- Humidity format -->
-    <string name="format_humidity">
-        <xliff:g id="humidity">%1.0f</xliff:g> %%
-    </string>
 
     <!-- Weather Conditions (From OpenWeatherMap) -->
-    <string name="condition_2xx">Storm</string>
-    <string name="condition_3xx">Drizzle</string>
-    <string name="condition_500">Light Rain</string>
-    <string name="condition_501">Moderate Rain</string>
-    <string name="condition_502">Heavy Rain</string>
-    <string name="condition_503">Intense Rain</string>
-    <string name="condition_504">Extreme Rain</string>
-    <string name="condition_511">Freezing Rain</string>
-    <string name="condition_520">Light Shower</string>
-    <string name="condition_521">Shower</string>
-    <string name="condition_522">Heavy Shower</string>
-    <string name="condition_531">Ragged Shower</string>
-    <string name="condition_600">Light Snow</string>
-    <string name="condition_601">Snow</string>
-    <string name="condition_602">Heavy Snow</string>
-    <string name="condition_611">Sleet</string>
-    <string name="condition_612">Shower Sleet</string>
-    <string name="condition_615">Rain and Snow</string>
-    <string name="condition_616">Rain and Snow</string>
-    <string name="condition_620">Shower Snow</string>
-    <string name="condition_621">Shower Snow</string>
-    <string name="condition_622">Shower Snow</string>
-    <string name="condition_701">Mist</string>
-    <string name="condition_711">Smoke</string>
-    <string name="condition_721">Haze</string>
-    <string name="condition_731">Sand, Dust</string>
-    <string name="condition_741">Fog</string>
-    <string name="condition_751">Sand</string>
-    <string name="condition_761">Dust</string>
-    <string name="condition_762">Volcanic Ash</string>
-    <string name="condition_771">Squalls</string>
-    <string name="condition_781">Tornado</string>
-    <string name="condition_800">Clear</string>
-    <string name="condition_801">Mostly Clear</string>
-    <string name="condition_802">Scattered Clouds</string>
-    <string name="condition_803">Broken Clouds</string>
-    <string name="condition_804">Overcast Clouds</string>
-    <string name="condition_900">Tornado</string>
-    <string name="condition_901">Tropical Storm</string>
-    <string name="condition_902">Hurricane</string>
-    <string name="condition_903">Cold</string>
-    <string name="condition_904">Hot</string>
-    <string name="condition_905">Windy</string>
-    <string name="condition_906">Hail</string>
-    <string name="condition_951">Calm</string>
-    <string name="condition_952">Light Breeze</string>
-    <string name="condition_953">Gentle Breeze</string>
-    <string name="condition_954">Breeze</string>
-    <string name="condition_955">Fresh Breeze</string>
-    <string name="condition_956">Strong Breeze</string>
-    <string name="condition_957">High Wind</string>
-    <string name="condition_958">Gale</string>
-    <string name="condition_959">Severe Gale</string>
-    <string name="condition_960">Storm</string>
-    <string name="condition_961">Violent Storm</string>
-    <string name="condition_962">Hurricane</string>
-
-    <string name="condition_unknown">Unknown (<xliff:g id="conditionId">%1$d</xliff:g>)</string>
 
 
     <!-- - - - - - - - - - - - - - - - -
@@ -129,10 +55,30 @@
     <string name="no_network_error">There is no Internet connection</string>
     <string name="defaultErrorMessage">Failed to perform</string>
     <string name="generic_server_down">There is no Internet connection</string>
-    <string name="btn_ok">Ok</string>
+    <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
     <string name="title_delete_alert_dialog">Do you want to delete this?</string>
     <string name="title_alert_dialog">Alert</string>
     <string name="gps_network_not_enabled">GPS not enabled</string>
     <string name="open_location_settings">Open location settings</string>
+    <string name="found_results">%1$d results</string>
+    <string name="full_city_name">%1$s, %2$s</string>
+    <string name="format_min_max_temperature">%1$s / %2$s</string>
+    <string name="format_humidity">%1$d%%</string>
+    <string name="results_text">Results</string>
+    <string name="current_location_weather">Current location weather</string>
+    <string name="or">or</string>
+    <string name="city_name_placeholder">Warsaw, PL</string>
+    <string name="degree_placeholder">25</string>
+    <string name="weather_condition_placeholder">Cloud</string>
+    <string name="manage_title_toolbar">Manage</string>
+    <string name="add_new_title_toolbar">Add new…</string>
+    <string name="min_max_temperature_placeholder">27 / 20</string>
+    <string name="weather_condition_description_placeholder">light clouds</string>
+    <string name="humidity_title">Humidity</string>
+    <string name="wind_title">Wind</string>
+    <string name="sunrise_title">Sunrise</string>
+    <string name="sunset_title">Sunset</string>
+    <string name="value_to_complete_placeholder">--</string>
+    <string name="last_update_title">Last update:</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.openweather.challenge.openweatherapp.ui.showweather;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     private int page;
     private WeatherEntity weatherEntity;
     private View rootView;
-    private static String WEATHER = "weather";
+    private static final String WEATHER = "weather";
 //    private static String WEATHER_SAVED = "weather_saved";
 
     // newInstance constructor for creating fragment with arguments
@@ -47,7 +48,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
 
     // Inflate the rootView for the fragment based on layout XML
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.show_weather_description_fragment, container, false);
         return rootView;
@@ -72,16 +73,16 @@ public class ShowWeatherDescriptionFragment extends Fragment {
         int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.getWeather_id());
 
 
-        tvCityName.setText(weatherEntity.getName() + " , " + weatherEntity.getSys_country());
-        tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp()));
+        tvCityName.setText(Objects.requireNonNull(getActivity()).getString(R.string.full_city_name, weatherEntity.getName(), weatherEntity.getSys_country()));
+        tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(Objects.requireNonNull(getActivity()), weatherEntity.getMain_temp()));
         tvWeatherMain.setText(weatherEntity.getWeather_main());
         tvWeatherDescription.setText(weatherEntity.getWeather_description());
-        tvMinMaxTemp.setText(OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_max()) + " / " +
-                OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_min()));
+        tvMinMaxTemp.setText(getActivity().getString(R.string.format_min_max_temperature,OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_max()),
+                OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_min())));
 
         tvWindSpeed.setText(OpenWeatherUtils.getFormattedWind(getActivity(), weatherEntity.getWind_speed(), weatherEntity.getWind_deg()));
 
-        tvHumidity.setText(weatherEntity.getMain_humidity() + "%");
+        tvHumidity.setText(getActivity().getString(R.string.format_humidity,weatherEntity.getMain_humidity()));
         tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
 

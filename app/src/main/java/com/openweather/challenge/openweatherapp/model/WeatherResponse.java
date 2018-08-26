@@ -2,6 +2,8 @@ package com.openweather.challenge.openweatherapp.model;
 
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 
+import java.util.Arrays;
+
 /**
  * Created by manuel on 23,August,2018
  */
@@ -35,7 +37,7 @@ public class WeatherResponse {
         return "WeatherResponse{" +
                 "id=" + id +
                 ", coord=" + coord +
-                ", weather=" + weather +
+                ", weather=" + Arrays.toString(weather) +
                 ", base='" + base + '\'' +
                 ", main=" + main +
                 ", visibility=" + visibility +

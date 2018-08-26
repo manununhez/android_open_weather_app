@@ -2,11 +2,12 @@ package com.openweather.challenge.openweatherapp.ui.managecities;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
 import com.openweather.challenge.openweatherapp.repository.AppRepository;
 
-/**
- * Created by manuel on 21,August,2018
+/*
+  Created by manuel on 21,August,2018
  */
 
 /**
@@ -21,8 +22,9 @@ public class ManageCitiesViewModelFactory extends ViewModelProvider.NewInstanceF
         this.mRepository = repository;
     }
 
+    @NonNull
     @Override
-    public <T extends ViewModel> T create(Class<T> modelClass) {
+    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
         return (T) new ManageCitiesViewModel(mRepository);
     }

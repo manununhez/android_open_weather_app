@@ -3,10 +3,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".ui.addcity.AddCityFragment">
 
 
@@ -29,7 +27,7 @@
         app:queryHint="Search e.g. Warsaw" />
 
     <Button
-        android:id="@+id/btnCurrenLocation"
+        android:id="@+id/btnCurrentLocation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
@@ -39,7 +37,7 @@
         android:layout_marginRight="150dp"
         android:layout_marginBottom="8dp"
         android:background="@color/colorPrimary"
-        android:text="Current location weather"
+        android:text="@string/current_location_weather"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15sp"
@@ -56,7 +54,7 @@
         android:layout_marginEnd="150dp"
         android:layout_marginRight="150dp"
         android:layout_marginBottom="4dp"
-        android:text="Results"
+        android:text="@string/results_text"
         app:layout_constraintBottom_toTopOf="@+id/rvSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView" />
@@ -88,9 +86,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="10dp"
-        android:text="or"
+        android:text="@string/or"
         app:layout_constraintBottom_toTopOf="@+id/searchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCurrenLocation" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCurrentLocation" />
 </android.support.constraint.ConstraintLayout>

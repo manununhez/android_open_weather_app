@@ -42,9 +42,5 @@ public class InjectorUtils {
         return new ManageCitiesViewModelFactory(repository);
     }
 
-//    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {
-//        SunshineRepository repository = provideRepository(context.getApplicationContext());
-//        return new MainViewModelFactory(repository);
-//    }
 
 }

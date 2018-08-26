@@ -2,6 +2,7 @@ package com.openweather.challenge.openweatherapp.ui.addcity;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,17 +28,18 @@ public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdap
 
     }
 
+    @NonNull
     @Override
-    public AddCitySearchAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row, viewGroup, false);
+    public AddCitySearchAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row_s, viewGroup, false);
         mContext = rootView.getContext();
         return new ViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(AddCitySearchAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull AddCitySearchAdapter.ViewHolder viewHolder, int position) {
 
-        viewHolder.bind(mArrayList.get(position), mListener);
+        viewHolder.bind(mArrayList.get(position));
 
     }
 
@@ -73,10 +75,10 @@ public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdap
             ivWeatherCondition = view.findViewById(R.id.ivWeatherCondition);
         }
 
-        void bind(WeatherEntity item, OnItemClickListener itemClickListener) {
+        void bind(WeatherEntity item) {
             int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(item.getWeather_id());
 
-            tvCityName.setText(item.getName() + ", " + item.getSys_country());
+            tvCityName.setText(mContext.getString(R.string.full_city_name, item.getName(), item.getSys_country()));
             tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
             tvWeatherCondition.setText(item.getWeather_main());
 
