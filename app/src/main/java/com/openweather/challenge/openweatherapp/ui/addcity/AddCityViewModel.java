@@ -20,13 +20,20 @@ class AddCityViewModel extends ViewModel {
         mRepository.insertWeather(weatherEntity);
     }
 
-    public LiveData<WeatherEntity> responseWeatherByCityName() {
-        return mRepository.responseWeatherByCityName();
+    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityName() {
+        return mRepository.responseFromCurrentWeatherByCityName();
     }
 
-    public void getWeatherByCityName(String text) {
-        mRepository.getWeatherByCityName(text);
+    public void fetchCurrentWeatherByCityName(String text) {
+        mRepository.fetchCurrentWeatherByCityName(text);
+    }
+
+    public void fetchCurrentWeatherByCityCoords(String lat, String lon) {
+        mRepository.fetchCurrentWeatherByCityCoords(lat, lon);
     }
 
 
+    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord() {
+        return mRepository.responseFromCurrentWeatherByCityCoord();
+    }
 }

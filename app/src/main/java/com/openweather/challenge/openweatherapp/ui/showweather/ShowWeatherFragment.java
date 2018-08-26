@@ -69,6 +69,9 @@ public class ShowWeatherFragment extends Fragment {
         });
 
 
+        /**
+         * Update viewpager witch the current weathers stored
+         */
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             if (weatherEntities != null && !weatherEntities.isEmpty()) {
 

@@ -54,7 +54,8 @@ public class NetworkDataSource {
 
     // LiveData storing the latest downloaded weather forecasts
     private final MutableLiveData<WeatherEntity[]> responseFromGetCurrentWeathers;
-    private final MutableLiveData<WeatherEntity> responseWeatherByCityName;
+    private final MutableLiveData<WeatherEntity> responseFromCurrentWeatherByCityName;
+    private final MutableLiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord;
     private final Context context;
 
     // Volley requestQueue
@@ -66,7 +67,8 @@ public class NetworkDataSource {
         mRequestQueue = getRequestQueue();
 
         responseFromGetCurrentWeathers = new MutableLiveData<>();
-        responseWeatherByCityName = new MutableLiveData<>();
+        responseFromCurrentWeatherByCityName = new MutableLiveData<>();
+        responseFromCurrentWeatherByCityCoord = new MutableLiveData<>();
     }
 
 
@@ -237,27 +239,25 @@ public class NetworkDataSource {
     }
 
 
-
-
     /**************************************
      *              Network requests
      ******************************************/
 
-    public void getIconImage(String imageId) {
-        URL url = NetworkUtils.getImageURL(imageId);
-
-        requestImage(url.toString(), new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-
-            }
-        }, 300, 200, ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-    }
+//    public void getIconImage(String imageId) {
+//        URL url = NetworkUtils.getImageURL(imageId);
+//
+//        requestImage(url.toString(), new Response.Listener<Bitmap>() {
+//            @Override
+//            public void onResponse(Bitmap response) {
+//
+//            }
+//        }, 300, 200, ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        });
+//    }
 
     /**
      * Get the current weather of city by name
@@ -272,7 +272,7 @@ public class NetworkDataSource {
                 //TODO add control to "not found city" according to "cod" = 400. Cod = 200, success. Cod = 400, Not found
                 OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityName Response: " + response);
                 WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
-                responseWeatherByCityName.postValue(weatherResponse.getWeatherEntity());
+                responseFromCurrentWeatherByCityName.postValue(weatherResponse.getWeatherEntity());
                 OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityName Response JSON: " + weatherResponse.toString());
             }
         }, new Response.ErrorListener() {
@@ -296,12 +296,12 @@ public class NetworkDataSource {
      *
      * @return
      */
-    public void fetchCurrentWeathersByCitiesID(String citiesID) {
+    public void fetchCurrentWeathersByCityIDs(String citiesID) {
         URL url = NetworkUtils.getCurrentWeatherURLByListCityId(citiesID);
         getRequestString(url.toString(), null, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                OpenWeatherApp.Logger.d("fetchCurrentWeathersByCitiesID Response: " + response);
+                OpenWeatherApp.Logger.d("fetchCurrentWeathersByCityIDs Response: " + response);
                 WeathersResponse weathersResponse = new Gson().fromJson(response, WeathersResponse.class);
                 WeatherEntity[] weatherEntities = new WeatherEntity[weathersResponse.list.length];
 
@@ -311,7 +311,7 @@ public class NetworkDataSource {
 
                 responseFromGetCurrentWeathers.postValue(weatherEntities);
 
-                OpenWeatherApp.Logger.d("fetchCurrentWeathersByCitiesID Response JSON: " + weathersResponse.toString());
+                OpenWeatherApp.Logger.d("fetchCurrentWeathersByCityIDs Response JSON: " + weathersResponse.toString());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -353,26 +353,61 @@ public class NetworkDataSource {
 //                }
             }
         });
-
     }
+
 
     /**
-     * Get the current weather of all the cities stored
      *
-     * @return
+     * @param lat
+     * @param lon
      */
-    public LiveData<WeatherEntity[]> responseFromGetCurrentWeathers() {
-        return responseFromGetCurrentWeathers;
+    public void fetchCurrentWeatherByCityCoord(String lat, String lon){
+            URL url = NetworkUtils.getCurrentWeatherURLByCityCoord(lat, lon);
+            getRequestString(url.toString(), null, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityCoord Response: " + response);
+                    WeatherResponse weatherResponse = new Gson().fromJson(response, WeatherResponse.class);
+//                mDownloadedWeatherForecast.postValue(weatherResponse.getWeatherEntity());
+                    responseFromCurrentWeatherByCityCoord.postValue(weatherResponse.getWeatherEntity());
+
+                    OpenWeatherApp.Logger.d("fetchCurrentWeatherByCityCoord Response JSON: " + weatherResponse.toString());
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+//                String errorMessage = VolleyErrorHelper.getMessage(error, context);
+//                OpenWeatherApp.Logger.e(errorMessage);
+//                if (errorMessage != null && !errorMessage.isEmpty()) {
+//                    Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+//                }
+                }
+            });
+
+        }
+
+        /**
+         * Get the current weather of all the cities stored
+         *
+         * @return
+         */
+        public LiveData<WeatherEntity[]> responseFromCurrentWeathersByCityIDs() {
+            return responseFromGetCurrentWeathers;
+        }
+
+        /**
+         * Get the current weather of city by name
+         *
+         *
+         * @return
+         */
+        public LiveData<WeatherEntity> responseFromCurrentWeatherByCityName() {
+            return responseFromCurrentWeatherByCityName;
+        }
+
+
+    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord() {
+        return responseFromCurrentWeatherByCityCoord;
     }
 
-    /**
-     * Get the current weather of city by name
-     *
-     * @return
-     */
-    public LiveData<WeatherEntity> responseWeatherByCityName() {
-        return responseWeatherByCityName;
     }
-
-
-}

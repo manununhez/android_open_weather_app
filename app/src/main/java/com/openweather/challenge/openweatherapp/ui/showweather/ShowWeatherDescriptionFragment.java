@@ -38,15 +38,6 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-//        // Save the user's current game state
-//        savedInstanceState.putParcelable(WEATHER_SAVED, weatherEntity);
-//
-//        // Always call the superclass so it can save the rootView hierarchy state
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-
     // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,12 +56,6 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//
-//        // Check whether we're recreating a previously destroyed instance
-//        if (savedInstanceState != null) {
-//            // Restore value of members from saved state
-//            weatherEntity = savedInstanceState.getParcelable(WEATHER_SAVED);
-//        }
 
         TextView tvCityName = rootView.findViewById(R.id.tvCityName);
         TextView tvCurrentTemp = rootView.findViewById(R.id.tvCurrentTemp);
@@ -100,7 +85,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
         tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
 
-        tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntity.getDt())); //Update last update value
+        tvLastUpdate.setText(OpenWeatherDateUtils.getTimeAgo(weatherEntity.getDt())); //Update last update value
 
 
         ivWeatherCondition.setImageResource(weatherImageId);

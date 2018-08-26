@@ -12,11 +12,14 @@ import java.net.URL;
  */
 
 class NetworkUtils {
-    private static final String OPEN_WEATHER_API = "http://api.openweathermap.org/data/2.5/weather";
-    private static final String OPEN_WEATHER_GROUP_API = "http://api.openweathermap.org/data/2.5/group";
-    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
+    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
+    private static final String OPEN_WEATHER_API = "weather";
+    private static final String OPEN_WEATHER_GROUP_API = "group";
+//    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
     private static final String WEATHER_FORECAST_PARAM = "q";
     private static final String CITY_ID = "id";
+    private static final String CITY_COORD_LAT = "lat";
+    private static final String CITY_COORD_LON = "lon";
     private static final String UNITS_PARAM = "units";
     private static final String METRICS_PARAM = "metric"; //Temperature unit in CELSIUS
     private static final String APP_ID_PARAM = "APPID";
@@ -36,7 +39,7 @@ class NetworkUtils {
      * @return The URL to use to query the weather server.
      */
     private static URL buildUrlByCityName(String locationQuery) {
-        Uri weatherQueryUri = Uri.parse(OPEN_WEATHER_API).buildUpon()
+        Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_API)).buildUpon()
                 .appendQueryParameter(WEATHER_FORECAST_PARAM, locationQuery)
                 .appendQueryParameter(UNITS_PARAM, METRICS_PARAM)
                 .appendQueryParameter(APP_ID_PARAM, API_KEY)
@@ -54,7 +57,7 @@ class NetworkUtils {
 
 
     private static URL buildUrlByCityId(String cityID) {
-        Uri weatherQueryUri = Uri.parse(OPEN_WEATHER_API).buildUpon()
+        Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_API)).buildUpon()
                 .appendQueryParameter(CITY_ID, cityID)
                 .appendQueryParameter(UNITS_PARAM, METRICS_PARAM)
                 .appendQueryParameter(APP_ID_PARAM, API_KEY)
@@ -70,9 +73,26 @@ class NetworkUtils {
         }
     }
 
+    private static URL buildUrlByCityCoordinates(String lat, String lon) {
+        Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_API)).buildUpon()
+                .appendQueryParameter(CITY_COORD_LAT, lat)
+                .appendQueryParameter(CITY_COORD_LON, lon)
+                .appendQueryParameter(UNITS_PARAM, METRICS_PARAM)
+                .appendQueryParameter(APP_ID_PARAM, API_KEY)
+                .build();
+
+        try {
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString());
+            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+            return weatherQueryUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private static URL buildUrlByListCityId(String listCityID) {
-        Uri weatherQueryUri = Uri.parse(OPEN_WEATHER_GROUP_API).buildUpon()
+        Uri weatherQueryUri = Uri.parse(BASE_URL.concat(OPEN_WEATHER_GROUP_API)).buildUpon()
                 .appendQueryParameter(CITY_ID, listCityID)
                 .appendQueryParameter(UNITS_PARAM, METRICS_PARAM)
                 .appendQueryParameter(APP_ID_PARAM, API_KEY)
@@ -88,20 +108,20 @@ class NetworkUtils {
         }
     }
 
-    private static URL buildUrlGetImage(String imageId) {
-        Uri uri = Uri.parse(OPEN_WEATHER_IMAGE_API).buildUpon()
-                .appendPath(imageId + PNG_EXTENSION)
-                .build();
-
-        try {
-            URL weatherQueryUrl = new URL(uri.toString());
-            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
-            return weatherQueryUrl;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    private static URL buildUrlGetImage(String imageId) {
+//        Uri uri = Uri.parse(OPEN_WEATHER_IMAGE_API).buildUpon()
+//                .appendPath(imageId + PNG_EXTENSION)
+//                .build();
+//
+//        try {
+//            URL weatherQueryUrl = new URL(uri.toString());
+//            OpenWeatherApp.Logger.d("URL: " + weatherQueryUrl);
+//            return weatherQueryUrl;
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     public static URL getCurrentWeatherURLByCityName(String locationQuery) {
         return buildUrlByCityName(locationQuery);
@@ -115,7 +135,11 @@ class NetworkUtils {
         return buildUrlByCityId(cityID);
     }
 
-    public static URL getImageURL(String imageId) {
-        return buildUrlGetImage(imageId);
+    public static URL getCurrentWeatherURLByCityCoord(String lat, String lon){
+        return buildUrlByCityCoordinates(lat, lon);
     }
+
+//    public static URL getImageURL(String imageId) {
+//        return buildUrlGetImage(imageId);
+//    }
 }

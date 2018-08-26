@@ -133,4 +133,6 @@
     <string name="btn_cancel">Cancel</string>
     <string name="title_delete_alert_dialog">Do you want to delete this?</string>
     <string name="title_alert_dialog">Alert</string>
+    <string name="gps_network_not_enabled">GPS not enabled</string>
+    <string name="open_location_settings">Open location settings</string>
 </resources>

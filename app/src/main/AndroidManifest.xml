@@ -4,6 +4,9 @@
 
     <!-- This permission is necessary to perform network access. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--The permission you choose determines the accuracy of the location returned by the API-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".OpenWeatherApp"

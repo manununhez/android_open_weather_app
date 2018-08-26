@@ -37,7 +37,7 @@ public class AppRepository {
         // As long as the repository exists, observe the network LiveData.
         // If that LiveData changes, update the database.
         // Group of weathers that corresponds to the weather of all cities saved in the DB
-        LiveData<WeatherEntity[]> newWeathersFromNetwork = responseFromGetCurrentWeathers();
+        LiveData<WeatherEntity[]> newWeathersFromNetwork = responseFromCurrentWeathersByCityIDs();
 
         newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
             Executors.newSingleThreadScheduledExecutor().execute(() -> {
@@ -51,7 +51,6 @@ public class AppRepository {
             });
         });
     }
-
 
 
     public synchronized static AppRepository getInstance(WeatherDao weatherDao, NetworkDataSource networkDataSource) {
@@ -184,13 +183,7 @@ public class AppRepository {
      * Network related operation
      *****************************/
 
-    /**
-     *
-     * @return
-     */
-    private LiveData<WeatherEntity[]> responseFromGetCurrentWeathers() {
-        return mNetworkDataSource.responseFromGetCurrentWeathers();
-    }
+
 
     /**
      *
@@ -209,17 +202,17 @@ public class AppRepository {
      *
      * @param cityName
      */
-    public void getWeatherByCityName(String cityName) {
+    public void fetchCurrentWeatherByCityName(String cityName) {
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             mNetworkDataSource.fetchCurrentWeatherByCityName(cityName);
         });
     }
 
-    /**
-     * @return
+    /** Used by search by city name and city coords
+     * @return Current weather searched
      */
-    public LiveData<WeatherEntity> responseWeatherByCityName() {
-        return mNetworkDataSource.responseWeatherByCityName();
+    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityName() {
+        return mNetworkDataSource.responseFromCurrentWeatherByCityName();
     }
 
 
@@ -231,9 +224,29 @@ public class AppRepository {
             List<Integer> list = getAllWeathersId(); //We get the list of weather ID from the DB
             String idList = Utils.listToCommaValues(list);
 
-            mNetworkDataSource.fetchCurrentWeathersByCitiesID(idList);
+            mNetworkDataSource.fetchCurrentWeathersByCityIDs(idList);
+        });
+    }
+
+    /**
+     * @return
+     */
+    private LiveData<WeatherEntity[]> responseFromCurrentWeathersByCityIDs() {
+        return mNetworkDataSource.responseFromCurrentWeathersByCityIDs();
+    }
+
+    /**
+     *
+     *
+     */
+    public void fetchCurrentWeatherByCityCoords(String lat, String lon) {
+        Executors.newSingleThreadScheduledExecutor().execute(() -> {
+            mNetworkDataSource.fetchCurrentWeatherByCityCoord(lat, lon);
         });
     }
 
 
+    public LiveData<WeatherEntity> responseFromCurrentWeatherByCityCoord() {
+            return mNetworkDataSource.responseFromCurrentWeatherByCityCoord();
+    }
 }
