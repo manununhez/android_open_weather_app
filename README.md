@@ -1,6 +1,6 @@
 # Open Weather App with Android Architecture Components
 
-This app write in Java uses the new [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/)
+This app written in Java uses the new [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/)
 : Livedata, ViewModel, and Room. 
 
 Retrieves **current weather** using [OpenWeatherMap current API](https://openweathermap.org/current) free account.
@@ -32,7 +32,7 @@ You can open the project in Android studio and press run.
 ### Libraries
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [Android Architecture Components](https://developer.android.com/arch)
-* [Android Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
+<!---* [Android Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)-->
 * [Volley](https://github.com/google/volley) for REST api communication
 * [Firebase JobDispatcher](https://github.com/firebase/firebase-jobdispatcher-android) for scheduling background jobs
 * [Gson](https://github.com/google/gson) to convert Java Objects into JSON and back
