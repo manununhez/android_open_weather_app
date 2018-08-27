@@ -11,7 +11,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Class for handling date conversions that are useful for OpenWeatherApp.
+ * Class for handling date conversions that are useful for this weather application.
  */
 public final class OpenWeatherDateUtils {
 

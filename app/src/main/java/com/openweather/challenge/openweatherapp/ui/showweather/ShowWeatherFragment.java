@@ -71,6 +71,11 @@ public class ShowWeatherFragment extends Fragment {
         /*
           Update viewpager witch the current weathers stored
          */
+        observeCurrentWeathers();
+
+    }
+
+    private void observeCurrentWeathers(){
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             if (weatherEntities != null && !weatherEntities.isEmpty()) {
 
@@ -81,15 +86,10 @@ public class ShowWeatherFragment extends Fragment {
                     showWeatherDescriptionFragments.add(ShowWeatherDescriptionFragment.newInstance(weatherEntity));
                 }
 
-//                setViewPager(viewPager, showWeatherDescriptionFragments);
-
-                pagerAdapter.addItems(showWeatherDescriptionFragments);
-
-
+                pagerAdapter.addItems(showWeatherDescriptionFragments); //add items and refresh viewpager
 //                tvLastUpdate.setText(OpenWeatherDateUtils.getFriendlyDateString(weatherEntities.get(0).getDt())); //Update last update value
             }
         });
-
     }
 
 

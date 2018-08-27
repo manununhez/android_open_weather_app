@@ -25,7 +25,7 @@ import com.openweather.challenge.openweatherapp.utils.Utils;
 import java.util.List;
 import java.util.Objects;
 
-public class ManageCitiesFragment extends Fragment {
+public class ManageCitiesFragment extends Fragment implements ManageCitiesAdapter.OnItemClickListener, ManageCitiesAdapter.OnLongItemClickListener {
 
     private ManageCitiesViewModel mViewModel;
     private View rootView;
@@ -54,15 +54,17 @@ public class ManageCitiesFragment extends Fragment {
 
         initRecyclerView();
 
+        observeCurrentWeathers();
+    }
+
+
+    private void observeCurrentWeathers() {
         mViewModel.getCurrentWeathers().observe(this, weatherEntities -> {
             setRecyclerView(weatherEntities);
         });
-
-
     }
 
     private void initRecyclerView() {
-
         mRecyclerView = rootView.findViewById(R.id.rvManageCity);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -71,33 +73,8 @@ public class ManageCitiesFragment extends Fragment {
     }
 
     private void setRecyclerView(List<WeatherEntity> weatherEntities) {
-        ManageCitiesAdapter mAdapter = new ManageCitiesAdapter(weatherEntities, new ManageCitiesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(WeatherEntity item) {
-                //TODO go to specific weather TAB in ShowWeatherActivity
-            }
-        }, new ManageCitiesAdapter.OnLongItemClickListener() {
-            @Override
-            public void onLongItemClick(WeatherEntity item) {
-                Utils.getAlertDialogWithChoice(getActivity(), getString(R.string.title_alert_dialog), getString(R.string.title_delete_alert_dialog),
-                        getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mViewModel.deleteWeather(item);
-                            }
-                        }, getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }, new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-            }
-        });
+        ManageCitiesAdapter mAdapter = new ManageCitiesAdapter(weatherEntities, this, this);
+
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -119,5 +96,31 @@ public class ManageCitiesFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onItemClick(WeatherEntity item) {
+        //TODO go to specific weather TAB in ShowWeatherActivity
+    }
+
+    @Override
+    public void onLongItemClick(WeatherEntity item) {
+        Utils.getAlertDialogWithChoice(getActivity(), getString(R.string.title_alert_dialog), getString(R.string.title_delete_alert_dialog),
+                getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mViewModel.deleteWeather(item);
+                    }
+                }, getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }

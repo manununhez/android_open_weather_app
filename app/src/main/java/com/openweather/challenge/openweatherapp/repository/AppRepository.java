@@ -37,7 +37,7 @@ public class AppRepository {
         newWeathersFromNetwork.observeForever(weathersFromNetwork -> {
             if (weathersFromNetwork != null) {
                 if (weathersFromNetwork.status.equals(Resource.Status.SUCCESS)) {
-                    // Insert our new weather data into OpenWeatherApp's database
+                    // Insert our new weather data into the database
                     bulkInsert(weathersFromNetwork.data);
 
                     Log.d(TAG, "New values inserted");

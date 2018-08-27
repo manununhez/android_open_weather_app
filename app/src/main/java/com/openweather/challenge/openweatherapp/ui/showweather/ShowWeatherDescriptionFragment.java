@@ -27,7 +27,6 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     private WeatherEntity weatherEntity;
     private View rootView;
     private static final String WEATHER = "weather";
-//    private static String WEATHER_SAVED = "weather_saved";
 
     // newInstance constructor for creating fragment with arguments
     public static ShowWeatherDescriptionFragment newInstance(WeatherEntity weatherEntity) {
@@ -58,6 +57,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //TODO Data Binding
         TextView tvCityName = rootView.findViewById(R.id.tvCityName);
         TextView tvCurrentTemp = rootView.findViewById(R.id.tvCurrentTemp);
         TextView tvWeatherMain = rootView.findViewById(R.id.tvWeatherMain);
@@ -89,7 +89,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
 
         tvLastUpdate.setText(OpenWeatherDateUtils.getTimeAgo(weatherEntity.getDt())); //Update last update value
 
-
+        //TODO retrieve image with Glide
         ivWeatherCondition.setImageResource(weatherImageId);
 
     }

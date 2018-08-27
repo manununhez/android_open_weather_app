@@ -1,5 +1,5 @@
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  - This file contains all of the strings used throughout OpenWeatherApp. They can be accessed       -
+  - This file contains all of the strings used throughout the application. They can be accessed       -
   - through calls to Context#getString. This strings are organized by where they are used in   -
   - OpenWeatherApp.                                                                                  -
   -                                                                                            -

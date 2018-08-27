@@ -28,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.model.Resource;
@@ -43,20 +42,20 @@ import java.util.concurrent.Executors;
 
 public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, AddCitySearchAdapter.OnItemClickListener, View.OnClickListener {
 
+    private static final String TAG = AddCityFragment.class.getSimpleName();
     private static final String QUERY = "query_search";
     private static final String WEATHER_ENTITIES = "weather_entities_search";
     private static final boolean PRESSED = true;
     private static final boolean NOT_PRESSED = false;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1000;
     private static final int REQUEST_CODE_SOURCE_SETTINGS = 2000;
-    private final String TAG = AddCityFragment.class.getSimpleName();
+    private boolean ifBtnLocationHasBeenPressed = NOT_PRESSED;
     private AddCityViewModel mViewModel;
     private TextView tvCountResults;
     private View rootView;
     private AddCitySearchAdapter mAdapter;
     private ArrayList<WeatherEntity> weatherEntities;
     private ArrayList<String> queriesHistory;
-    private boolean ifBtnLocationHasBeenPressed = NOT_PRESSED;
     private LoadingDialog loadingDialog;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
@@ -90,7 +89,8 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null &&
                 savedInstanceState.getStringArrayList(QUERY) != null &&
-                savedInstanceState.getParcelableArrayList(WEATHER_ENTITIES) != null) { //In getActivity() way, after onDestroyView() might happen and restart, we will sure to init with variables not null
+                savedInstanceState.getParcelableArrayList(WEATHER_ENTITIES) != null) { //In getActivity() way, after onDestroyView() might happen and restart,
+            // we will sure to init with variables not null
             // Restore value of members from saved state
             queriesHistory = savedInstanceState.getStringArrayList(QUERY);
             weatherEntities = savedInstanceState.getParcelableArrayList(WEATHER_ENTITIES);
@@ -117,25 +117,48 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         instantiateLoading();
         initRecyclerView();
 
+        observeResponseFromCurrentWeatherByCityName();
+
+        observeResponseFromCurrentWeatherByCityCoord();
 
     }
 
+    private void observeResponseFromCurrentWeatherByCityCoord() {
 
-    private void initRecyclerView() {
-        mRecyclerView = rootView.findViewById(R.id.rvSearch);
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
+        LiveData<Resource<WeatherEntity>> weatherSearchByCityCoordResponse = mViewModel.responseFromCurrentWeatherByCityCoord();
+        weatherSearchByCityCoordResponse.observe(this, response -> {
+            if (response != null) {
+                if (response.status.equals(Resource.Status.SUCCESS)) {
 
-        mAdapter = new AddCitySearchAdapter(weatherEntities, this);
-        mRecyclerView.setAdapter(mAdapter);
+                    if (ifBtnLocationHasBeenPressed) { //we read the values of this observer only if the user has selected to get current location
+                        Log.d(TAG, "AddCityFragment = " + Objects.requireNonNull(response).toString());
+                        Log.d(TAG, "New values inserted");
 
+                        mViewModel.insertWeather(response.data);
+                        Toast.makeText(getActivity(), "Added " + response.data.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
+                        Objects.requireNonNull(getActivity()).finish();
+
+                    }
+
+                } else if (response.status.equals(Resource.Status.ERROR)) {
+                    //TODO do something error
+                    if (response.message != null)
+                        Log.d(TAG, response.message);
+                    else
+                        Log.d(TAG, "Status ERROR");
+                }
+                dismissLoading();
+            }
+        });
+
+    }
+
+    private void observeResponseFromCurrentWeatherByCityName() {
         LiveData<Resource<WeatherEntity>> weatherSearchByNameResponse = mViewModel.responseFromCurrentWeatherByCityName();
         weatherSearchByNameResponse.observe(this, response -> {
             if (response != null) {
                 if (response.status.equals(Resource.Status.SUCCESS)) {
-                    OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
-                    //TODO getActivity() can be improved
+                    Log.d(TAG, "AddCityFragment = " + Objects.requireNonNull(response).toString());
                     if (queriesHistory != null && !queriesHistory.isEmpty()) { // If at least one query was made, getActivity() response is correct. getActivity() avoid to have elements in the recyclerView from previous searches.
                         if (!findItemInTheList(weatherEntities, response.data)) { //We only add a new element if it does not exist in the list yet.
                             weatherEntities.add(response.data);
@@ -156,43 +179,20 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
                         Log.d(TAG, "Status ERROR");
                 }
 
-                dismissProgressBar();
+                showWeatherDataRecyclerView();
             }
         });
+    }
 
 
-        LiveData<Resource<WeatherEntity>> weatherSearchByCityCoordResponse = mViewModel.responseFromCurrentWeatherByCityCoord();
-//weatherSearchByCityCoordResponse.re
-        weatherSearchByCityCoordResponse.observe(this, response -> {
-            if (response != null) {
-                if (response.status.equals(Resource.Status.SUCCESS)) {
+    private void initRecyclerView() {
+        mRecyclerView = rootView.findViewById(R.id.rvSearch);
+        mRecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
 
-                    if (ifBtnLocationHasBeenPressed) { //we read the values of this observer only if the user has selected to get current location
-                        OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
-                        OpenWeatherApp.Logger.d("New values inserted");
-
-                        mViewModel.insertWeather(response.data);
-                        Toast.makeText(getActivity(), "Added " + response.data.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
-                        Objects.requireNonNull(getActivity()).finish();
-                        //                if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
-                        //                    weatherEntities.add(response);
-                        //
-                        //                    mAdapter.notifyDataSetChanged();
-                        //                    if (mAdapter != null)
-                        //                        tvCountResults.setText(mAdapter.getItemCount() + " results");
-                        //
-                    }
-
-                } else if (response.status.equals(Resource.Status.ERROR)) {
-                    //TODO do something error
-                    if (response.message != null)
-                        Log.d(TAG, response.message);
-                    else
-                        Log.d(TAG, "Status ERROR");
-                }
-                dismissLoading();
-            }
-        });
+        mAdapter = new AddCitySearchAdapter(weatherEntities, this);
+        mRecyclerView.setAdapter(mAdapter);
 
 
     }
@@ -227,7 +227,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
             }
 
         } else {
-            dismissProgressBar();
+            showWeatherDataRecyclerView();
             weatherEntities.clear();
             mAdapter.notifyDataSetChanged();
             if (mAdapter != null)
@@ -243,9 +243,9 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         Toast.makeText(getActivity(), "Added " + item.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
 
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
-            // Insert our new weather data into OpenWeatherApp's database
+            // Insert our new weather data into the database
             mViewModel.insertWeather(item);
-            OpenWeatherApp.Logger.d("New values inserted");
+            Log.d(TAG, "New values inserted");
 
             Objects.requireNonNull(getActivity()).finish();
 
@@ -265,6 +265,10 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
 
+    //*******************
+    // Current Location
+    //*******************
+
     private void checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
@@ -283,9 +287,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
             @Override
             public void onChanged(@Nullable Location location) {
                 if (location != null) {
-                    Log.d(TAG,
-                            "Location Changed " + location.getLatitude() + " : " + location.getLongitude());
-//                    Toast.makeText(getActivity(), location.getLatitude() + " : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Location Changed " + location.getLatitude() + " : " + location.getLongitude());
 
                     mViewModel.requestCurrentWeatherByCityCoords(String.valueOf(location.getLatitude()),
                             String.valueOf(location.getLongitude()));
@@ -367,45 +369,38 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
 
-    /**
-     * This method will make the View for the weather data visible and hide the error message and
-     * loading indicator.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't need to check whether
-     * each view is currently visible or invisible.
-     */
-    private void dismissLoading() {
-//        // First, hide the loading indicator
-//        mLoadingIndicator.setVisibility(View.INVISIBLE);
-//        // Finally, make sure the weather data is visible
-//        mRecyclerView.setVisibility(View.VISIBLE);
+    //********************************************
+    // Loading and progress bar related functions
+    //********************************************
 
+    private void dismissLoading() {
         loadingDialog.dismiss();
+    }
+
+
+    private void showLoading() {
+        loadingDialog.show();
     }
 
     /**
      * This method will make the loading indicator visible and hide the weather View and error
      * message.
-     * <p>
-     * Since it is okay to redundantly set the visibility of a View, we don't need to check whether
-     * each view is currently visible or invisible.
      */
-    private void showLoading() {
-//        // Then, hide the weather data
-//        mRecyclerView.setVisibility(View.INVISIBLE);
-//        // Finally, show the loading indicator
-
-        loadingDialog.show();
-    }
-
     private void showProgressBar() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        // Then, hide the weather data
         mRecyclerView.setVisibility(View.INVISIBLE);
-
+        // Finally, show the loading indicator
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void dismissProgressBar() {
+    /**
+     * This method will make the View for the weather data visible and hide the error message and
+     * loading indicator.
+     */
+    private void showWeatherDataRecyclerView() {
+        // First, hide the loading indicator
         mProgressBar.setVisibility(View.INVISIBLE);
+        // Finally, make sure the weather data is visible
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 }

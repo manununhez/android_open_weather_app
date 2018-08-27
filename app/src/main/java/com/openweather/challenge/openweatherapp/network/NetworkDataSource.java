@@ -89,7 +89,7 @@ public class NetworkDataSource {
      /*************************************/
 
     /**
-     * Starts an intent service to fetch the weather.
+     * Starts an intent service to fetch immediately the weather.
      */
     public void startFetchWeatherService() {
         Intent intentToFetch = new Intent(context, OpenWeatherAppSyncIntentService.class);
@@ -99,7 +99,8 @@ public class NetworkDataSource {
 
 
     /**
-     * Schedules a repeating job service which fetches the weather.
+     * Schedules a repeating {@link com.firebase.jobdispatcher.JobService} using {@link FirebaseJobDispatcher}.
+     * This repeating job will eventually sync weather information in the background.
      */
     public void scheduleRecurringFetchWeatherSync() {
         Driver driver = new GooglePlayDriver(context);

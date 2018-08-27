@@ -6,7 +6,6 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
-import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.db.dao.WeatherDao;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 

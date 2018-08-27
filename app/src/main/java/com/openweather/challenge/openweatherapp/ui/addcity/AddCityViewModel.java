@@ -21,20 +21,23 @@ class AddCityViewModel extends ViewModel {
         mRepository.insertWeather(weatherEntity);
     }
 
+    public void requestCurrentWeatherByCityName(String text) {
+        mRepository.requestCurrentWeatherByCityName(text);
+    }
+
     public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityName() {
         return mRepository.responseFromCurrentWeatherByCityName();
     }
 
 
-    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityCoord() {
-        return mRepository.responseFromCurrentWeatherByCityCoord();
-    }
-
-    public void requestCurrentWeatherByCityName(String text) {
-        mRepository.requestCurrentWeatherByCityName(text);
-    }
 
     public void requestCurrentWeatherByCityCoords(String lat, String lon) {
         mRepository.requestCurrentWeatherByCityCoords(lat, lon);
     }
+
+    public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityCoord() {
+        return mRepository.responseFromCurrentWeatherByCityCoord();
+    }
+
+
 }
