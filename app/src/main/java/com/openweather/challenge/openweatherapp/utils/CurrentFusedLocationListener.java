@@ -12,9 +12,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class CurrentLocationListener extends LiveData<Location> {
+public class CurrentFusedLocationListener extends LiveData<Location> {
 
-    private static CurrentLocationListener instance;
+    private static CurrentFusedLocationListener instance;
     final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -28,7 +28,7 @@ public class CurrentLocationListener extends LiveData<Location> {
     private final FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
 
-    private CurrentLocationListener(Context appContext) {
+    private CurrentFusedLocationListener(Context appContext) {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(appContext);
         mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
@@ -40,9 +40,9 @@ public class CurrentLocationListener extends LiveData<Location> {
         createLocationRequest();
     }
 
-    public static CurrentLocationListener getInstance(Context appContext) {
+    public static CurrentFusedLocationListener getInstance(Context appContext) {
         if (instance == null) {
-            instance = new CurrentLocationListener(appContext);
+            instance = new CurrentFusedLocationListener(appContext);
         }
         return instance;
     }

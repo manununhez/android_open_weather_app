@@ -43,7 +43,10 @@ public class AppRepository {
                     Log.d(TAG, "New values inserted");
                 } else if (weathersFromNetwork.status.equals(Resource.Status.ERROR)) {
                     //TODO do something
-                    Log.d(TAG, weathersFromNetwork.message);
+                    if (weathersFromNetwork.message != null)
+                        Log.d(TAG, weathersFromNetwork.message);
+                    else
+                        Log.d(TAG, "Status ERROR");
                 }
             }
 

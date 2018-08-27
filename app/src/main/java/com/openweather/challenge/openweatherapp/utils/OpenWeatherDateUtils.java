@@ -167,7 +167,9 @@ public final class OpenWeatherDateUtils {
 
     public static String getHourFromLongTimeSeconds(long time) {
         Date date = new Date(time * 1000L);
-        SimpleDateFormat df2 = new SimpleDateFormat("HH:mm");
+        TimeZone tz = TimeZone.getTimeZone("GTM");
+        SimpleDateFormat df2 = new SimpleDateFormat("HH:mm z");
+        df2.setTimeZone(tz);
         return df2.format(date);
     }
 

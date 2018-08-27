@@ -24,15 +24,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.openweather.challenge.openweatherapp.OpenWeatherApp;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
-import com.openweather.challenge.openweatherapp.utils.CurrentLocationListener;
+import com.openweather.challenge.openweatherapp.model.Resource;
+import com.openweather.challenge.openweatherapp.utils.CurrentFusedLocationListener;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 import com.openweather.challenge.openweatherapp.utils.LoadingDialog;
-import com.openweather.challenge.openweatherapp.model.Resource;
 import com.openweather.challenge.openweatherapp.utils.Utils;
 
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     private ArrayList<String> queriesHistory;
     private boolean ifBtnLocationHasBeenPressed = NOT_PRESSED;
     private LoadingDialog loadingDialog;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerView;
 
     public static AddCityFragment newInstance() {
         return new AddCityFragment();
@@ -102,6 +106,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         AddCityViewModelFactory factory = InjectorUtils.provideAddCityViewModelFactory(Objects.requireNonNull(getActivity()).getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(AddCityViewModel.class);
 
+        mProgressBar = rootView.findViewById(R.id.progressBar);
         tvCountResults = rootView.findViewById(R.id.tvCountResults);
         Button btnCurrenLocation = rootView.findViewById(R.id.btnCurrentLocation);
         btnCurrenLocation.setOnClickListener(this);
@@ -117,7 +122,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
 
     private void initRecyclerView() {
-        RecyclerView mRecyclerView = rootView.findViewById(R.id.rvSearch);
+        mRecyclerView = rootView.findViewById(R.id.rvSearch);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -127,25 +132,31 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 
         LiveData<Resource<WeatherEntity>> weatherSearchByNameResponse = mViewModel.responseFromCurrentWeatherByCityName();
         weatherSearchByNameResponse.observe(this, response -> {
-            if (response.status.equals(Resource.Status.SUCCESS)) {
-                OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
-                //TODO getActivity() can be improved
-                if (queriesHistory != null && !queriesHistory.isEmpty()) { // If at least one query was made, getActivity() response is correct. getActivity() avoid to have elements in the recyclerView from previous searches.
-                    if (!findItemInTheList(weatherEntities, response.data)) { //We only add a new element if it does not exist in the list yet.
-                        weatherEntities.add(response.data);
+            if (response != null) {
+                if (response.status.equals(Resource.Status.SUCCESS)) {
+                    OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
+                    //TODO getActivity() can be improved
+                    if (queriesHistory != null && !queriesHistory.isEmpty()) { // If at least one query was made, getActivity() response is correct. getActivity() avoid to have elements in the recyclerView from previous searches.
+                        if (!findItemInTheList(weatherEntities, response.data)) { //We only add a new element if it does not exist in the list yet.
+                            weatherEntities.add(response.data);
 
-                        mAdapter.notifyDataSetChanged();
-                        if (mAdapter != null)
-                            tvCountResults.setText(getString(R.string.found_results, mAdapter.getItemCount()));
+                            mAdapter.notifyDataSetChanged();
+                            if (mAdapter != null)
+                                tvCountResults.setText(getString(R.string.found_results, mAdapter.getItemCount()));
+
+                        }
+
 
                     }
-
-                    dismissLoading();
+                } else if (response.status.equals(Resource.Status.ERROR)) {
+                    //TODO do something error
+                    if (response.message != null)
+                        Log.d(TAG, response.message);
+                    else
+                        Log.d(TAG, "Status ERROR");
                 }
-            } else if (response.status.equals(Resource.Status.ERROR)) {
-                //TODO do something error
-                OpenWeatherApp.Logger.d(response.message);
-                dismissLoading();
+
+                dismissProgressBar();
             }
         });
 
@@ -153,27 +164,32 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         LiveData<Resource<WeatherEntity>> weatherSearchByCityCoordResponse = mViewModel.responseFromCurrentWeatherByCityCoord();
 //weatherSearchByCityCoordResponse.re
         weatherSearchByCityCoordResponse.observe(this, response -> {
-            if (response.status.equals(Resource.Status.SUCCESS)) {
+            if (response != null) {
+                if (response.status.equals(Resource.Status.SUCCESS)) {
 
-                if (ifBtnLocationHasBeenPressed) { //we read the values of this observer only if the user has selected to get current location
-                    OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
-                    OpenWeatherApp.Logger.d("New values inserted");
+                    if (ifBtnLocationHasBeenPressed) { //we read the values of this observer only if the user has selected to get current location
+                        OpenWeatherApp.Logger.d("AddCityFragment = " + Objects.requireNonNull(response).toString());
+                        OpenWeatherApp.Logger.d("New values inserted");
 
-                    mViewModel.insertWeather(response.data);
-                    Objects.requireNonNull(getActivity()).finish();
-//                if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
-//                    weatherEntities.add(response);
-//
-//                    mAdapter.notifyDataSetChanged();
-//                    if (mAdapter != null)
-//                        tvCountResults.setText(mAdapter.getItemCount() + " results");
-//
+                        mViewModel.insertWeather(response.data);
+                        Toast.makeText(getActivity(), "Added " + response.data.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
+                        Objects.requireNonNull(getActivity()).finish();
+                        //                if (!findItemInTheList(weatherEntities, response)) { //We only add a new element if it does not exist in the list yet.
+                        //                    weatherEntities.add(response);
+                        //
+                        //                    mAdapter.notifyDataSetChanged();
+                        //                    if (mAdapter != null)
+                        //                        tvCountResults.setText(mAdapter.getItemCount() + " results");
+                        //
+                    }
+
+                } else if (response.status.equals(Resource.Status.ERROR)) {
+                    //TODO do something error
+                    if (response.message != null)
+                        Log.d(TAG, response.message);
+                    else
+                        Log.d(TAG, "Status ERROR");
                 }
-
-                dismissLoading();
-            } else if (response.status.equals(Resource.Status.ERROR)) {
-                //TODO do something error
-                OpenWeatherApp.Logger.d(response.message);
                 dismissLoading();
             }
         });
@@ -205,13 +221,13 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         if (!s.isEmpty()) {
             String allRemoved = s.replaceAll("^\\s+|\\s+$", ""); //trim white spaces, front and back of the text
             if (!queriesHistory.contains(allRemoved)) { //Avoid repeat the same queries to prevent inaccuracies calls
-                showLoading();
+                showProgressBar();
                 mViewModel.requestCurrentWeatherByCityName(allRemoved);
                 queriesHistory.add(allRemoved);
             }
 
         } else {
-            dismissLoading();
+            dismissProgressBar();
             weatherEntities.clear();
             mAdapter.notifyDataSetChanged();
             if (mAdapter != null)
@@ -224,6 +240,8 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     //FilterClick
     @Override
     public void onItemClick(WeatherEntity item) {
+        Toast.makeText(getActivity(), "Added " + item.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
+
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             // Insert our new weather data into OpenWeatherApp's database
             mViewModel.insertWeather(item);
@@ -261,7 +279,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     private void getLocationUpdates() {
-        CurrentLocationListener.getInstance(getActivity()).observe(this, new Observer<Location>() {
+        CurrentFusedLocationListener.getInstance(getActivity()).observe(this, new Observer<Location>() {
             @Override
             public void onChanged(@Nullable Location location) {
                 if (location != null) {
@@ -273,7 +291,7 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
                             String.valueOf(location.getLongitude()));
 
 
-                    CurrentLocationListener.getInstance(getActivity()).removeObserver(this);//We receive the coords only once and then we cancel the observer to stop receiving location
+                    CurrentFusedLocationListener.getInstance(getActivity()).removeObserver(this);//We receive the coords only once and then we cancel the observer to stop receiving location
                 }
             }
         });
@@ -378,5 +396,16 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
 //        // Finally, show the loading indicator
 
         loadingDialog.show();
+    }
+
+    private void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void dismissProgressBar() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 }

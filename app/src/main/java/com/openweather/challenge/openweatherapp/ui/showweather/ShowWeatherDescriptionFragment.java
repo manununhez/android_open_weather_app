@@ -83,6 +83,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
         tvWindSpeed.setText(OpenWeatherUtils.getFormattedWind(getActivity(), weatherEntity.getWind_speed(), weatherEntity.getWind_deg()));
 
         tvHumidity.setText(getActivity().getString(R.string.format_humidity,weatherEntity.getMain_humidity()));
+
         tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
         tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
 
