@@ -26,6 +26,14 @@ public interface WeatherDao {
     List<Integer> getAllWeathersId();
 
     /**
+     * Weather entry by id
+     *
+     * @return {@link WeatherEntity} weather entry
+     */
+    @Query("SELECT * FROM weather_table WHERE id = :id")
+    WeatherEntity getWeatherById(int id);
+
+    /**
      * Last update. We get the oldest dt, that's why we order dt by ASC. This is key to know if new
      * data should be fetched from network.
      *

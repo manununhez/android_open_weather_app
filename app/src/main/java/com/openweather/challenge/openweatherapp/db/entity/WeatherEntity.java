@@ -25,7 +25,7 @@ public class WeatherEntity implements Parcelable {
     private int id;
     private double lat;
     private double lon;
-    private int weather_id;
+    private int weather_id; //image id
     private String weather_main;
     private String weather_description;
     private String weather_icon;

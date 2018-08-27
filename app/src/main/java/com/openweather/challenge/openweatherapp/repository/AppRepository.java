@@ -136,6 +136,15 @@ public class AppRepository {
         return mWeatherDao.getAllWeathersId();
     }
 
+    /**
+     * Weather entry by ID
+     *
+     * @return Weather Entry
+     */
+    public WeatherEntity getWeatherById(int id) {
+        return mWeatherDao.getWeatherById(id);
+    }
+
 
     /**
      * Returns how many weathers entries are in DB.

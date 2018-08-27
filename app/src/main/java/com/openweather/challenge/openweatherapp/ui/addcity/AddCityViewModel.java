@@ -3,9 +3,11 @@ package com.openweather.challenge.openweatherapp.ui.addcity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.openweather.challenge.openweatherapp.repository.AppRepository;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.model.Resource;
+import com.openweather.challenge.openweatherapp.repository.AppRepository;
+
+import java.util.List;
 
 class AddCityViewModel extends ViewModel {
 
@@ -29,14 +31,25 @@ class AddCityViewModel extends ViewModel {
         return mRepository.responseFromCurrentWeatherByCityName();
     }
 
-
-
     public void requestCurrentWeatherByCityCoords(String lat, String lon) {
         mRepository.requestCurrentWeatherByCityCoords(lat, lon);
     }
 
     public LiveData<Resource<WeatherEntity>> responseFromCurrentWeatherByCityCoord() {
         return mRepository.responseFromCurrentWeatherByCityCoord();
+    }
+
+
+     //     Used by {@link AddCityViewModelTest}
+    public WeatherEntity getWeatherById(int id) {
+        return mRepository.getWeatherById(id);
+    }
+
+
+    //     Used by {@link AddCityViewModelTest}
+    public LiveData<List<WeatherEntity>> getCurrentWeathers(){
+        return mRepository.getCurrentWeathers();
+
     }
 
 

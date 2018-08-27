@@ -51,7 +51,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="fef80c" />
-                                                <entry key="scalingPercent" value="80" />
+                                                <entry key="scalingPercent" value="45" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
