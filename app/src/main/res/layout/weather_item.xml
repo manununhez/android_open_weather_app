@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="weatherEntity"
+            type="com.openweather.challenge.openweatherapp.db.entity.WeatherEntity" />
+
+        <variable
+            name="onClickCallback"
+            type="com.openweather.challenge.openweatherapp.ui.addcity.SearchWeatherItemClickCallback" />
+
+        <import type="com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() ->  onClickCallback.onClick(weatherEntity)}"
+        android:onLongClick="@{() ->  onClickCallback.onLongClick(weatherEntity)}"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvCityName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:hint="@string/city_name_placeholder"
+                android:text="@{@string/full_city_name(weatherEntity.name, weatherEntity.sys_country)}"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:hint="@string/degree_placeholder"
+                android:text="@{@string/format_temperature(weatherEntity.main_temp)}"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toTopOf="@+id/tvWeatherCondition"
+                app:layout_constraintEnd_toEndOf="@+id/tvWeatherCondition"
+                app:layout_constraintStart_toStartOf="@+id/tvWeatherCondition"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvWeatherCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="4dp"
+                android:hint="@string/weather_condition_placeholder"
+                android:text="@{weatherEntity.weather_main}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivWeatherCondition"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/ic_launcher_background"
+                android:contentDescription="TODO"
+                app:imageResource="@{OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.weather_id)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvWeatherCondition"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</layout>

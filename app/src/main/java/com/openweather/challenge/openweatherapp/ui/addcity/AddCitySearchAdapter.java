@@ -2,100 +2,65 @@ package com.openweather.challenge.openweatherapp.ui.addcity;
 
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
+import com.openweather.challenge.openweatherapp.databinding.WeatherItemSBinding;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
-import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
 
 import java.util.List;
 
-public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdapter.ViewHolder> {
-    private final OnItemClickListener mListener;
+public class AddCitySearchAdapter extends RecyclerView.Adapter<AddCitySearchAdapter.WeatherViewHolder> {
 
-    private final List<WeatherEntity> mArrayList;
-    private Context mContext;
+    private final List<WeatherEntity> weatherEntityList;
+    private final SearchWeatherItemClickCallback mWeatherItemClickCallback;
 
-    public AddCitySearchAdapter(List<WeatherEntity> arrayList, OnItemClickListener listener) {
-        mArrayList = arrayList;
-        mListener = listener;
+    public AddCitySearchAdapter(List<WeatherEntity> arrayList, SearchWeatherItemClickCallback searchWeatherItemClickCallback) {
+        weatherEntityList = arrayList;
+        mWeatherItemClickCallback = searchWeatherItemClickCallback;
 
     }
 
     @NonNull
     @Override
-    public AddCitySearchAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.city_list_row_s, viewGroup, false);
-        mContext = rootView.getContext();
-        return new ViewHolder(rootView);
+    public WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+        WeatherItemSBinding binding = DataBindingUtil
+                .inflate(LayoutInflater.from(parent.getContext()), R.layout.weather_item_s,
+                        parent, false);
+        binding.setOnClickCallback(mWeatherItemClickCallback);
+        return new WeatherViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AddCitySearchAdapter.ViewHolder viewHolder, int position) {
-
-        viewHolder.bind(mArrayList.get(position));
-
+    public void onBindViewHolder(@NonNull WeatherViewHolder weatherViewHolder, int position) {
+        weatherViewHolder.binding.setWeatherEntity(weatherEntityList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mArrayList.size();
+        return weatherEntityList.size();
     }
 
     public void setItemList(List<WeatherEntity> weatherEntities) {
-        mArrayList.clear();
-        mArrayList.addAll(weatherEntities);
+        weatherEntityList.clear();
+        weatherEntityList.addAll(weatherEntities);
 
         notifyDataSetChanged();
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(WeatherEntity item);
-    }
 
+    public class WeatherViewHolder extends RecyclerView.ViewHolder {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvTemperature;
-        private final TextView tvCityName;
-        private final TextView tvWeatherCondition;
-        private final ImageView ivWeatherCondition;
+        final WeatherItemSBinding binding;
 
-        ViewHolder(View view) {
-            super(view);
-
-            tvCityName = view.findViewById(R.id.tvCityName);
-            tvTemperature = view.findViewById(R.id.tvTemperature);
-            tvWeatherCondition = view.findViewById(R.id.tvWeatherCondition);
-            ivWeatherCondition = view.findViewById(R.id.ivWeatherCondition);
+        WeatherViewHolder(WeatherItemSBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
-
-        void bind(WeatherEntity item) {
-            int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(item.getWeather_id());
-
-            tvCityName.setText(mContext.getString(R.string.full_city_name, item.getName(), item.getSys_country()));
-            tvTemperature.setText(OpenWeatherUtils.formatTemperature(mContext, item.getMain_temp()));
-            tvWeatherCondition.setText(item.getWeather_main());
-
-            ivWeatherCondition.setImageResource(weatherImageId);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onItemClick(item);
-
-                }
-            });
-
-
-        }
-
-
     }
 
 

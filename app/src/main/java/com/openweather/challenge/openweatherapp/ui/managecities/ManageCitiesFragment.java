@@ -19,13 +19,14 @@ import android.view.ViewGroup;
 import com.openweather.challenge.openweatherapp.R;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.ui.addcity.AddCityActivity;
+import com.openweather.challenge.openweatherapp.ui.addcity.SearchWeatherItemClickCallback;
 import com.openweather.challenge.openweatherapp.utils.InjectorUtils;
 import com.openweather.challenge.openweatherapp.utils.Utils;
 
 import java.util.List;
 import java.util.Objects;
 
-public class ManageCitiesFragment extends Fragment implements ManageCitiesAdapter.OnItemClickListener, ManageCitiesAdapter.OnLongItemClickListener {
+public class ManageCitiesFragment extends Fragment implements SearchWeatherItemClickCallback {
 
     private ManageCitiesViewModel mViewModel;
     private View rootView;
@@ -73,7 +74,7 @@ public class ManageCitiesFragment extends Fragment implements ManageCitiesAdapte
     }
 
     private void setRecyclerView(List<WeatherEntity> weatherEntities) {
-        ManageCitiesAdapter mAdapter = new ManageCitiesAdapter(weatherEntities, this, this);
+        ManageCitiesAdapter mAdapter = new ManageCitiesAdapter(weatherEntities, this);
 
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -98,18 +99,20 @@ public class ManageCitiesFragment extends Fragment implements ManageCitiesAdapte
         }
     }
 
+
     @Override
-    public void onItemClick(WeatherEntity item) {
+    public void onClick(WeatherEntity weatherEntity) {
         //TODO go to specific weather TAB in ShowWeatherActivity
+
     }
 
     @Override
-    public void onLongItemClick(WeatherEntity item) {
+    public boolean onLongClick(WeatherEntity weatherEntity) {
         Utils.getAlertDialogWithChoice(getActivity(), getString(R.string.title_alert_dialog), getString(R.string.title_delete_alert_dialog),
                 getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mViewModel.deleteWeather(item);
+                        mViewModel.deleteWeather(weatherEntity);
                     }
                 }, getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -122,5 +125,8 @@ public class ManageCitiesFragment extends Fragment implements ManageCitiesAdapte
                         dialog.dismiss();
                     }
                 }).show();
+        return true;
     }
+
+
 }

@@ -70,6 +70,30 @@ public final class OpenWeatherUtils {
     }
 
 
+    public static String getWindDirection(double degrees) {
+        String direction = "Unknown";
+        if (degrees >= 337.5 || degrees < 22.5) {
+            direction = "N";
+        } else if (degrees < 67.5) {
+            direction = "NE";
+        } else if ( degrees < 112.5) {
+            direction = "E";
+        } else if ( degrees < 157.5) {
+            direction = "SE";
+        } else if (degrees < 202.5) {
+            direction = "S";
+        } else if (degrees < 247.5) {
+            direction = "SW";
+        } else if (degrees < 292.5) {
+            direction = "W";
+        } else if (degrees < 337.5) {
+            direction = "NW";
+        }
+
+        return String.format(direction);
+    }
+
+
     /**
      * Helper method to provide the icon resource id according to the weather condition id returned
      * by the OpenWeatherMap call.

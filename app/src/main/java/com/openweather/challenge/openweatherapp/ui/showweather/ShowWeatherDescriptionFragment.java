@@ -1,5 +1,7 @@
 package com.openweather.challenge.openweatherapp.ui.showweather;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openweather.challenge.openweatherapp.R;
+import com.openweather.challenge.openweatherapp.databinding.ShowWeatherDescriptionFragmentBinding;
 import com.openweather.challenge.openweatherapp.db.entity.WeatherEntity;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherDateUtils;
 import com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils;
@@ -27,6 +30,7 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     private WeatherEntity weatherEntity;
     private View rootView;
     private static final String WEATHER = "weather";
+private ShowWeatherDescriptionFragmentBinding mBinding;
 
     // newInstance constructor for creating fragment with arguments
     public static ShowWeatherDescriptionFragment newInstance(WeatherEntity weatherEntity) {
@@ -49,48 +53,10 @@ public class ShowWeatherDescriptionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.show_weather_description_fragment, container, false);
-        return rootView;
+        // Inflate this data binding layout
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.show_weather_description_fragment, container, false);
+        mBinding.setWeatherEntity(weatherEntity);
+        return mBinding.getRoot();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        //TODO Data Binding
-        TextView tvCityName = rootView.findViewById(R.id.tvCityName);
-        TextView tvCurrentTemp = rootView.findViewById(R.id.tvCurrentTemp);
-        TextView tvWeatherMain = rootView.findViewById(R.id.tvWeatherMain);
-        TextView tvMinMaxTemp = rootView.findViewById(R.id.tvMinMaxTemp);
-        TextView tvWeatherDescription = rootView.findViewById(R.id.tvWeatherDescription);
-        TextView tvWindSpeed = rootView.findViewById(R.id.tvWindSpeed);
-        TextView tvHumidity = rootView.findViewById(R.id.tvHumidity);
-        TextView tvSunrise = rootView.findViewById(R.id.tvSunrise);
-        TextView tvSunset = rootView.findViewById(R.id.tvSunset);
-        TextView tvLastUpdate = rootView.findViewById(R.id.tvLastUpdate);
-        ImageView ivWeatherCondition = rootView.findViewById(R.id.ivWeatherCondition);
-
-        int weatherImageId = OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.getWeather_id());
-
-
-        tvCityName.setText(Objects.requireNonNull(getActivity()).getString(R.string.full_city_name, weatherEntity.getName(), weatherEntity.getSys_country()));
-        tvCurrentTemp.setText(OpenWeatherUtils.formatTemperature(Objects.requireNonNull(getActivity()), weatherEntity.getMain_temp()));
-        tvWeatherMain.setText(weatherEntity.getWeather_main());
-        tvWeatherDescription.setText(weatherEntity.getWeather_description());
-        tvMinMaxTemp.setText(getActivity().getString(R.string.format_min_max_temperature,OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_max()),
-                OpenWeatherUtils.formatTemperature(getActivity(), weatherEntity.getMain_temp_min())));
-
-        tvWindSpeed.setText(OpenWeatherUtils.getFormattedWind(getActivity(), weatherEntity.getWind_speed(), weatherEntity.getWind_deg()));
-
-        tvHumidity.setText(getActivity().getString(R.string.format_humidity,weatherEntity.getMain_humidity()));
-
-        tvSunrise.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunrise()));
-        tvSunset.setText(OpenWeatherDateUtils.getHourFromLongTimeSeconds(weatherEntity.getSys_sunset()));
-
-        tvLastUpdate.setText(OpenWeatherDateUtils.getTimeAgo(weatherEntity.getDt())); //Update last update value
-
-        //TODO retrieve image with Glide
-        ivWeatherCondition.setImageResource(weatherImageId);
-
-    }
 }

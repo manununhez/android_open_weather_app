@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
-public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, AddCitySearchAdapter.OnItemClickListener, View.OnClickListener {
+public class AddCityFragment extends Fragment implements SearchView.OnQueryTextListener, SearchWeatherItemClickCallback, View.OnClickListener {
 
     private static final String TAG = AddCityFragment.class.getSimpleName();
     private static final String QUERY = "query_search";
@@ -226,10 +226,11 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
                 queriesHistory.add(allRemoved);
             }
 
-        } else {
+        } else { //the search is empty
             showWeatherDataRecyclerView();
-            weatherEntities.clear();
-            mAdapter.notifyDataSetChanged();
+            queriesHistory.clear(); //Clear the list of queries searched
+            weatherEntities.clear(); //Clear the result list (recyclerview)
+            mAdapter.notifyDataSetChanged(); //update Recycler
             if (mAdapter != null)
                 tvCountResults.setText(getString(R.string.found_results, mAdapter.getItemCount()));
 
@@ -237,19 +238,31 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         return true;
     }
 
-    //FilterClick
+
+    /**
+     * Search item click
+     * Used by {@link AddCitySearchAdapter}
+     *
+     * @param weatherEntity
+     */
     @Override
-    public void onItemClick(WeatherEntity item) {
-        Toast.makeText(getActivity(), "Added " + item.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
+    public void onClick(WeatherEntity weatherEntity) {
+        Toast.makeText(getActivity(), "Added " + weatherEntity.getName() + " as a new city.", Toast.LENGTH_SHORT).show();
 
         Executors.newSingleThreadScheduledExecutor().execute(() -> {
             // Insert our new weather data into the database
-            mViewModel.insertWeather(item);
+            mViewModel.insertWeather(weatherEntity);
             Log.d(TAG, "New values inserted");
 
             Objects.requireNonNull(getActivity()).finish();
 
         });
+    }
+
+    @Override
+    public boolean onLongClick(WeatherEntity weatherEntity) {
+        //Nothing
+        return true;
     }
 
 
@@ -403,4 +416,6 @@ public class AddCityFragment extends Fragment implements SearchView.OnQueryTextL
         // Finally, make sure the weather data is visible
         mRecyclerView.setVisibility(View.VISIBLE);
     }
+
+
 }
