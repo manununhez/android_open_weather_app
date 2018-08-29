@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
@@ -84,13 +85,13 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/ic_launcher_background"
                 android:contentDescription="TODO"
                 app:imageResource="@{OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.weather_id)}"
                 app:layout_constraintBottom_toTopOf="@+id/tvWeatherMain"
                 app:layout_constraintEnd_toStartOf="@+id/tvCurrentTemp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvCurrentTemp" />
+                app:layout_constraintTop_toTopOf="@+id/tvCurrentTemp"
+                bind:weather_icon="@{weatherEntity.weather_icon}" />
 
             <TextView
                 android:id="@+id/tvWeatherDescription"

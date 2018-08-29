@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,6 +14,8 @@
             type="com.openweather.challenge.openweatherapp.ui.addcity.SearchWeatherItemClickCallback" />
 
         <import type="com.openweather.challenge.openweatherapp.utils.OpenWeatherUtils" />
+
+        <import type="android.view.View" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -74,12 +77,11 @@
                 android:layout_height="50dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
-                android:background="@drawable/ic_launcher_background"
                 android:contentDescription="TODO"
-                app:imageResource="@{OpenWeatherUtils.geResourceIdForWeatherCondition(weatherEntity.weather_id)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvWeatherCondition"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                bind:weather_icon="@{weatherEntity.weather_icon}" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

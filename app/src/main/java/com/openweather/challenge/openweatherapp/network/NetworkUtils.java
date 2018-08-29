@@ -7,12 +7,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-class NetworkUtils {
+public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
     private static final String OPEN_WEATHER_API = "weather";
     private static final String OPEN_WEATHER_GROUP_API = "group";
-    //    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
+    private static final String OPEN_WEATHER_IMAGE_API = "http://openweathermap.org/img/w/";
     private static final String WEATHER_FORECAST_PARAM = "q";
     private static final String CITY_ID = "id";
     private static final String CITY_COORD_LAT = "lat";
@@ -25,6 +25,20 @@ class NetworkUtils {
 
 
     private NetworkUtils() {
+    }
+
+    private static URL builImageUrl(String iconUrl) {
+        Uri weatherQueryUri = Uri.parse(OPEN_WEATHER_IMAGE_API.concat(iconUrl).concat(PNG_EXTENSION)).buildUpon()
+                .build();
+
+        try {
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString());
+            Log.d(TAG, "URL: " + weatherQueryUrl);
+            return weatherQueryUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -121,6 +135,9 @@ class NetworkUtils {
         }
     }
 
+    public static URL getCurrentWeatherURLIconImage(String iconUrl) {
+        return builImageUrl(iconUrl);
+    }
 
     /**
      * Returns the URL used to talk to the weather server using a location.
