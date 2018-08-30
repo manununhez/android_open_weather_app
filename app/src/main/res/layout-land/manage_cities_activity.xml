@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
-    tools:context=".ui.managecities.ManageCitiesFragment">
+    tools:context=".ui.managecities.ManageCitiesActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvManageCity"

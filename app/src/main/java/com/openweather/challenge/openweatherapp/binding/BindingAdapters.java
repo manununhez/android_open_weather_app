@@ -1,4 +1,4 @@
-package com.openweather.challenge.openweatherapp.db.entity;
+package com.openweather.challenge.openweatherapp.binding;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;
